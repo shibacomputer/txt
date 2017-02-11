@@ -2,12 +2,11 @@
   "name": "txt",
   "version": "0.0.1",
   "description": "Simple, secure journalling",
-  "main": "app/index.js",
+  "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "dev": "set DEV=true && concurrently --kill-others \"npm start\"",
-    "test": "mocha tests && npm run lint",
-    "lint": "standard | snazzy"
+    "watch": "watchify index.js -o bundle.js --debug --verbose",
+    "dev": "NODE_ENV=development && concurrently \"npm start\""
   },
   "repository": {
     "type": "git",
@@ -25,20 +24,12 @@
   },
   "homepage": "https://txtapp.io/",
   "dependencies": {
-    "choo-log": "^3.0.0",
-    "choo-md-editor": "^0.1.0",
-    "choo-persist": "^2.0.1",
-    "electron-updater": "^1.6.1",
     "electron-window": "^0.8.1",
-    "nanomorph": "^2.1.3",
-    "open": "0.0.5",
-    "run-waterfall": "^1.1.3",
-    "sheet-router": "^4.2.3",
-    "toiletdb": "^1.2.1"
+    "envobj": "^1.0.3"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
-    "choo-test": "0.0.5",
+    "budo": "^9.4.7",
     "concurrently": "^3.2.0",
     "devtron": "^1.4.0",
     "electron": "^1.4.14",
