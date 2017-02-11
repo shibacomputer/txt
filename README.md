@@ -1,1 +1,2 @@
-# txt
+# Txt
+Simple, private journalling.
