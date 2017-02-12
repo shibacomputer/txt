@@ -1,3 +1,13 @@
+
+/*
+    _______  ________
+   /_  __/ |/ /_  __/
+    / /  |   / / /
+   / /  /   | / /
+  /_/  /_/|_|/_/
+  Simple, secure journalling.
+*/
+
 const { app, shell, Menu, ipcMain } = require('electron')
 const window = require('electron-window')
 const budo = require('budo')
@@ -6,6 +16,7 @@ const budo = require('budo')
 const windowConfig = require('./config/defaults')
 const menuConfig = require('./config/menu')
 
+// Setup windows
 const mainWindowSetup = {
   titleBarStyle:  windowConfig.win.app.titleBar,
   width:          windowConfig.win.app.x,
@@ -22,7 +33,12 @@ app.on('ready', () => {
   var server = budo('./app/app.js', {
     port: 8001,
     live: true,
-    stream: process.stdout
+    stream: process.stdout,
+    browserify: {
+      transform: [
+        'sheetify/transform'
+      ]
+    }
   })
 
   .on('connect', function (ev) {

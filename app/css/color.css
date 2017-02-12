@@ -1,0 +1,17 @@
+/* Grid unit */
+--u: 16px;
+
+/* Colours */
+--c:      #27FF98;
+--m:      #F427FF;
+--y:      #FFD710;
+--k:      #242529;
+--w:      #DCF9FE;
+--g:      #858585;
+--b:      #00D7FF;
+--f:      #FFFFFF;
+--r:      #ff0000;
+
+/* Gradients */
+--myc:   linear-gradient(0deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
+--bck:   linear-gradient(-180deg, #00D7FF 0%, #27FF98 51%, #000000 100%);

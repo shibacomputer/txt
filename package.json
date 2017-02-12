@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "watch": "watchify index.js -o bundle.js --debug --verbose",
     "dev": "NODE_ENV=development && concurrently \"npm start\""
   },
   "repository": {
@@ -24,9 +23,14 @@
   },
   "homepage": "https://txtapp.io/",
   "dependencies": {
+    "bel": "^4.5.1",
     "choo": "^4.1.0",
     "electron-window": "^0.8.1",
-    "envobj": "^1.0.3"
+    "envobj": "^1.0.3",
+    "fs-explorer": "^1.1.0",
+    "sheetify": "6.0.0",
+    "tachyons": "^4.6.2",
+    "yo-yo": "^1.4.0"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
