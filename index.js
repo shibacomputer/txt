@@ -1,4 +1,3 @@
-
 /*
     _______  ________
    /_  __/ |/ /_  __/
@@ -30,7 +29,7 @@ let mainWindow
 
 app.on('ready', () => {
   mainWindow = window.createWindow(mainWindowSetup)
-  var server = budo('./app/app.js', {
+  var server = budo('app.js', {
     port: 8001,
     live: true,
     stream: process.stdout,
