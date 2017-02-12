@@ -24,6 +24,7 @@
   },
   "homepage": "https://txtapp.io/",
   "dependencies": {
+    "choo": "^4.1.0",
     "electron-window": "^0.8.1",
     "envobj": "^1.0.3"
   },
