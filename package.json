@@ -41,7 +41,8 @@
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
     "mochify": "^2.18.1",
-    "spritesh": "^1.2.0"
+    "spritesh": "^1.2.0",
+    "svgo": "^0.7.2"
   },
   "build": {
     "appId": "com.shibacomputer.txt",
