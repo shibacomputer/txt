@@ -1,3 +1,23 @@
+@font-face {  font-family: 'NovelMono';
+              font-weight: normal;
+              font-style: normal;
+              src:  url('assets/fonts/novelmono.ttf') format('truetype') }
+
+@font-face {  font-family: 'NovelMono';
+              font-weight: normal;
+              font-style: italic;;
+              src:  url('assets/fonts/novelmono-italic.ttf') format('truetype') }
+
+@font-face {  font-family: 'NovelMono';
+              font-weight: bold;
+              font-style: normal;
+              src:  url('assets/fonts/novelmono-bold.ttf') format('truetype') }
+
+@font-face {  font-family: 'NovelMono';
+              font-weight: bold;
+              font-style: italic;
+              src:  url('assets/fonts/novelmono-bold-italic.ttf') format('truetype') }
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -30,6 +50,7 @@ html {
 }
 
 body {
+  font-family: "NovelMono", monospace;
   padding: 0;
   margin: 0;
   -ms-overflow-style: scrollbar;
