@@ -24,21 +24,20 @@ const mainWindowSetup = {
   minHeight:      windowConfig.win.app.minY,
   frame:          windowConfig.win.app.frame
 }
+const opts = {
+  debug: process.env.NODE_ENVIRONMENT !== 'production',
+  verbose: true,
+  live: true,
+  stream: process.stdout,
+  browserify: { transform: [ 'sheetify/transform' ]},
+  browserifyArgs: ['--im', '--no-builtins']
+};
 
 let mainWindow
 
 app.on('ready', () => {
   mainWindow = window.createWindow(mainWindowSetup)
-  var server = budo('app.js', {
-    port: 8001,
-    live: true,
-    stream: process.stdout,
-    browserify: {
-      transform: [
-        'sheetify/transform'
-      ]
-    }
-  })
+  var server = budo('app.js', opts)
 
   .on('connect', function (ev) {
     mainWindow.showUrl(ev.uri)

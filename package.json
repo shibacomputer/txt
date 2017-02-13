@@ -4,8 +4,8 @@
   "description": "Simple, secure journalling",
   "main": "index.js",
   "scripts": {
-    "start": "electron .",
-    "dev": "NODE_ENV=development && concurrently \"npm start\""
+    "start": "NODE_ENV=development && npm run spriteify && electron .",
+    "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 240 240' --prefix txt-"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "fs-explorer": "^1.1.0",
     "sheetify": "6.0.0",
     "tachyons": "^4.6.2",
+    "yo-css": "^1.1.0",
     "yo-yo": "^1.4.0"
   },
   "devDependencies": {
@@ -39,7 +40,8 @@
     "devtron": "^1.4.0",
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
-    "mochify": "^2.18.1"
+    "mochify": "^2.18.1",
+    "spritesh": "^1.2.0"
   },
   "build": {
     "appId": "com.shibacomputer.txt",

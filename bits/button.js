@@ -1,21 +1,21 @@
 'use strict'
 
 const html = require('yo-yo')
-const css = require('sheetify')
+const css = require('yo-css')
 
-const base = css`
-  width: 1rem;
-  height: 1rem;
-  display: inline-block;
-`
 
 module.exports = (props, click) => {
   if (typeof click === 'function') props.click = click
 
-  return html`
-  <button onclick=${props.click} class="${base} pointer">
-    
-  </button>
-`
+  const style = {
+    fill: 'currentColor',
+    width: '2rem',
+    height: '2rem'
+  }
 
+  return html`
+    <svg viewBox="0 0 24 24" style=${css(style)}>
+      <use xlink:href="#txt-${props.icon}" />
+    </svg>
+  `
 }
