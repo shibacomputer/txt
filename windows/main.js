@@ -1,24 +1,32 @@
 'use strict'
 
-const html = require('bel')
+const html = require('yo-yo')
 const css = require('sheetify')
 
+const Toolbar = require('../bits/toolbar.js')
+const FileExplorer = require('../bits/sidebar.js')
 const base = css`
   :host {
-    body {
-      height: 100vh;
-      background-color: var(--k);
-      display: flex;
-      flex-direction: column;
-      -webkit-app-region: drag;
-    }
+    display: flex;
+    flex-direction: row;
+    color: white;
+    background-color: #242529;
   }
 `
-module.exports = function mainWindow(state, prev, send) {
-  document.title = 'Text'
-  return html`
-    <body class="b-myc">
 
+module.exports = mainWindow
+
+function mainWindow(state, prev, send) {
+  document.title = 'Text'
+  const toolbar = Toolbar({})
+  const sidebar = FileExplorer({})
+
+  return html`
+    <body class="b-myc ${base}">
+      ${sidebar}
+      <main>
+        ${toolbar}
+      </main>
     </body>
   `
 }
