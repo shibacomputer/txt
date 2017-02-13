@@ -9,13 +9,15 @@ module.exports = (props, click) => {
 
   const style = {
     fill: 'currentColor',
-    width: '2rem',
-    height: '2rem'
+    width: '1.5rem',
+    height: '1.5rem',
   }
 
   return html`
-    <svg viewBox="0 0 24 24" style=${css(style)}>
-      <use xlink:href="#txt-${props.icon}" />
-    </svg>
+    <div onclick=${props.click} class=${props.classes}>
+      <svg viewBox="0 0 24 24" style=${css(style)}>
+        <use xlink:href="#txt-${props.icon}" />
+      </svg>
+    </div>
   `
 }

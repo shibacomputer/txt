@@ -18,3 +18,13 @@
   --myc:   linear-gradient(0deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
   --bck:   linear-gradient(-180deg, #00D7FF 0%, #27FF98 51%, #000000 100%);
 }
+
+.c { color: var(--c) }
+.m { color: var(--m) }
+.y { color: var(--y) }
+.k { color: var(--k) }
+.w { color: var(--w) }
+.g { color: var(--g) }
+.b { color: var(--b) }
+.f { color: var(--f) }
+.r { color: var(--r) }

@@ -4,7 +4,7 @@
     / /  |   / / /
    / /  /   | / /
   /_/  /_/|_|/_/
-  Simple, secure journalling.
+
 */
 
 const { app, shell, Menu, ipcMain } = require('electron')

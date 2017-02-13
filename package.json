@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "NODE_ENV=development && npm run spriteify && electron .",
-    "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 240 240' --prefix txt-"
+    "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 24 24' --prefix txt-"
   },
   "repository": {
     "type": "git",

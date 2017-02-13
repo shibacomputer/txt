@@ -10,19 +10,26 @@ const base = css`
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     background-color: rgba(0,0,0,0.1);
     padding: 0 1rem;
+    font-size: 12px;
   }
 `
 
 module.exports = (props) => {
   return html`
     <header class="${base}">
-      <nav>
-        ${button({
-          icon: 'new'
-        })}
+      <nav class="left">
+        ${props.left}
+      </nav>
 
+      <nav class="mid">
+        ${props.mid}
+      </nav>
+
+      <nav class="right">
+        ${props.right}
       </nav>
     </header>
   `
