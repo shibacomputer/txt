@@ -9,6 +9,7 @@ const app = choo()
 css('tachyons')
 css('./css/color.css')
 css('./css/frame.css')
+css('./css/common.css')
 
 persist((persist) => {
   app.use(persist)

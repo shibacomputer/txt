@@ -3,8 +3,7 @@
 const html = require('yo-yo')
 const css = require('sheetify')
 const icons = require('../utils/icons')
-
-const Toolbar = require('../bits/toolbar')
+const button = require('../bits/button')
 const FileExplorer = require('../bits/sidebar')
 
 const base = css`
@@ -13,6 +12,10 @@ const base = css`
     flex-direction: row;
     color: white;
     background-color: #242529;
+
+    .toolbar .right {
+
+    }
   }
 `
 
@@ -28,16 +31,34 @@ module.exports = mainWindow
 
 function mainWindow(state, prev, send) {
   document.title = 'Text'
-
-  const toolbar = Toolbar({})
+  const editingTools = html`
+    <div class="tools">
+      ${button({
+        name: 'new',
+        classes: 'c',
+        click: function() { console.log('hello')}
+      })}
+    </div>
+  `
   const sidebar = FileExplorer({})
-
   return html`
     <body class="b-myc ${base}">
       ${icons()}
       ${sidebar}
       <main class="${editorWindow}">
-        ${toolbar}
+        <header class="toolbar">
+          <nav class="left">
+          </nav>
+          <nav class="mid">
+          </nav>
+          <nav class="right">
+            ${button({
+              icon: 'new',
+              classes: 'c',
+              click: function() { console.log('hi')}
+            })}
+          </nav>
+        </header>
       </main>
     </body>
   `

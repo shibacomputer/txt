@@ -12,7 +12,7 @@ const base = css`
     align-items: center;
     justify-content: space-between;
     background-color: rgba(0,0,0,0.1);
-    padding: 0 1rem;
+    padding: 0 0.5rem;
     font-size: 12px;
   }
 `
