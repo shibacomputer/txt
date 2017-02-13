@@ -28,6 +28,7 @@ html {
   cursor: default;
   background: var(--k);
 }
+
 body {
   padding: 0;
   margin: 0;
@@ -35,8 +36,38 @@ body {
   -webkit-app-region: drag;
   background: var(--k);
   overflow: hidden;
+  width: 100vw;
+  height: 100vh;
 }
 
 button, input, select, textarea {
   -webkit-app-region: no-drag;
+}
+
+/* Borders */
+.b-myc, .b-bck {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+}
+.b-myc::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--myc);
+  content: '';
+  z-index: -1;
+}
+
+.b-bck::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--bck);
+  content: '';
+  z-index: -1;
 }
