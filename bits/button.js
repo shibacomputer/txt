@@ -14,10 +14,10 @@ module.exports = (props, click) => {
   }
 
   return html`
-    <div onclick=${props.click} class=${props.classes}>
+    <button onclick=${props.click} class=${props.classes}>
       <svg viewBox="0 0 24 24" style=${css(style)}>
         <use xlink:href="#txt-${props.icon}" />
       </svg>
-    </div>
+    </button>
   `
 }

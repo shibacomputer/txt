@@ -51,6 +51,7 @@ const emptyBase = css`
   }
   .guide {
     font-weight: normal;
+    margin-bottom: 0;
   }
 
 `
@@ -60,9 +61,10 @@ function EmptyState() {
     <nav class="${emptyBase}">
       <object data="/assets/illu/illu-writing.svg" style="width: 64px; height: 64px;" type="image/svg+xml" class="block c"></object>
       <div class="msg">
-        Welcome to your new notebook!
+        <p>Welcome to Txt.</p>
+        <p>Each file in your Txt notebook is encrypted and stored in ~/Txt.</p>
       </div>
-      <button class="bg-c k">
+      <button class="bg-c k button">
         New Entry +
       </button>
       <div class="guide b">

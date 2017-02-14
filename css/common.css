@@ -22,8 +22,22 @@
 }
 
 button {
+  background: none;
+  border: none;
+  outline-color: var(--w);
+  outline-width: 1px;
+  padding: 0;
+}
+
+.button {
   padding: 0.55rem 1rem 0.5rem 1rem;
   border: none;
   font-family: NovelMono;
   font-size: 13px;
+  outline-color: var(--w);
+  outline-width: 1px;
+}
+
+.button:active {
+  opacity: 0.8;
 }

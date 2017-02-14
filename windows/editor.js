@@ -8,13 +8,13 @@ const widget = require('cache-element/widget')
 
 module.exports = editor
 
+
 function editor(state, prev, send) {
-  var container = document.getElementsByClassName('editor')
-  var editor = new Quill('editor');
+  var container = document.getElementById('editor');
+  var editor = new Quill(container);
 
   return html`
-    <div class="editor">
+    <div id="editor">
     </div>
   `
-
 }
