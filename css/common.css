@@ -20,3 +20,10 @@
   padding: 0 0.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+button {
+  padding: 0.55rem 1rem 0.5rem 1rem;
+  border: none;
+  font-family: NovelMono;
+  font-size: 13px;
+}

@@ -5,6 +5,7 @@ const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
 const FileExplorer = require('../bits/sidebar')
+const editor = require('./editor')
 
 const base = css`
   :host {
@@ -59,6 +60,7 @@ function mainWindow(state, prev, send) {
             })}
           </nav>
         </header>
+        ${editor()}
       </main>
     </body>
   `

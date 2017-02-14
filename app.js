@@ -14,7 +14,6 @@ css('./css/common.css')
 persist((persist) => {
   app.use(persist)
 
-
   app.router([
     '/', require('./windows/main')
   ])

@@ -19,6 +19,9 @@ const base = css`
 
     .content {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+
       height: calc(100vh - 2px - 2.5rem - 2.5rem);
       overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
@@ -27,6 +30,47 @@ const base = css`
     }
   }
 `
+
+const emptyBase = css`
+  :host {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 2px - 2.5rem - 2.5rem);
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--c);
+  }
+  .msg, .guide {
+    padding: 0 1rem;
+    line-height: 1.5;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+  .guide {
+    font-weight: normal;
+  }
+
+`
+
+function EmptyState() {
+  return html `
+    <nav class="${emptyBase}">
+      <object data="/assets/illu/illu-writing.svg" style="width: 64px; height: 64px;" type="image/svg+xml" class="block c"></object>
+      <div class="msg">
+        Welcome to your new notebook!
+      </div>
+      <button class="bg-c k">
+        New Entry +
+      </button>
+      <div class="guide b">
+        Welcome Guide
+      </div>
+    </nav>
+  `
+}
 module.exports = (props) => {
   return html`
     <aside class="${base}">
@@ -36,7 +80,7 @@ module.exports = (props) => {
         <nav style="width: 33%; text-align: center" class="mid c">
           Txt
         </nav>
-        <nav style="width: 33%; text-align: right" class="right">
+        <nav style="width: 33%; margin-top: 2px; text-align: right" class="right">
           ${button({
             icon: 'new-folder',
             classes: 'c'
@@ -45,6 +89,7 @@ module.exports = (props) => {
       </header>
 
       <nav class="content">
+        ${EmptyState()}
       </nav>
 
       <footer class="footer">
