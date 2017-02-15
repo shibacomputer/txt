@@ -12,11 +12,7 @@ const base = css`
     display: flex;
     flex-direction: row;
     color: white;
-    background-color: #242529;
-
-    .toolbar .right {
-
-    }
+    background-color: var(--k);
   }
 `
 
