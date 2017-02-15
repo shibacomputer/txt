@@ -66,12 +66,12 @@ const opts = {
   live: true,
   stream: process.stdout,
   browserify: {
+    ignoreMissing: true,
+    detectGlobals: false,
+    bare: true,
     transform: [ 'sheetify/transform' ],
-    insertGlobalVars: {
-      process: function() { return; }
-    }
   },
-  browserifyArgs: ['--im', '--no-builtins', '--ig', '--no-bf']
+  browserifyArgs: ['--no-builtins', '--no-bf', '--no-commondir']
 }
 
 let mainWin
