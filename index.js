@@ -87,14 +87,14 @@ app.on('ready', () => {
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
-    mainWin.showUrl(ev.uri)
-    mainWin.webContents.openDevTools({ mode: 'detach' })
-    mainWin.once('close', function () {
+    setupWin.showUrl(ev.uri)
+    setupWin.webContents.openDevTools({ mode: 'detach' })
+    setupWin.once('close', function () {
       server.close()
     })
   })
 
   .on('update', function(file, contents) {
-    mainWin.reload()
+    setupWin.reload()
   })
 })

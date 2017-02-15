@@ -8,7 +8,8 @@ const button = require('./button')
 const base = css`
   :host {
     width: 25vw;
-    min-width: 214px;
+    min-width: 12rem;
+    max-width: 20rem;
     height: calc(100vh - 2px);
     border-radius: 5px;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
@@ -49,11 +50,11 @@ const emptyBase = css`
     margin-top: 1rem;
     margin-bottom: 1rem;
   }
+
   .guide {
     font-weight: normal;
     margin-bottom: 0;
   }
-
 `
 
 function EmptyState() {
@@ -84,6 +85,7 @@ module.exports = (props) => {
         </nav>
         <nav style="width: 33%; margin-top: 2px; text-align: right" class="right">
           ${button({
+            name: 'NewFolder',
             icon: 'new-folder',
             classes: 'c'
           })}
@@ -97,12 +99,14 @@ module.exports = (props) => {
       <footer class="footer">
         <nav class="left">
           ${button({
+            name: 'Lock',
             icon: 'lock',
             classes: 'm'
           })}
         </nav>
         <nav class="right">
           ${button({
+            name: 'Settings',
             icon: 'settings',
             classes: 'm'
           })}

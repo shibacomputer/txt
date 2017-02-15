@@ -29,6 +29,14 @@ button {
   padding: 0;
 }
 
+button:focus {
+
+}
+
+button:active {
+  color: var(--w);
+}
+
 .button {
   padding: 0.55rem 1rem 0.5rem 1rem;
   border: none;

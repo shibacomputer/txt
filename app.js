@@ -3,6 +3,7 @@ const mount = require ('choo/mount')
 const html = require('yo-yo')
 const css = require('sheetify')
 const persist = require('choo-persist')
+
 const app = choo()
 
 // Setup global CSS
@@ -15,7 +16,7 @@ persist((persist) => {
   app.use(persist)
 
   app.router([
-    '/', require('./windows/main')
+    '/', require('./windows/setup')
   ])
 
   mount('body', app.start())
