@@ -8,6 +8,7 @@
 */
 
 const { app, shell, Menu, ipcMain } = require('electron')
+const db = require('toiletdb')
 const window = require('electron-window')
 const budo = require('budo')
 
@@ -29,8 +30,15 @@ const opts = {
   verbose: true,
   live: true,
   stream: process.stdout,
-  browserify: { transform: [ 'sheetify/transform' ]},
-  browserifyArgs: ['--im', '--no-builtins']
+  browserify: {
+    transform: [ 'sheetify/transform' ],
+    insertGlobalVars: {
+      process: function() { return;
+    }
+  }
+
+  },
+  browserifyArgs: ['--im', '--no-builtins', '--ig', '--no-bf']
 };
 
 let mainWindow
