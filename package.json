@@ -31,6 +31,7 @@
     "envobj": "^1.0.3",
     "fs-explorer": "^1.1.0",
     "keychain": "^1.2.0",
+    "nanocomponent": "^2.0.0",
     "openpgp": "^2.3.7",
     "quill": "^1.2.0",
     "sheetify": "6.0.0",

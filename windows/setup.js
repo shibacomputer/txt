@@ -2,7 +2,6 @@ const html = require('yo-yo')
 const css = require('sheetify')
 const path = require('path')
 const fs = require('fs')
-const app = require('electron')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
 
@@ -34,17 +33,17 @@ const base = css`
     line-height: 1.5;
   }
 
-  label {
+  .label {
     font-weight: normal;
   }
 
-  button {
+  .button {
     font-family: 'NovelMono', monospace;
     font-size: 14px;
     padding: 0.85rem 1rem 0.75rem 1rem;
   }
 
-  input {
+  .input {
     background: none;
     font-family: 'NovelMono', monospace;
     padding: 0.85rem 1rem 0.75rem 1rem;
@@ -70,7 +69,7 @@ const location = css`
     color: var(--c);
   }
 
-  button {
+  .button {
     color: var(--k);
     background-color: var(--c);
   }
@@ -114,7 +113,7 @@ function setupWindow(state, prev, send) {
         <section class="c ${location}">
           <label for="location">Location</label>
           <div class="container">
-            <input type="text" class="location-input"/>
+            <input type="text" class="location-input input"/>
             <button>Change</button>
           </div>
           <p class="small w">Txt uses a folder on your computer to save and encrypt your work.</p>
@@ -122,7 +121,7 @@ function setupWindow(state, prev, send) {
         <section class="b ${passphrase}">
           <label for="passphrase">Passphrase</label>
           <div class="container">
-            <input type="text" name="passphrase" class="passphrase-input"/>
+            <input type="text" name="passphrase" class="passphrase-input input"/>
           </div>
           <p class="small w">Txt uses PGP to encrypt your notebook. Choose a strong phrase to best protect your entires.</p>
         </section>

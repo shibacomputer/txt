@@ -3,8 +3,8 @@
 const choo = require('choo')
 const css = require('sheetify')
 const html = require('yo-yo')
+const nano = require('nanocomponent')
 const Quill = require('quill')
-const widget = require('cache-element/widget')
 
 module.exports = editor
 

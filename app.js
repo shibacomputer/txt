@@ -16,7 +16,8 @@ persist((persist) => {
   app.use(persist)
 
   app.router([
-    '/', require('./windows/setup')
+    '/', require('./windows/main'),
+    '/setup', require('./windows/setup'),
   ])
 
   mount('body', app.start())

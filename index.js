@@ -66,12 +66,12 @@ const opts = {
   live: true,
   stream: process.stdout,
   browserify: {
-    ignoreMissing: true,
-    detectGlobals: false,
-    bare: true,
     transform: [ 'sheetify/transform' ],
+    insertGlobalVars: {
+      process: function() { return; }
+    }
   },
-  browserifyArgs: ['--no-builtins', '--no-bf', '--no-commondir']
+  browserifyArgs: ['--im', '--no-builtins', '--ig', '--no-bf']
 }
 
 let mainWin
@@ -87,14 +87,14 @@ app.on('ready', () => {
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
-    setupWin.showUrl(ev.uri)
-    setupWin.webContents.openDevTools({ mode: 'detach' })
-    setupWin.once('close', function () {
+    mainWin.showUrl(ev.uri)
+    mainWin.webContents.openDevTools({ mode: 'detach' })
+    mainWin.once('close', function () {
       server.close()
     })
   })
 
   .on('update', function(file, contents) {
-    setupWin.reload()
+    mainWin.reload()
   })
 })
