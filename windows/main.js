@@ -11,7 +11,7 @@ const base = css`
   :host {
     display: flex;
     flex-direction: row;
-    color: white;
+    color: var(--w);
     background-color: var(--k);
   }
 `
@@ -24,6 +24,13 @@ const editorWindow = css`
   }
 `
 
+const editContainer = css`
+  :host {
+    height: calc(100vh - 2px - 2.5rem);
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+  }
+`
 module.exports = mainWindow
 
 function mainWindow(state, prev, send) {
@@ -56,7 +63,9 @@ function mainWindow(state, prev, send) {
             })}
           </nav>
         </header>
-        ${editor()}
+        <div class="${editContainer}">
+          ${editor()}
+        </div>
       </main>
     </body>
   `
