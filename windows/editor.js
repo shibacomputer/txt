@@ -13,7 +13,6 @@ const base = css`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2rem;
     max-width: 48rem;
   }
 `
@@ -35,6 +34,9 @@ function editor(state, prev, send) {
 
   return html`
     <div class="${base}">
+      <header class="title">
+
+      </header>
       ${editbox()}
     </div>
   `
