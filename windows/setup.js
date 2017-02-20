@@ -6,7 +6,10 @@ const button = require('../bits/button')
 const keychain = require('keychain')
 const path = require('path')
 const fs = require('fs')
-const settings = require('electron-settings')
+
+const electron = window.require('electron')
+const settings = window.require('electron-settings')
+
 
 module.exports = setupWindow
 

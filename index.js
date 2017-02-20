@@ -68,11 +68,10 @@ const opts = {
   pushstate: true,
   browserify: {
     transform: [ 'sheetify/transform' ],
-    insertGlobalVars: {
-      process: function() { return; }
-    }
+    insertGlobals: false,
+    detectGlobals: false
   },
-  browserifyArgs: ['--im', '--no-builtins', '--ig', '--no-bf']
+  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir', '--insert-global-vars=\"global\"', '--no-browser-field']
 }
 
 let mainWin
