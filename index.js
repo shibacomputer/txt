@@ -99,7 +99,6 @@ app.on('ready', () => {
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
-    console.log(ev)
     // Check to see whether this we have a Txt folder set up.
     settings.get('isActiveInstall').then(val => {
       if(val === false) {
