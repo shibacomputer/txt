@@ -25,6 +25,7 @@
   "dependencies": {
     "cache-element": "^2.0.1",
     "choo": "^4.1.0",
+    "choo-log": "^3.0.1",
     "choo-persist": "^2.0.1",
     "electron-settings": "^2.2.2",
     "electron-window": "^0.8.1",
@@ -36,6 +37,7 @@
     "quill": "^1.2.0",
     "sheetify": "6.0.0",
     "tachyons": "^4.6.2",
+    "xtend": "^4.0.1",
     "yo-css": "^1.1.0",
     "yo-yo": "^1.4.0"
   },

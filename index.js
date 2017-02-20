@@ -65,6 +65,7 @@ const opts = {
   verbose: true,
   live: true,
   stream: process.stdout,
+  pushstate: true,
   browserify: {
     transform: [ 'sheetify/transform' ],
     insertGlobalVars: {
@@ -79,18 +80,37 @@ let lockWin
 let setupWin
 
 app.on('ready', () => {
+
+  // Check for settings defaults
+  settings.defaults({
+    hasDbLocationOf: app.getPath('home') + '/Txt', // Default location
+    isActiveInstall: false, // Have we performed setup?
+    usesKeychain: false, // Save passphrase in the keychain?
+    usesTheme: 'dark' // What theme are we using?
+  })
+
   // Get our windows in order, since any of the three can be called at any time.
   mainWin = window.createWindow(mainWindowConfig)
   setupWin = window.createWindow(setupWindowConfig)
   lockWin = window.createWindow(lockWindowConfig)
+
+  // Start the dev server
   var server = budo('app.js', opts)
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
-    mainWin.showUrl(ev.uri)
-    mainWin.webContents.openDevTools({ mode: 'detach' })
-    mainWin.once('close', function () {
-      server.close()
+    console.log(ev)
+    // Check to see whether this we have a Txt folder set up.
+    settings.get('isActiveInstall').then(val => {
+      if(val === false) {
+        setupWin.showUrl(ev.uri + 'setup')
+      } else {
+        mainWin.showUrl(ev.uri)
+        mainWin.webContents.openDevTools({ mode: 'detach' })
+        mainWin.once('close', function () {
+          server.close()
+        })
+      }
     })
   })
 

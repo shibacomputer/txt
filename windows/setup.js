@@ -1,9 +1,11 @@
 const html = require('yo-yo')
 const css = require('sheetify')
-const path = require('path')
-const fs = require('fs')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
+
+const keychain = require('keychain')
+const path = require('path')
+const fs = require('fs')
 
 module.exports = setupWindow
 
@@ -68,11 +70,6 @@ const location = css`
     border: 1px solid var(--c);
     color: var(--c);
   }
-
-  .button {
-    color: var(--k);
-    background-color: var(--c);
-  }
 `
 
 const passphrase = css`
@@ -98,9 +95,19 @@ const ok = css`
     width: 100%;
     font-weight: bold;
     text-transform: uppercase;
+    font-family: 'NovelMono', monospace;
+    font-size: 14px;
+    padding: 0.85rem 1rem 0.75rem 1rem;
   }
+
 `
 
+// Save ur settings
+function saveSettings() {
+
+}
+
+// Present the window
 function setupWindow(state, prev, send) {
   document.title = 'Welcome to Txt'
   return html`
@@ -114,7 +121,7 @@ function setupWindow(state, prev, send) {
           <label for="location">Location</label>
           <div class="container">
             <input type="text" class="location-input input"/>
-            <button>Change</button>
+            <button class="button bg-c">Change</button>
           </div>
           <p class="small w">Txt uses a folder on your computer to save and encrypt your work.</p>
         </section>

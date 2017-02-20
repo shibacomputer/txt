@@ -7,6 +7,8 @@ const button = require('../bits/button')
 const FileExplorer = require('../bits/sidebar')
 const editor = require('./editor')
 
+module.exports = mainWindow
+
 const base = css`
   :host {
     display: flex;
@@ -31,7 +33,6 @@ const editContainer = css`
     -webkit-overflow-scrolling: touch;
   }
 `
-module.exports = mainWindow
 
 function mainWindow(state, prev, send) {
   document.title = 'Text'

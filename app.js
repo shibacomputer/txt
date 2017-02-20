@@ -1,10 +1,10 @@
 const choo = require('choo')
 const mount = require ('choo/mount')
-const html = require('yo-yo')
-const css = require('sheetify')
+const log = require('choo-log')
 const persist = require('choo-persist')
+const xtend = require('xtend')
 
-const app = choo()
+const css = require('sheetify')
 
 // Setup global CSS
 css('tachyons')
@@ -13,12 +13,22 @@ css('./css/frame.css')
 css('./css/common.css')
 css('./css/editor.css')
 
-persist((persist) => {
-  app.use(persist)
+const opts = {
+  filter: (state) => {
+    state = xtend(state)
+    delete state.repos
+    return state
+  }
+}
 
-  app.router([
-    '/', require('./windows/main'),
-    '/setup', require('./windows/setup'),
+persist(opts, (p) => {
+  const app = choo()
+  app.use(p)
+  app.use(log())
+
+  app.router({ default: '/' }, [
+    ['/', require('./windows/main')],
+    ['/setup', require('./windows/setup')]
   ])
 
   mount('body', app.start())
