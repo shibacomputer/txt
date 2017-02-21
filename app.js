@@ -13,7 +13,7 @@ css('./css/frame.css')
 css('./css/common.css')
 css('./css/editor.css')
 
-const opts = {
+const options = {
   filter: (state) => {
     state = xtend(state)
     delete state.repos
@@ -21,9 +21,9 @@ const opts = {
   }
 }
 
-persist(opts, (p) => {
+persist(options, (persist) => {
   const app = choo()
-  app.use(p)
+  app.use(persist)
   app.use(log())
 
   app.router({ default: '/' }, [

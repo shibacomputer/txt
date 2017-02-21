@@ -3,13 +3,13 @@ const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
 
-const keychain = require('keychain')
 const path = require('path')
 const fs = require('fs')
 
-const electron = window.require('electron')
-const settings = window.require('electron-settings')
+const { app } = window.require('electron').remote
+const { dialog } = window.require('electron').remote
 
+const txtPath = app.getPath('home')
 
 module.exports = setupWindow
 
@@ -111,9 +111,20 @@ function saveSettings() {
 
 }
 
+function pickDirectory() {
+  dialog.showOpenDialog({
+    title: 'Choose Your Txt Location',
+    defaultPath: txtPath,
+    properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
+  }, function(filePaths) {
+    defaultPath = filePaths[0]
+  })
+}
+
 // Present the window
 function setupWindow(state, prev, send) {
   document.title = 'Welcome to Txt'
+
   return html`
     <body class="b-myc">
       <main class="${base}">
@@ -124,8 +135,10 @@ function setupWindow(state, prev, send) {
         <section class="c ${location}">
           <label for="location">Location</label>
           <div class="container">
-            <input type="text" class="location-input input"/>
-            <button class="button bg-c">Change</button>
+            <div class="location-input input" onclick=${pickDirectory}>
+              ${txtPath}
+            </div>
+            <button class="button bg-c" onclick=${pickDirectory}>Change</button>
           </div>
           <p class="small w">Txt uses a folder on your computer to save and encrypt your work.</p>
         </section>
