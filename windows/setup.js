@@ -6,7 +6,7 @@ const button = require('../bits/button')
 const path = require('path')
 const fs = require('fs')
 
-const { app } = window.require('electron').remote
+const { app, ipc } = window.require('electron').remote
 const { dialog } = window.require('electron').remote
 
 const txtPath = app.getPath('home')
@@ -108,7 +108,7 @@ const ok = css`
 
 // Save ur settings
 function saveSettings() {
-
+  console.log('Saving!')
 }
 
 function pickDirectory() {
@@ -117,7 +117,7 @@ function pickDirectory() {
     defaultPath: txtPath,
     properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
   }, function(filePaths) {
-    defaultPath = filePaths[0]
+    if (filePaths) defaultPath = filePaths[0]
   })
 }
 
@@ -150,7 +150,7 @@ function setupWindow(state, prev, send) {
           <p class="small w">Txt uses PGP to encrypt your notebook. Choose a strong phrase to best protect your entires.</p>
         </section>
         <footer class="${ok}">
-          <button name="finish" class="k bg-m ok-button">Create Notebook</button>
+          <button name="finish" class="k bg-m ok-button" onclick=${saveSettings}>Create Notebook</button>
         </footer>
       </main>
     </body>
