@@ -21,6 +21,8 @@ const menuConfig = require('./config/menu')
 // Settings
 const settings = require('electron-settings')
 
+global.settings = settings
+
 // Setup windows
 const mainWindowConfig = {
   titleBarStyle:  windowConfig.win.app.titleBar,
@@ -43,7 +45,6 @@ const setupWindowConfig = {
   fullscreenable: windowConfig.win.setup.fullscreen,
   minimizable:    windowConfig.win.setup.minimizable,
   maximizable:    windowConfig.win.setup.maximizable
-
 }
 
 const lockWindowConfig = {
@@ -68,8 +69,6 @@ const opts = {
   pushstate: true,
   browserify: {
     transform: [ 'sheetify/transform' ],
-    insertGlobals: false,
-    detectGlobals: false
   },
   browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir', '--insert-global-vars=\"global\"', '--no-browser-field']
 }

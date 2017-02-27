@@ -26,6 +26,8 @@ persist(options, (persist) => {
   app.use(persist)
   app.use(log())
 
+  app.model(require('./models/global')())
+
   app.router({ default: '/' }, [
     ['/', require('./windows/main')],
     ['/setup', require('./windows/setup')]

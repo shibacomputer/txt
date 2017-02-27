@@ -6,8 +6,9 @@ const button = require('../bits/button')
 const path = require('path')
 const fs = require('fs')
 
-const { app, ipc } = window.require('electron').remote
-const { dialog } = window.require('electron').remote
+const remote = window.require('electron').remote
+
+const { app, ipc, dialog } = remote.require('electron')
 
 const txtPath = app.getPath('home')
 
@@ -87,6 +88,9 @@ const passphrase = css`
     border: 1px solid var(--b);
     color: var(--b);
   }
+  .passphrase-label {
+    font-weight: normal;
+  }
 `
 
 const ok = css`
@@ -143,7 +147,7 @@ function setupWindow(state, prev, send) {
           <p class="small w">Txt uses a folder on your computer to save and encrypt your work.</p>
         </section>
         <section class="b ${passphrase}">
-          <label for="passphrase">Passphrase</label>
+          <label for="passphrase" class="passphrase-label">Passphrase</label>
           <div class="container">
             <input type="text" name="passphrase" class="passphrase-input input"/>
           </div>
