@@ -9,13 +9,14 @@ function createModel() {
     namespace: 'global',
     effects: {
 
+      openDatabase: openDatabase
     },
     state: {
       firstRun: true,
       databasePath: null,
     },
     reducers: {
-
+      setDatabasePath: setDatabasePath
     }
   }
 }
@@ -26,7 +27,7 @@ function setDatabasePath (state, data, send, done) {
 
   settings.set('hasDbLocationOf', newPath).then(() => {
     settings.set('isActiveInstall', true).then(() => {
-      // @TODO: Tell Txt to do a full reload!
+      console.log('hello')
     })
   })
 }

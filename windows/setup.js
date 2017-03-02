@@ -10,8 +10,6 @@ const remote = window.require('electron').remote
 
 const { app, ipc, dialog } = remote.require('electron')
 
-const txtPath = app.getPath('home')
-
 module.exports = setupWindow
 
 const base = css`
@@ -115,19 +113,19 @@ function saveSettings() {
   console.log('Saving!')
 }
 
-function pickDirectory() {
-  dialog.showOpenDialog({
-    title: 'Choose Your Txt Location',
-    defaultPath: txtPath,
-    properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
-  }, function(filePaths) {
-    if (filePaths) defaultPath = filePaths[0]
-  })
-}
-
 // Present the window
 function setupWindow(state, prev, send) {
   document.title = 'Welcome to Txt'
+  var txtPath = app.getPath('home') + '/Txt'
+  function pickDirectory(send, done) {
+    dialog.showOpenDialog({
+      title: 'Choose Your Txt Location',
+      desiredPath: txtPath,
+      properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
+    }, function(filePaths) {
+      if (filePaths) state.txtPath = filePaths[0]
+    })
+  }
 
   return html`
     <body class="b-myc">
@@ -140,7 +138,7 @@ function setupWindow(state, prev, send) {
           <label for="location">Location</label>
           <div class="container">
             <div class="location-input input" onclick=${pickDirectory}>
-              ${txtPath}
+              ${state.txtPath}
             </div>
             <button class="button bg-c" onclick=${pickDirectory}>Change</button>
           </div>
