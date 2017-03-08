@@ -22,6 +22,9 @@
     "url": "https://github.com/helveticade/txt/issues"
   },
   "homepage": "https://txtapp.io/",
+  "browser": {
+    "openpgp": "openpgp/dist/openpgp.worker.min.js"
+  },
   "dependencies": {
     "cache-element": "^2.0.1",
     "choo": "^4.1.0",
@@ -31,6 +34,7 @@
     "electron-window": "^0.8.1",
     "envobj": "^1.0.3",
     "fs-explorer": "^1.1.0",
+    "kbpgp": "^2.0.64",
     "keytar": "^3.0.2",
     "nanocomponent": "^2.0.0",
     "openpgp": "^2.3.7",

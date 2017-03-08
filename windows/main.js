@@ -5,6 +5,7 @@ const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
 const FileExplorer = require('../bits/sidebar')
+const fileManager = require('../utils//fileio')
 const editor = require('./editor')
 
 module.exports = mainWindow
@@ -35,6 +36,7 @@ const editContainer = css`
 `
 
 function mainWindow(state, prev, send) {
+  fileManager.readFile('file.txt')
   document.title = 'Text'
   const editingTools = html`
     <div class="tools">

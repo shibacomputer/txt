@@ -69,8 +69,10 @@ const opts = {
   pushstate: true,
   browserify: {
     transform: [ 'sheetify/transform' ],
+    exclude: ['openpgp'],
+    ignore: ['buffer']
   },
-  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir', '--insert-global-vars=\"global\"', '--no-browser-field']
+  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir']
 }
 
 let mainWin
