@@ -8,12 +8,11 @@ function createModel() {
   return {
     namespace: 'global',
     effects: {
-
       openDatabase: openDatabase
     },
     state: {
       firstRun: true,
-      databasePath: null,
+      txtPath: null,
     },
     reducers: {
       setDatabasePath: setDatabasePath
@@ -27,7 +26,8 @@ function setDatabasePath (state, data, send, done) {
 
   settings.set('hasDbLocationOf', newPath).then(() => {
     settings.set('isActiveInstall', true).then(() => {
-      console.log('hello')
+      return { txtPath: newPath, firstRun: false }
+
     })
   })
 }

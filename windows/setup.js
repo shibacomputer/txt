@@ -115,15 +115,18 @@ function saveSettings() {
 
 // Present the window
 function setupWindow(state, prev, send) {
+
   document.title = 'Welcome to Txt'
   var txtPath = app.getPath('home') + '/Txt'
-  function pickDirectory(send, done) {
+
+  function pickDirectory(e) {
     dialog.showOpenDialog({
       title: 'Choose Your Txt Location',
       desiredPath: txtPath,
       properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
     }, function(filePaths) {
-      if (filePaths) state.txtPath = filePaths[0]
+      if (filePaths) txtPath = filePaths[0]
+      send('global:setDatabasePath', txtPath)
     })
   }
 
