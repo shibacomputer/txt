@@ -6,6 +6,7 @@ const fs = require('fs')
 const remote = window.require('electron').remote
 const settings = remote.require('electron-settings')
 const openpgp = require('openpgp')
+const openPgpWorker = require('openpgp.worker')
 
 module.exports = {
   readFile: function(file) {
@@ -18,7 +19,7 @@ module.exports = {
 }
 
 function decrypt(data) {
-  openpgp.initWorker({ path:'openpgp.worker.js' })
+  openpgp.initWorker(openPgpWorker)
   openpgp.config.aead_protect = true
 
   var opts = {
