@@ -22,37 +22,26 @@
     "url": "https://github.com/helveticade/txt/issues"
   },
   "homepage": "https://txtapp.io/",
-  "browser": {
-    "openpgp": "openpgp/dist/openpgp.worker.min.js"
-  },
   "dependencies": {
     "cache-element": "^2.0.1",
     "choo": "^4.1.0",
     "choo-log": "^3.0.1",
-    "choo-persist": "^2.0.1",
     "electron-settings": "^2.2.2",
     "electron-window": "^0.8.1",
-    "envobj": "^1.0.3",
-    "fs-explorer": "^1.1.0",
-    "kbpgp": "^2.0.64",
     "keytar": "^3.0.2",
     "nanocomponent": "^2.0.0",
     "openpgp": "^2.3.7",
     "quill": "^1.2.0",
     "sheetify": "6.0.0",
     "tachyons": "^4.6.2",
-    "xtend": "^4.0.1",
-    "yo-css": "^1.1.0",
-    "yo-yo": "^1.4.0"
+    "yo-css": "^1.1.0"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
     "budo": "^9.4.7",
-    "concurrently": "^3.2.0",
     "devtron": "^1.4.0",
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
-    "mochify": "^2.18.1",
     "spritesh": "^1.2.0",
     "svgo": "^0.7.2"
   },

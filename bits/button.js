@@ -1,8 +1,7 @@
 'use strict'
 
-const html = require('yo-yo')
+const html = require('choo/html')
 const css = require('yo-css')
-
 
 module.exports = (props, click) => {
   if (typeof click === 'function') props.click = click

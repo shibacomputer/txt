@@ -1,4 +1,4 @@
-const html = require('yo-yo')
+const html = require('choo/html')
 const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
