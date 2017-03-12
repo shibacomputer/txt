@@ -22,6 +22,9 @@
     "url": "https://github.com/helveticade/txt/issues"
   },
   "homepage": "https://txtapp.io/",
+  "browser": {
+    "openpgp": "openpgp/dist/openpgp.worker.min.js"
+  },
   "dependencies": {
     "cache-element": "^2.0.1",
     "choo": "^4.1.0",
@@ -32,6 +35,7 @@
     "nanocomponent": "^2.0.0",
     "openpgp": "^2.3.7",
     "quill": "^1.2.0",
+    "rimraf": "^2.6.1",
     "sheetify": "6.0.0",
     "tachyons": "^4.6.2",
     "yo-css": "^1.1.0"

@@ -70,7 +70,12 @@ const opts = {
   browserify: {
     transform: [ 'sheetify/transform' ],
     exclude: ['openpgp'],
-    ignore: ['buffer']
+    ignore: ['buffer'],
+    insertGlobalVars: {
+      process: function() { return; },
+      importScripts: function() { return; }
+
+    }
   },
   browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir']
 }

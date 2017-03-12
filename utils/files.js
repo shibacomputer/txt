@@ -3,31 +3,44 @@
 const path = require('path')
 const fs = require('fs')
 
+
 const remote = window.require('electron').remote
 const settings = remote.require('electron-settings')
 
 module.exports = {
-  readFile: function(file) {
+  open: function(file) {
     getPath(file, (target) => {
-      fs.readFile(target, (err, data) => {
+      fs.stat(target, (err, stats) => {
         if (err) {
           throw err
-        } else  {
-          console.log(data)
+        } else {
+            fs.readFile(target, (err, data) => {
+            if (err) {
+              throw err
+            } else  {
+              decrypt(data, (plaintext) => {
+                console.log(plaintext)
+              })
+            }
+          })
         }
       })
     })
   },
-
-  writeFile: function(data, location) {
+  write: function(data, location) {
     getPath(location, (target) => {
-      fs.writeFile(target, data, (err) => {
+      fs.stat(target, (err, stats) => {
         if (err) {
-          console.log(err)
           throw err
         } else {
-          console.log(data)
-          console.log('SAVED')
+          fs.writeFile(target, data, (err) => {
+            if (err) {
+              throw err
+            } else {
+              console.log(data)
+              console.log('SAVED')
+            }
+          })
         }
       })
     })
@@ -39,4 +52,21 @@ function getPath(filename, cb) {
   settings.get('hasDbLocationOf').then((value) => {
     cb(path.join(value, filename))
   })
+}
+
+function decrypt(data, cb) {
+  /*var options, result
+  openpgp.initWorker({ path: 'openpgp.worker.min.js' })
+  openpgp.config.aead_protect = true
+
+  options = {
+      message: openpgp.message.read(data),
+      password: 'test',
+      format: 'binary'
+  };
+  openpgp.decrypt(options).then((plaintext) => {
+    cb(plaintext)
+  });
+  */
+  cb(data)
 }
