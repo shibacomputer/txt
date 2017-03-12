@@ -1,11 +1,11 @@
 'use strict'
 
-const html = require('yo-yo')
+const html = require('choo/html')
 const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../bits/button')
 const FileExplorer = require('../bits/sidebar')
-const fileManager = require('../utils//fileio')
+const fileManager = require('../utils/files')
 const editor = require('./editor')
 
 module.exports = mainWindow

@@ -1,7 +1,6 @@
 const choo = require('choo')
 const mount = require ('choo/mount')
 const log = require('choo-log')
-const persist = require('choo-persist')
 
 const css = require('sheetify')
 
@@ -12,17 +11,14 @@ css('./css/frame.css')
 css('./css/common.css')
 css('./css/editor.css')
 
-persist((persist) => {
-  const app = choo()
-  app.use(persist)
-  app.use(log())
+const app = choo()
+app.use(log())
 
-  app.model(require('./models/global')())
+app.model(require('./models/global')())
 
-  app.router({ default: '/' }, [
-    ['/', require('./windows/main')],
-    ['/setup', require('./windows/setup')]
-  ])
+app.router({ default: '/' }, [
+  ['/', require('./windows/main')],
+  ['/setup', require('./windows/setup')]
+])
 
-  mount('body', app.start())
-})
+mount('body', app.start())

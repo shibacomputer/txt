@@ -1,8 +1,7 @@
 'use strict'
 
-const html = require('yo-yo')
+const html = require('choo/html')
 const css = require('sheetify')
-const explorer = require('fs-explorer')
 const button = require('./button')
 
 const base = css`
