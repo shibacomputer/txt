@@ -7,23 +7,22 @@ const remote = window.require('electron').remote
 const settings = remote.require('electron-settings')
 
 module.exports = {
-  readDirectory: function(target) {
-    if (!target) {
-      target = getDefault
-    }
-  }
-
-  makeDirectory: function(name, location) {
-
-  }
-
-  deleteDirectory: function(target) {
-
+  readDir: function(file) {
+    getPath(file, (target) => {
+      fs.readdir(target, (err, data) => {
+        if (err) {
+          throw err
+        } else {
+          console.log(data)
+        }
+      })
+    })
   }
 }
 
-function getDefaultPath(filename, cb) {
+// Utility functions
+function getPath(filename, cb) {
   settings.get('hasDbLocationOf').then((value) => {
-    cb(value)
+    cb(path.join(value, filename))
   })
 }
