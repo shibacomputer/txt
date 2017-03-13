@@ -88,7 +88,7 @@ app.on('ready', () => {
 
   // Check for settings defaults
   settings.defaults({
-    hasDbLocationOf: app.getPath('home') + '/Txt', // Default location
+    hasDbLocationOf: null,
     isActiveInstall: false, // Have we performed setup?
     usesKeychain: false, // Save passphrase in the keychain?
     usesTheme: 'dark' // What theme are we using?

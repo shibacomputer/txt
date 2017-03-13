@@ -46,10 +46,3 @@ module.exports = {
     })
   }
 }
-
-// Utility functions
-function getPath(filename, cb) {
-  settings.get('hasDbLocationOf').then((value) => {
-    cb(path.join(value, filename))
-  })
-}

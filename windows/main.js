@@ -3,11 +3,11 @@
 const html = require('choo/html')
 const css = require('sheetify')
 const icons = require('../utils/icons')
-const button = require('../bits/button')
-const FileExplorer = require('../bits/sidebar')
+const button = require('../components/button')
+const FileExplorer = require('../components/sidebar')
 const files = require('../utils/files')
 const folders = require('../utils/folders')
-const editor = require('./editor')
+const editor = require('../components/editor')
 
 module.exports = mainWindow
 

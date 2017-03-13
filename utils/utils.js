@@ -14,6 +14,24 @@ module.exports = {
     })
   },
 
+  getSetting: function(key, cb) {
+    settings.get(key).then((value) => {
+      console.log('GET SETTING: ' + key + ' VALUE: ' + value)
+      cb(value)
+    })
+  },
+
+  setSetting: function(key, value, cb) {
+    settings.set(key, value).then( () => {
+      if (key === 'hasDbLocationOf') {
+        settings.set('isActiveInstall', true).then( () => {
+          console.log('SET SETTING: ' + key + ' VALUE: ' + value)
+          cb(key)
+        })
+      }
+    })
+  },
+
   decrypt: function(data, cb) {
     /*
     openpgp.initWorker({ path: 'openpgp.worker.min.js' })

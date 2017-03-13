@@ -14,7 +14,7 @@ css('./css/editor.css')
 const app = choo()
 app.use(log())
 
-app.model(require('./models/global')())
+app.model(require('./models/model')())
 
 app.router({ default: '/' }, [
   ['/', require('./windows/main')],

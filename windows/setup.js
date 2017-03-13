@@ -1,13 +1,13 @@
 const html = require('choo/html')
 const css = require('sheetify')
 const icons = require('../utils/icons')
-const button = require('../bits/button')
+const button = require('../components/button')
+const utils = require('../utils/utils')
 
 const path = require('path')
 const fs = require('fs')
 
 const remote = window.require('electron').remote
-
 const { app, ipc, dialog } = remote.require('electron')
 
 module.exports = setupWindow
@@ -108,27 +108,11 @@ const ok = css`
 
 `
 
-// Save ur settings
-function saveSettings() {
-  console.log('Saving!')
-}
-
 // Present the window
 function setupWindow(state, prev, send) {
+  console.log(state)
 
   document.title = 'Welcome to Txt'
-  var txtPath = app.getPath('home') + '/Txt'
-
-  function pickDirectory(e) {
-    dialog.showOpenDialog({
-      title: 'Choose Your Txt Location',
-      desiredPath: txtPath,
-      properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
-    }, function(filePaths) {
-      if (filePaths) txtPath = filePaths[0]
-      send('global:setDatabasePath', txtPath)
-    })
-  }
 
   return html`
     <body class="b-myc">
@@ -141,7 +125,7 @@ function setupWindow(state, prev, send) {
           <label for="location">Location</label>
           <div class="container">
             <div class="location-input input" onclick=${pickDirectory}>
-              ${state.txtPath}
+              ${ showPath() }
             </div>
             <button class="button bg-c" onclick=${pickDirectory}>Change</button>
           </div>
@@ -160,4 +144,28 @@ function setupWindow(state, prev, send) {
       </main>
     </body>
   `
+
+  function showPath() {
+    var txtPath = state.model.path
+    return txtPath
+  }
+  function pickDirectory(e) {
+    var txtPath = state.model.path
+    dialog.showOpenDialog({
+      title: 'Choose Your Txt Location',
+      desiredPath: txtPath,
+      properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
+    }, function(filePaths) {
+      if (filePaths) {
+        txtPath = path.normalize(filePaths[0])
+        console.log(txtPath)
+        send('model:setDbPath', txtPath)
+      }
+    })
+  }
+
+  function saveSettings(e) {
+    console.log('hi')
+  }
+
 }
