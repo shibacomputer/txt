@@ -1,15 +1,16 @@
 'use strict'
 
+const utils = require('./utils')
+
 const path = require('path')
+const assert = require('assert')
+
 const fs = require('fs')
 
-
-const remote = window.require('electron').remote
-const settings = remote.require('electron-settings')
-
 module.exports = {
+
   open: function(file) {
-    getPath(file, (target) => {
+    utils.getPath(file, (target) => {
       fs.stat(target, (err, stats) => {
         if (err) {
           throw err
@@ -18,7 +19,7 @@ module.exports = {
             if (err) {
               throw err
             } else  {
-              decrypt(data, (plaintext) => {
+              utils.decrypt(data, (plaintext) => {
                 console.log(plaintext)
               })
             }
@@ -28,7 +29,7 @@ module.exports = {
     })
   },
   write: function(data, location) {
-    getPath(location, (target) => {
+    utils.getPath(location, (target) => {
       fs.stat(target, (err, stats) => {
         if (err) {
           throw err
@@ -45,28 +46,4 @@ module.exports = {
       })
     })
   }
-}
-
-// Utility functions
-function getPath(filename, cb) {
-  settings.get('hasDbLocationOf').then((value) => {
-    cb(path.join(value, filename))
-  })
-}
-
-function decrypt(data, cb) {
-  /*var options, result
-  openpgp.initWorker({ path: 'openpgp.worker.min.js' })
-  openpgp.config.aead_protect = true
-
-  options = {
-      message: openpgp.message.read(data),
-      password: 'test',
-      format: 'binary'
-  };
-  openpgp.decrypt(options).then((plaintext) => {
-    cb(plaintext)
-  });
-  */
-  cb(data)
 }

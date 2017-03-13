@@ -1,35 +1,37 @@
 'use strict'
 
+const utils = require('./utils')
+
 const path = require('path')
+const assert = require('assert')
+
 const fs = require('fs')
 const rimraf = require('rimraf')
 
-const remote = window.require('electron').remote
-const settings = remote.require('electron-settings')
 
 module.exports = {
   ls: function(dir) {
-    getPath(dir, (target) => {
+    utils.getPath(dir, (target) => {
       fs.readdir(target, (err, data) => {
         if (err) {
           throw err
         } else {
-          console.log(data)
+          // @TODO: DO SOMETHING HERE
         }
       })
     })
   },
   mk: function(name) {
-    getPath(name, (target) => {
+    utils.getPath(name, (target) => {
       fs.stat(target, (err, stats) => {
-        if (err || stats) {
-          console.log('Cant make this')
+        if (stats) {
+          console.log('Dir exists.')
         } else {
           fs.mkdir(target, (err) => {
             if (err) {
               throw err
             } else {
-              console.log('ok')
+              // @TODO: DO SOMETHING HERE
             }
           })
         }
@@ -37,9 +39,9 @@ module.exports = {
     })
   },
   rm: function(name) {
-    getPath(name, (target) => {
+    utils.getPath(name, (target) => {
       rimraf(target, () => {
-        console.log('deleted')
+        // @TODO: DO SOMETHING HERE
       })
     })
   }
