@@ -3,7 +3,7 @@
 const path = require('path')
 const remote = window.require('electron').remote
 const settings = remote.require('electron-settings')
-// const openpgp = require('openpgp')
+const openpgp = require('openpgp')
 
 // Utility functions
 
@@ -26,14 +26,12 @@ module.exports = {
       if (key === 'hasDbLocationOf') {
         settings.set('isActiveInstall', true).then( () => {
           console.log('SET SETTING: ' + key + ' VALUE: ' + value)
-          cb(key)
         })
       }
     })
   },
 
   decrypt: function(data, cb) {
-    /*
     openpgp.initWorker({ path: 'openpgp.worker.min.js' })
     openpgp.config.aead_protect = true
 
@@ -46,8 +44,6 @@ module.exports = {
     openpgp.decrypt(options).then((plaintext) => {
       cb(plaintext)
     });
-    */
-    cb(data)
   },
 
   encrypt: function(plaintext, cb) {

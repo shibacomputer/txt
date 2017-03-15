@@ -47,6 +47,7 @@
     "devtron": "^1.4.0",
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
+    "gulp": "^3.9.1",
     "spritesh": "^1.2.0",
     "svgo": "^0.7.2"
   },

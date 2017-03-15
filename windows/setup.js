@@ -3,6 +3,7 @@ const css = require('sheetify')
 const icons = require('../utils/icons')
 const button = require('../components/button')
 const utils = require('../utils/utils')
+const files = require('../utils/files')
 
 const path = require('path')
 const fs = require('fs')
@@ -147,8 +148,10 @@ function setupWindow(state, prev, send) {
 
   function showPath() {
     var txtPath = state.model.path
+    console.log(txtPath)
     return txtPath
   }
+
   function pickDirectory(e) {
     var txtPath = state.model.path
     dialog.showOpenDialog({
@@ -158,7 +161,6 @@ function setupWindow(state, prev, send) {
     }, function(filePaths) {
       if (filePaths) {
         txtPath = path.normalize(filePaths[0])
-        console.log(txtPath)
         send('model:setDbPath', txtPath)
       }
     })

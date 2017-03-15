@@ -17,9 +17,8 @@ function createModel() {
 }
 
 function setDatabasePath (state, data) {
-  utils.setSetting('hasDbLocationOf', data, () => {
-    return { path: data }
-  })
+  utils.setSetting('hasDbLocationOf', data)
+  return { path: data }
 }
 
 function getDatabasePath () {
