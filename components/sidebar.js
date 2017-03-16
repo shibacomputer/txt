@@ -160,10 +160,10 @@ function setupSidebar(state, prev, send) {
   }
 
   function listSubdirectories(subDirs) {
-    return subDirs.map( (dir) => {
+    return subDirs.map( (d) => {
       return html`
         <button class="fsItem dir">
-          ${dir.name}
+          ${d.name}
         </button>
       `
     })
