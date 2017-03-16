@@ -20,6 +20,7 @@ module.exports = {
     }
     utils.getPath(dir, (target) => {
       newDir.name = dir
+      newDir.collapsed = true
 
       fs.readdir(target, (err, data) => {
         if (err) {

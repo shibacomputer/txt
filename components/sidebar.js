@@ -91,7 +91,7 @@ function setupSidebar(state, prev, send) {
       </header>
 
       <nav class="content">
-        ${sidebarContent()}
+        ${createSidebar()}
       </nav>
 
       <footer class="footer">
@@ -113,8 +113,70 @@ function setupSidebar(state, prev, send) {
     </aside>
   `
 
-  function sidebarContent() {
-    send('filesystem:readDir', '/')
+  function createSidebar() {
+    const fsBase = css`
+      :host {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 2px - 2.5rem - 2.5rem);
+        align-items: flex-start;
+        justify-content: flex-start;
+      }
+      .fsItem {
+        width: 100%;
+        text-align: left;
+        font-family: 'NovelMono', monospace;
+        font-size: 13px;
+        padding: 0.45rem 1rem 0.25rem 1rem;
+      }
+      .fsItem:hover {
+        background-color: var(--c);
+        color: var(--k);
+      }
+      .fsItem:active,
+      .fsItem:focus {
+        outline: none;
+        background-color: var(--b);
+        color: var(--k);
+      }
+    `
+    return html`
+      <nav class="${fsBase}">
+        ${populateSidebar()}
+      </nav>
+    `
+  }
+
+  function populateSidebar() {
+    return state.filesystem.dirs.map( (fsItem) => {
+      return html`
+        <ul>
+          ${listSubdirectories(fsItem.subdirs)}
+          ${listFiles(fsItem.files)}
+        </ul>
+      `
+    })
+  }
+
+  function listSubdirectories(subDirs) {
+    return subDirs.map( (dir) => {
+      return html`
+        <button class="fsItem dir">
+          ${dir.name}
+        </button>
+      `
+    })
+  }
+
+  function listFiles(files) {
+    return files.map( (f) => {
+      return html`
+        <button class="fsItem dir">
+          ${f.name}
+        </button>
+      `
+    })
   }
 
   function nothing() {
