@@ -149,7 +149,8 @@ function setupSidebar(state, prev, send) {
   }
 
   function populateSidebar() {
-    return state.filesystem.dirs.map( (fsItem) => {
+    state.filesystem.dirs.map( (fsItem) => {
+
       return html`
         <ul>
           ${listSubdirectories(fsItem.subdirs)}
@@ -161,6 +162,7 @@ function setupSidebar(state, prev, send) {
 
   function listSubdirectories(subDirs) {
     return subDirs.map( (d) => {
+      console.log('Hello')
       return html`
         <button class="fsItem dir">
           ${d.name}
@@ -195,6 +197,10 @@ function setupSidebar(state, prev, send) {
         </div>
       </nav>
     `
+  }
+
+  function appFocused() {
+
   }
 
 }
