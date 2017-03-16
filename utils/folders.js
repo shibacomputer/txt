@@ -10,12 +10,17 @@ const fs = require('fs')
 const rimraf = require('rimraf')
 
 mime.define({ 'text/gpg': ['gpg'] })
-var newDir = {}
 
 module.exports = {
+
   ls: function(dir, cb) {
+    var newDir = {
+      'files': [],
+      'subdirs': []
+    }
     utils.getPath(dir, (target) => {
       newDir.name = dir
+
       fs.readdir(target, (err, data) => {
         if (err) {
           throw err
@@ -40,18 +45,22 @@ module.exports = {
                     ['uri']: uri,
                     ['type']: type
                   }
+                  newDir.files.push(diskItem)
                 }
-              } else if (stats.isDirectory()) {
+              }
+              if (stats.isDirectory()) {
                 var diskItem = {
                   ['name']: name,
                   ['uri']: uri,
                   ['type']: 'directory'
                 }
+                newDir.subdirs.push(diskItem)
               }
             })
           })
         }
       })
+      cb(newDir)
     })
   },
   mk: function(name) {
