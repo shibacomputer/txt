@@ -2,6 +2,8 @@
 
 const html = require('choo/html')
 const css = require('sheetify')
+const onload = require('on-load')
+
 const button = require('./button')
 
 const base = css`
@@ -56,25 +58,22 @@ const emptyBase = css`
   }
 `
 
-function EmptyState() {
-  return html `
-    <nav class="${emptyBase}">
-      <object data="/assets/illu/illu-writing.svg" style="width: 64px; height: 64px;" type="image/svg+xml" class="block c"></object>
-      <div class="msg">
-        <p>Welcome to Txt.</p>
-        <p>Each file in your Txt notebook is encrypted and stored in ~/Txt.</p>
-      </div>
-      <button class="bg-c k button">
-        New Entry +
-      </button>
-      <div class="guide b">
-        Welcome Guide
-      </div>
-    </nav>
-  `
-}
-module.exports = (props) => {
+module.exports = setupSidebar
+
+function setupSidebar(state, prev, send) {
+/*
+  onload(div, load, unload)
+
+  function load() {
+
+  }
+
+  function unload() {
+
+  }
+*/
   return html`
+
     <aside class="${base}">
       <header class="toolbar">
         <nav style="width: 33%; text-align: left" class="left">
@@ -92,7 +91,7 @@ module.exports = (props) => {
       </header>
 
       <nav class="content">
-        ${EmptyState()}
+        ${sidebarContent()}
       </nav>
 
       <footer class="footer">
@@ -113,4 +112,27 @@ module.exports = (props) => {
       </footer>
     </aside>
   `
+
+  function sidebarContent() {
+    send('filesystem:readDir', '/')
+  }
+
+  function nothing() {
+    return html `
+      <nav class="${emptyBase}">
+        <object data="/assets/illu/illu-writing.svg" style="width: 64px; height: 64px;" type="image/svg+xml" class="block c"></object>
+        <div class="msg">
+          <p>Welcome to Txt.</p>
+          <p>Each file in your Txt notebook is encrypted and stored in ~/Txt.</p>
+        </div>
+        <button class="bg-c k button">
+          New Entry +
+        </button>
+        <div class="guide b">
+          Welcome Guide
+        </div>
+      </nav>
+    `
+  }
+
 }

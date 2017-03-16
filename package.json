@@ -26,7 +26,6 @@
     "openpgp": "openpgp/dist/openpgp.worker.min.js"
   },
   "dependencies": {
-    "cache-element": "^2.0.1",
     "choo": "^4.1.0",
     "choo-log": "^3.0.1",
     "electron-settings": "^2.2.2",

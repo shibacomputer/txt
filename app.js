@@ -15,6 +15,7 @@ const app = choo()
 app.use(log())
 
 app.model(require('./models/model')())
+app.model(require('./models/filesystem')())
 
 app.router({ default: '/' }, [
   ['/', require('./windows/main')],

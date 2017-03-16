@@ -9,6 +9,7 @@
 
 // App setup
 const { app, shell, Menu, ipcMain } = require('electron')
+const path = require('path')
 const window = require('electron-window')
 
 // Browserify service for development
@@ -73,11 +74,9 @@ const opts = {
     ignore: ['buffer'],
     insertGlobalVars: {
       process: function() { return; },
-      importScripts: function() { return; }
-
     }
   },
-  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir']
+  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir', '--node']
 }
 
 let mainWin
@@ -88,7 +87,7 @@ app.on('ready', () => {
 
   // Check for settings defaults
   settings.defaults({
-    hasDbLocationOf: null,
+    hasDbLocationOf: path.join(app.getPath('home') + '/Txt'),
     isActiveInstall: false, // Have we performed setup?
     usesKeychain: false, // Save passphrase in the keychain?
     usesTheme: 'dark' // What theme are we using?
@@ -105,9 +104,10 @@ app.on('ready', () => {
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
     // Check to see whether this we have a Txt folder set up.
-    settings.get('isActiveInstall').then(val => {
+    settings.get('isActiveInstall').then( (val) => {
       if(val === false) {
         setupWin.showUrl(ev.uri + 'setup')
+        setupWin.webContents.openDevTools({ mode: 'detach' })
       } else {
         mainWin.showUrl(ev.uri)
         mainWin.webContents.openDevTools({ mode: 'detach' })

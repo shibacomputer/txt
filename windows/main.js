@@ -37,21 +37,20 @@ const editContainer = css`
 `
 
 function mainWindow(state, prev, send) {
-  files.open('file.txt')
-  folders.ls('.')
-  folders.mk('test2')
-  folders.rm('test3')
-  document.title = 'Text'
+
+  const sidebar = FileExplorer(state, prev, send)
+
+  document.title = 'Txt'
+
   const editingTools = html`
     <div class="tools">
       ${button({
         name: 'new',
-        classes: 'c',
-        click: function() { console.log('hello')}
+        classes: 'c'
       })}
     </div>
   `
-  const sidebar = FileExplorer({})
+
   return html`
     <body class="b-myc ${base}">
       ${icons()}

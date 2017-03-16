@@ -1,28 +1,54 @@
-const path = require('path')
 const utils = require('../utils/utils')
 
 module.exports = createModel
 
 function createModel() {
   return {
-    namespace: 'model',
+    namespace: 'global',
     state: {
       locked: true,
-      path: null
+      path: null,
+      theme: 'light',
+      keychain: true
     },
     reducers: {
-      setDbPath: setDatabasePath
+      setDb: setDb
+    },
+    effects: {
+      readDbPath: readDbPath,
+      writeDbPath: writeDbPath
+    },
+    subscriptions: {
+      'on-load': function(send, done) {
+        send('global:readDbPath', done)
+      }
     }
   }
 }
 
-function setDatabasePath (state, data) {
-  utils.setSetting('hasDbLocationOf', data)
+function readDbPath (state, data, send, done) {
+  utils.getSetting('hasDbLocationOf', (data) => {
+    send('global:setDb', data, (err, value) => {
+      if (err) return done(err)
+      done(null, value)
+    })
+  })
+}
+
+function setDb (state, data) {
   return { path: data }
 }
 
-function getDatabasePath () {
-  utils.getSettings('hasDbLocationOf', (dbPath) => {
-    return dbPath
+function writeDbPath (state, data, send, done) {
+  utils.setSetting('hasDbLocationOf', data, () => {
+    send('global:setDb', data, (err, value) => {
+      if (err) return done(err)
+      done(null, value)
+    })
   })
+}
+
+function toggleKeychain (state, data) {
+  if (keychain === data) return !data
+  else return data
 }

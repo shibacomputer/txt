@@ -32,23 +32,20 @@ module.exports = {
   },
 
   decrypt: function(data, cb) {
-    openpgp.initWorker({ path: 'openpgp.worker.min.js' })
     openpgp.config.aead_protect = true
-
     var options, result
     options = {
         message: openpgp.message.read(data),
         password: 'test',
-        format: 'binary'
+        format: 'utf8'
     };
     openpgp.decrypt(options).then((plaintext) => {
       cb(plaintext)
     });
+
   },
 
   encrypt: function(plaintext, cb) {
-    /*
-    openpgp.initWorker({ path: 'openpgp.worker.min.js' })
     openpgp.config.aead_protect = true
 
     var options, encrypted
@@ -60,7 +57,5 @@ module.exports = {
     openpgp.encrypt(options).then((plaintext) => {
       cb(plaintext)
     });
-    */
-    cb(data)
   }
 }

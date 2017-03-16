@@ -1,15 +1,16 @@
+const remote = window.require('electron').remote
+const { app, ipc, dialog } = remote.require('electron')
+
 const html = require('choo/html')
 const css = require('sheetify')
-const icons = require('../utils/icons')
-const button = require('../components/button')
-const utils = require('../utils/utils')
-const files = require('../utils/files')
-
 const path = require('path')
 const fs = require('fs')
 
-const remote = window.require('electron').remote
-const { app, ipc, dialog } = remote.require('electron')
+const icons = require('../utils/icons')
+const utils = require('../utils/utils')
+const files = require('../utils/files')
+
+const button = require('../components/button')
 
 module.exports = setupWindow
 
@@ -111,7 +112,6 @@ const ok = css`
 
 // Present the window
 function setupWindow(state, prev, send) {
-  console.log(state)
 
   document.title = 'Welcome to Txt'
 
@@ -147,13 +147,13 @@ function setupWindow(state, prev, send) {
   `
 
   function showPath() {
-    var txtPath = state.model.path
+    var txtPath = state.path
     console.log(txtPath)
     return txtPath
   }
 
   function pickDirectory(e) {
-    var txtPath = state.model.path
+    var txtPath = state.path
     dialog.showOpenDialog({
       title: 'Choose Your Txt Location',
       desiredPath: txtPath,
