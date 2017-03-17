@@ -147,7 +147,7 @@ function setupWindow(state, prev, send) {
   `
 
   function showPath() {
-    var txtPath = state.path
+    var txtPath = state.global.path
     console.log(txtPath)
     return txtPath
   }
@@ -161,7 +161,7 @@ function setupWindow(state, prev, send) {
     }, function(filePaths) {
       if (filePaths) {
         txtPath = path.normalize(filePaths[0])
-        send('model:writeDbPath', txtPath)
+        send('global:writeDbPath', txtPath)
       }
     })
   }
