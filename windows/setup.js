@@ -161,7 +161,7 @@ function setupWindow(state, prev, send) {
     }, function(filePaths) {
       if (filePaths) {
         txtPath = path.normalize(filePaths[0])
-        send('model:setDbPath', txtPath)
+        send('model:writeDbPath', txtPath)
       }
     })
   }
