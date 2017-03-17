@@ -168,14 +168,10 @@ function setupSidebar(state, prev, send) {
   }
 
   function listFiles(items, type) {
-    console.log(items)
-    return items.map( (f) => {
-      return html`
-        <button class="fsItem {type}">
-          ${f.name}
-        </button>
-      `
-    })
+     return html`
+      <button class="fsItem {type}">
+        ${items.map( (f) => { console.log(f.name) } )}
+      </button>`
   }
 
   function nothing() {
