@@ -114,6 +114,7 @@ function setupSidebar(state, prev, send) {
   `
 
   function createSidebar() {
+
     const fsBase = css`
       :host {
         width: 100%;
@@ -141,40 +142,36 @@ function setupSidebar(state, prev, send) {
         color: var(--k);
       }
     `
-    return html`
-      <nav class="${fsBase}">
-        ${populateSidebar()}
-      </nav>
-    `
-  }
 
-  function populateSidebar() {
-    state.filesystem.dirs.map( (fsItem) => {
+    var filesystem = state.filesystem.dirs
+
+    if (filesystem.length > 0) {
+      // @TODO: Make this work properly
 
       return html`
+        <nav class="${fsBase}">
+          ${populateSidebar(filesystem)}
+        </nav>
+      `
+    } else return nothing()
+  }
+
+  function populateSidebar(filesystem) {
+    return filesystem.map( (item) => {
+      return html`
         <ul>
-          ${listSubdirectories(fsItem.subdirs)}
-          ${listFiles(fsItem.files)}
+          ${listFiles(item.subdirs, 'dir')}
+          ${listFiles(item.files, 'file')}
         </ul>
       `
     })
   }
 
-  function listSubdirectories(subDirs) {
-    return subDirs.map( (d) => {
-      console.log('Hello')
+  function listFiles(items, type) {
+    console.log(items)
+    return items.map( (f) => {
       return html`
-        <button class="fsItem dir">
-          ${d.name}
-        </button>
-      `
-    })
-  }
-
-  function listFiles(files) {
-    return files.map( (f) => {
-      return html`
-        <button class="fsItem dir">
+        <button class="fsItem {type}">
           ${f.name}
         </button>
       `
