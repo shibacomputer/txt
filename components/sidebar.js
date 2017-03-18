@@ -194,34 +194,6 @@ function setupSidebar(state, prev, send) {
       }
     } else return nothing()
   }
-  /*
-  function populateSidebar(filesystem) {
-    if (filesystem) {
-      var sidebarContent
-
-
-    }
-    filesystem.map( (item) => {
-      return html`
-        <ul>
-          ${listFiles(item.subdirs, 'dir')}
-          ${listFiles(item.files, 'file')}
-        </ul>
-      `
-    })
-  }
-
-  function listFiles(items, type) {
-    return items.map( (f) => {
-      return html`
-        <button class="fsItem {type}">
-          ${f.name}
-        </button>
-      `
-    })
-  }
-  */
-
   function nothing() {
     return html `
       <nav class="${emptyBase}">
