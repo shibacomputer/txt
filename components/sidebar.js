@@ -162,13 +162,23 @@ function setupSidebar(state, prev, send) {
           <nav class="${fsBase}">
             ${filesystem.map( function (item) {
               if (item) {
-                console.log(item)
                 return html`
                   <ul>
-                    ${item.map( (f) => {
+                    ${item.subdirs.map( function (f) {
+                      console.log(f)
                       return html`
                         <li>
                           <button class="fsItem dir">
+                            ${f.name}
+                          </button>
+                        </li>
+                      `
+                    })}
+                    ${item.files.map( function (f) {
+                      console.log(f)
+                      return html`
+                        <li>
+                          <button class="fsItem file">
                             ${f.name}
                           </button>
                         </li>
