@@ -4,6 +4,8 @@ const html = require('choo/html')
 const css = require('sheetify')
 const onload = require('on-load')
 
+const remote = window.require('electron').remote
+const { shell } = remote.require('electron')
 const button = require('./button')
 
 const base = css`
@@ -45,6 +47,12 @@ const emptyBase = css`
     font-size: 13px;
     color: var(--c);
   }
+  .text-button {
+    font-family: 'NovelMono', monospace;
+    font-weight: normal;
+    font-size: 13px;
+  }
+
   .msg, .guide {
     padding: 0 1rem;
     line-height: 1.5;
@@ -61,6 +69,10 @@ const emptyBase = css`
 module.exports = setupSidebar
 
 function setupSidebar(state, prev, send) {
+
+  var filesystem    = state.filesystem.dirs,
+      hasFilesystem = !state.filesystem.listingDirs && state.filesystem.listedDirs,
+      authenticated = state.global.authenticated
 /*
   onload(div, load, unload)
 
@@ -114,7 +126,6 @@ function setupSidebar(state, prev, send) {
   `
 
   function createSidebar() {
-
     const fsBase = css`
       :host {
         width: 100%;
@@ -143,21 +154,44 @@ function setupSidebar(state, prev, send) {
       }
     `
 
-    var filesystem = state.filesystem.dirs
+    if (authenticated) {
+      if (hasFilesystem) {
+        var fsItems
 
-    if (filesystem.length > 0) {
-      // @TODO: Make this work properly
-
-      return html`
-        <nav class="${fsBase}">
-          ${populateSidebar(filesystem)}
-        </nav>
-      `
+        fsItems = html`
+          <nav class="${fsBase}">
+            ${filesystem.map( function (item) {
+              if (item) {
+                console.log(item)
+                return html`
+                  <ul>
+                    ${item.map( (f) => {
+                      return html`
+                        <li>
+                          <button class="fsItem dir">
+                            ${f.name}
+                          </button>
+                        </li>
+                      `
+                    })}
+                  </ul>
+                `
+              } else {
+            }
+            })}
+          </nav>
+        `
+      }
     } else return nothing()
   }
-
+  /*
   function populateSidebar(filesystem) {
-    return filesystem.map( (item) => {
+    if (filesystem) {
+      var sidebarContent
+
+
+    }
+    filesystem.map( (item) => {
       return html`
         <ul>
           ${listFiles(item.subdirs, 'dir')}
@@ -168,11 +202,15 @@ function setupSidebar(state, prev, send) {
   }
 
   function listFiles(items, type) {
-     return html`
-      <button class="fsItem {type}">
-        ${items.map( (f) => { console.log(f.name) } )}
-      </button>`
+    return items.map( (f) => {
+      return html`
+        <button class="fsItem {type}">
+          ${f.name}
+        </button>
+      `
+    })
   }
+  */
 
   function nothing() {
     return html `
@@ -186,7 +224,9 @@ function setupSidebar(state, prev, send) {
           New Entry +
         </button>
         <div class="guide b">
-          Welcome Guide
+          <button class="b f-hover text-button" onclick=${ function() { shell.openExternal("https://txtapp.io") } }>
+            Welcome Guide
+          </button>
         </div>
       </nav>
     `

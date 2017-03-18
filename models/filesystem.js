@@ -12,42 +12,41 @@ function createModel() {
       listedDirs: false
     },
     reducers: {
-      list: list,
-      listingFs: function (state, data) {
+      addDir: function (state, data) {
+        return { dirs: state.dirs.concat(data) }
+      },
+      clearDirs: function (state, data) {
+        return { dirs: [] }
+      },
+      listingDirs: function (state, data) {
         return { listingDirs: data }
       },
-      listedFs: function (state, data) {
+      listedDirs: function (state, data) {
         return { listedDirs: data }
       }
-
     },
     effects: {
-      read: read,
-      refresh: refresh
+      readDir: readDir
     },
     subscriptions: {
       'on-load': function(send, done) {
-        send('filesystem:read', '/', done)
+        send('filesystem:readDir', '/', done)
       }
       //@TODO: add disk polling
     }
   }
 }
 
-function list (state, data) {
-  return { dirs: state.dirs.push(data) }
-}
-
-function read (state, data, send, done) {
-  send('filesystem:listingFs', true, () => {
-    folders.ls(data, (f) => {
-      send('filesystem:list', f, (err, value) => {
-        send('filesystem:listingFs', false, done)
+function readDir (state, data, send, done) {
+  send('filesystem:listingDirs', true, () => {
+    send('filesystem:listedDirs', false, () => {
+      folders.ls(data, (f) => {
+        send('filesystem:addDir', f, (err, value) => {
+          send('filesystem:listingDirs', false, () => {
+            send('filesystem:listedDirs', true, done)
+          })
+        })
       })
     })
   })
-}
-
-function refresh (state, data, send, done) {
-
 }

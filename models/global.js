@@ -1,6 +1,6 @@
 const utils = require('../utils/utils')
 const remote = window.require('electron').remote
-// const keytar = remote.require('keytar')
+const keytar = remote.require('keytar')
 
 module.exports = createModel
 
