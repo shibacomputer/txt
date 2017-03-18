@@ -42,18 +42,18 @@ module.exports = {
                 type = mime.lookup(uri)
                 if (type === 'text/gpg') {
                   var diskItem = {
-                    ['name']: name,
-                    ['uri']: uri,
-                    ['type']: type
+                    'name': name,
+                    'uri': uri,
+                    'type': type
                   }
                   newDir.files.push(diskItem)
                 }
               }
               if (stats.isDirectory()) {
                 var diskItem = {
-                  ['name']: name,
-                  ['uri']: uri,
-                  ['type']: 'directory'
+                  'name': name,
+                  'uri': uri,
+                  'type': 'directory'
                 }
                 newDir.subdirs.push(diskItem)
               }
