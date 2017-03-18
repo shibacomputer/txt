@@ -31,7 +31,6 @@ module.exports = {
 
             // Define the properties we care about
             var name, uri, type
-
             name = item
             uri = path.join(target, name)
 
