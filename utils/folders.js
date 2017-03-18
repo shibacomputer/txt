@@ -56,11 +56,11 @@ module.exports = {
                 }
                 newDir.subdirs.push(diskItem)
               }
+              cb(newDir)
             })
           })
         }
       })
-      cb(newDir)
     })
   },
   mk: function(name) {

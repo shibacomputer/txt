@@ -158,16 +158,16 @@ function setupSidebar(state, prev, send) {
       if (hasFilesystem) {
         var fsItems
         console.log('Setting up filesystem')
-        fsItems = html`
+        return html`
           <nav class="${fsBase}">
             ${filesystem.map( function (item) {
               console.log('Mapping item: ', item)
               return html`
-                <ul>
+                <ul style="width: 100%">
                   ${item.subdirs.map( function (f) {
                     return html`
                       <li>
-                        <button class="fsItem dir">
+                        <button class="fsItem c dir">
                           ${f.name}
                         </button>
                       </li>
@@ -177,7 +177,7 @@ function setupSidebar(state, prev, send) {
                     console.log(f)
                     return html`
                       <li>
-                        <button class="fsItem file">
+                        <button class="fsItem c file">
                           ${f.name}
                         </button>
                       </li>
@@ -191,6 +191,8 @@ function setupSidebar(state, prev, send) {
       }
     } else return nothing()
   }
+
+
   function nothing() {
     return html `
       <nav class="${emptyBase}">

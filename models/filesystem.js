@@ -38,6 +38,23 @@ function createModel() {
 }
 
 function readDir (state, data, send, done) {
+  if (state.dirs.length) {
+    console.log('hello')
+    state.dirs.filter( (fsCheck) => {
+      var matchPath = (fsCheck.name === data.name)
+      console.log(matchPath)
+      if (fsCheck.name === data.name) {
+        done()
+      } else {
+        createDirListing(state, data, send, done)
+      }
+    })
+  } else {
+    createDirListing(state, data, send, done)
+  }
+}
+
+function createDirListing(state, data, send, done) {
   send('filesystem:listingDirs', true, () => {
     send('filesystem:listedDirs', false, () => {
       folders.ls(data, (f) => {
