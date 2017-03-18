@@ -1,7 +1,19 @@
-![Txt Logo](https://txtapp.io/assets/images/txt.png)
+![Txt Logo](icon.png)
 # Txt.app
-Simple, private journalling.
 
-Built with proven encryption and sporting a simple design, Txt is a writing app that respects your work by keeping it safe and accessible only to you.
+Txt is a cute little private journalling app that keeps your work safe with [proven encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).
 
-Its simple feature set – including inline images, multi-format export and favouriting – makes Txt ideal for taking notes, keeping a journal or writing a book.
+https://txtapp.io
+
+![Txt Screenshot](screenshot.png)
+
+## Getting Started
+
+```
+git clone git@github.com:shibacomputer/txt.git txt
+cd txt
+npm run setup
+npm start
+
+✨ 📝 🚀!
+```
