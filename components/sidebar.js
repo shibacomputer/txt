@@ -157,37 +157,34 @@ function setupSidebar(state, prev, send) {
     if (authenticated) {
       if (hasFilesystem) {
         var fsItems
-
+        console.log('Setting up filesystem')
         fsItems = html`
           <nav class="${fsBase}">
             ${filesystem.map( function (item) {
-              if (item) {
-                return html`
-                  <ul>
-                    ${item.subdirs.map( function (f) {
-                      console.log(f)
-                      return html`
-                        <li>
-                          <button class="fsItem dir">
-                            ${f.name}
-                          </button>
-                        </li>
-                      `
-                    })}
-                    ${item.files.map( function (f) {
-                      console.log(f)
-                      return html`
-                        <li>
-                          <button class="fsItem file">
-                            ${f.name}
-                          </button>
-                        </li>
-                      `
-                    })}
-                  </ul>
-                `
-              } else {
-            }
+              console.log('Mapping item: ', item)
+              return html`
+                <ul>
+                  ${item.subdirs.map( function (f) {
+                    return html`
+                      <li>
+                        <button class="fsItem dir">
+                          ${f.name}
+                        </button>
+                      </li>
+                    `
+                  })}
+                  ${item.files.map( function (f) {
+                    console.log(f)
+                    return html`
+                      <li>
+                        <button class="fsItem file">
+                          ${f.name}
+                        </button>
+                      </li>
+                    `
+                  })}
+                </ul>
+              `
             })}
           </nav>
         `
