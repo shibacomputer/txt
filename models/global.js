@@ -1,4 +1,6 @@
 const utils = require('../utils/utils')
+const remote = window.require('electron').remote
+// const keytar = remote.require('keytar')
 
 module.exports = createModel
 
@@ -6,7 +8,7 @@ function createModel() {
   return {
     namespace: 'global',
     state: {
-      locked: true,
+      authenticated: true,
       path: null,
       theme: 'light',
       keychain: true

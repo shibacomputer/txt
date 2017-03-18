@@ -4,8 +4,11 @@
   "description": "Simple, secure journalling",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=development && npm run spriteify && electron .",
-    "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 24 24' --prefix txt-"
+    "setup": "npm install && npm run rebuild && npm run spriteify",
+    "start": "NODE_ENV=development && electron .",
+    "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 24 24' --prefix txt-",
+    "rebuild": "electron-rebuild -f -w keytar"
+
   },
   "repository": {
     "type": "git",
@@ -46,6 +49,7 @@
     "devtron": "^1.4.0",
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
+    "electron-rebuild": "^1.5.7",
     "gulp": "^3.9.1",
     "spritesh": "^1.2.0",
     "svgo": "^0.7.2"

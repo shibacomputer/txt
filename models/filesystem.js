@@ -7,10 +7,19 @@ function createModel() {
   return {
     namespace: 'filesystem',
     state: {
-      dirs: []
+      dirs: [],
+      listingDirs: false,
+      listedDirs: false
     },
     reducers: {
-      list: list
+      list: list,
+      listingFs: function (state, data) {
+        return { listingDirs: data }
+      },
+      listedFs: function (state, data) {
+        return { listedDirs: data }
+      }
+
     },
     effects: {
       read: read,
@@ -26,14 +35,15 @@ function createModel() {
 }
 
 function list (state, data) {
-  return { folders: state.dirs.push(data)}
+  return { dirs: state.dirs.push(data) }
 }
 
 function read (state, data, send, done) {
-  folders.ls(data, (data) => {
-    send('filesystem:list', data, (err, value) => {
-      if (err) return done(err)
-      done(null, value)
+  send('filesystem:listingFs', true, () => {
+    folders.ls(data, (f) => {
+      send('filesystem:list', f, (err, value) => {
+        send('filesystem:listingFs', false, done)
+      })
     })
   })
 }
