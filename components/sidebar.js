@@ -135,12 +135,25 @@ function setupSidebar(state, prev, send) {
         align-items: flex-start;
         justify-content: flex-start;
       }
+      .fsItemContent {
+        display: flex;
+        flex-direction: row;
+
+      }
+      .icon {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+      }
+      .label {
+        margin-top: 3px;
+      }
       .fsItem {
         width: 100%;
         text-align: left;
         font-family: 'NovelMono', monospace;
         font-size: 13px;
-        padding: 0.45rem 1rem 0.25rem 1rem;
+        padding: 0.35rem 1rem 0.35rem 1rem;
       }
       .fsItem:hover {
         background-color: var(--c);
@@ -168,17 +181,30 @@ function setupSidebar(state, prev, send) {
                     return html`
                       <li>
                         <button class="fsItem c dir">
-                          ${f.name}
+                          <div class="fsItemContent">
+                            <svg viewBox="0 0 24 24" class="icon">
+                              <use xlink:href="#txt-folder" />
+                            </svg>
+                            <span class="label">
+                              ${f.name}
+                            </span>
+                          </div>
                         </button>
                       </li>
                     `
                   })}
                   ${item.files.map( function (f) {
-                    console.log(f)
                     return html`
                       <li>
                         <button class="fsItem c file">
-                          ${f.name}
+                          <div class="fsItemContent">
+                            <svg viewBox="0 0 24 24" class="icon">
+                              <use xlink:href="#txt-file" />
+                            </svg>
+                            <span class="label">
+                              ${f.name}
+                            </span>
+                          </div>
                         </button>
                       </li>
                     `
