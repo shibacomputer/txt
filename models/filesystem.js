@@ -13,8 +13,11 @@ function createModel() {
     },
     reducers: {
       addDir: function (state, data) {
-        console.log('Adding Dir')
-        return { dirs: state.dirs.concat(data) }
+        var unique = true
+        state.dirs.forEach( (item) => {
+          if (item.name === data.name) unique = false
+        })
+        if (unique) return { dirs: state.dirs.concat(data) }
       },
       clearDirs: function (state, data) {
         return { dirs: [] }
@@ -39,18 +42,7 @@ function createModel() {
 }
 
 function readDir (state, data, send, done) {
-  if (state.dirs.length) {
-    state.dirs.filter( (fsCheck) => {
-      var matchPath = (fsCheck.name === data.name)
-      if (fsCheck.name === data.name) {
-        done()
-      } else {
-        createDirListing(state, data, send, done)
-      }
-    })
-  } else {
-    createDirListing(state, data, send, done)
-  }
+  createDirListing(state, data, send, done)
 }
 
 function createDirListing(state, data, send, done) {
