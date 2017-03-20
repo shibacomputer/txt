@@ -1,3 +1,6 @@
+//@TODO Redo this localisation.
+//@TODO Reimplement locatisation.
+
 const en = {
   location: "Location",
   passphrase: "Passphrase",
@@ -9,10 +12,10 @@ const en = {
   unlock: "Unlock",
   showByDate: "Sort by Date",
   showByName: "Sort by Name",
-  closeNotebook: "Close Notebook", //
-  showFavourites: "Show only 💜", // TODO de
-  rename: "Rename", // TODO de
-  unlockRetry: 'Try Again',  // TODO de
+  closeNotebook: "Close Notebook",
+  showFavourites: "Show only 💜",
+  rename: "Rename",
+  unlockRetry: 'Try Again',
   moveHere: 'Move Here...',
   useLightTheme: 'Use Light Theme',
   emptyPane: 'No note! Click + to add one.'

@@ -13,6 +13,7 @@ function createModel() {
     },
     reducers: {
       addDir: function (state, data) {
+        console.log('Adding Dir')
         return { dirs: state.dirs.concat(data) }
       },
       clearDirs: function (state, data) {
@@ -39,10 +40,8 @@ function createModel() {
 
 function readDir (state, data, send, done) {
   if (state.dirs.length) {
-    console.log('hello')
     state.dirs.filter( (fsCheck) => {
       var matchPath = (fsCheck.name === data.name)
-      console.log(matchPath)
       if (fsCheck.name === data.name) {
         done()
       } else {
