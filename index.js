@@ -10,7 +10,7 @@
 // App setup
 const { app, shell, Menu, ipcMain } = require('electron')
 const path = require('path')
-const window = require('electron-window')
+const appWindow = require('electron-window')
 
 // Browserify service for development
 const budo = require('budo')
@@ -94,9 +94,9 @@ app.on('ready', () => {
   })
 
   // Get our windows in order, since any of the three can be called at any time.
-  mainWin = window.createWindow(mainWindowConfig)
-  setupWin = window.createWindow(setupWindowConfig)
-  lockWin = window.createWindow(lockWindowConfig)
+  mainWin = appWindow.createWindow(mainWindowConfig)
+  setupWin = appWindow.createWindow(setupWindowConfig)
+  lockWin = appWindow.createWindow(lockWindowConfig)
 
   // Start the dev server
   var server = budo('app.js', opts)
