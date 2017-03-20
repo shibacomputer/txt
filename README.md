@@ -17,3 +17,16 @@ npm start
 
 ✨ 📝 🚀!
 ```
+
+## Features
+
+[ ] Simple PGP-managed filesystem-based notekeeping
+[ ] Text editor
+[ ] Markdown support
+[ ] Keychain support
+[ ] Export to...
+    [ ] Are.na
+    [ ] Medium
+    [ ] PDF
+[ ] Automatic image management
+[ ] Secure Syncing
