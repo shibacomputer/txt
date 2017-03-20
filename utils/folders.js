@@ -62,9 +62,11 @@ module.exports = {
 function mapDir (target, data, newDir, cb) {
   //@TODO: Implement filesystem unit tests.
   console.log('Mapping new Dir.')
+  var counter = 0,
+      max = data.length
 
   data.map((item) => {
-
+    counter ++
     // Define the properties we care about
     var name, uri, type
     name = item
@@ -83,6 +85,7 @@ function mapDir (target, data, newDir, cb) {
           }
           console.log('Pushing file: ', diskItem)
           newDir.files.push(diskItem)
+          if (counter === max) cb(newDir)
         }
       }
       if (stats.isDirectory()) {
@@ -93,8 +96,8 @@ function mapDir (target, data, newDir, cb) {
         }
         console.log('Pushing dir: ', diskItem)
         newDir.subdirs.push(diskItem)
+        if (counter === max) cb(newDir)
       }
     })
   })
-  cb(newDir)
 }
