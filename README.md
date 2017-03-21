@@ -20,13 +20,19 @@ npm start
 
 ## Features
 
+This is an ever-changing list.
+
 ✅ Simple PGP-managed filesystem-based notekeeping  
 ✅ Text editor  
 ⬜️ Markdown support  
+✅ Dark UI  
+⬜️ Light UI  
 ✅ Keychain support  
-⬜️ Export to Are.na  
-⬜️ Export to Medium  
+⬜️ Export to [Are.na](https://are.na)  
+⬜️ Export to [Medium](https://medium.com)  
 ⬜️ Export to PDF  
 ⬜️ Automatic image management  
 ⬜️ Secure syncing  
-⬜️ Windows & Linux support
+⬜️ Windows & Linux support  
+
+Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
