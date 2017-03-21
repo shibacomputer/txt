@@ -1,10 +1,7 @@
-'use strict'
-
 const utils = require('./utils')
 const mime = require('mime')
 
 const path = require('path')
-const assert = require('assert')
 
 const fs = require('fs')
 const rimraf = require('rimraf')
@@ -33,7 +30,7 @@ module.exports = {
       })
     })
   },
-  mk: function(name) {
+  mk: function(name, cb) {
     utils.getPath(name, (target) => {
       fs.stat(target, (err, stats) => {
         if (stats) {
@@ -74,29 +71,33 @@ function mapDir (target, data, newDir, cb) {
 
     // Determine type
     fs.stat(uri, (err, stats) => {
-
+      var diskItem = { }
       if (stats.isFile()) {
         type = mime.lookup(uri)
         if (type === 'text/gpg') {
-          var diskItem = {
+          diskItem = {
             'name': name,
             'uri': uri,
             'type': type
           }
           console.log('Pushing file: ', diskItem)
           newDir.files.push(diskItem)
-          if (counter === max) cb(newDir)
+          if (counter === max) {
+            cb(newDir)
+          }
         }
       }
       if (stats.isDirectory()) {
-        var diskItem = {
+        diskItem = {
           'name': name,
           'uri': uri,
           'type': 'directory'
         }
         console.log('Pushing dir: ', diskItem)
         newDir.subdirs.push(diskItem)
-        if (counter === max) cb(newDir)
+        if (counter === max) {
+          cb(newDir)
+        }
       }
     })
   })

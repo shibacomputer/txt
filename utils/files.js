@@ -9,7 +9,7 @@ const fs = require('fs')
 
 module.exports = {
 
-  open: function(file) {
+  open: function(file, cb) {
     var newFile = { }
     fs.stat(file, (err, stats) => {
       if (err) {
@@ -20,7 +20,7 @@ module.exports = {
             throw err
           } else  {
             utils.decrypt(data, (plaintext) => {
-              console.log(plaintext)
+              cb(plaintext)
             })
           }
         })

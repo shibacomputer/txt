@@ -197,12 +197,12 @@ function setupSidebar(state, prev, send) {
                   ${item.files.map( function (f) {
                     return html`
                       <li>
-                        <button class="fsItem c file" onclick=${file.open(f.uri)}>
-                          <div class="fsItemContent">
-                            <svg viewBox="0 0 24 24" class="icon">
+                        <button data-id="${f.uri}" class="fsItem c file" onclick=${ openFile }>
+                          <div data-id="${f.uri}" class="fsItemContent">
+                            <svg data-id="${f.uri}" viewBox="0 0 24 24" class="icon">
                               <use xlink:href="#txt-file" />
                             </svg>
-                            <span class="label">
+                            <span data-id="${f.uri}" class="label">
                               ${f.name}
                             </span>
                           </div>
@@ -242,6 +242,11 @@ function setupSidebar(state, prev, send) {
 
   function appFocused() {
 
+  }
+
+  function openFile(e) {
+    var target = e.target.getAttribute('data-id')
+    send('note:readNote', target)
   }
 
 }

@@ -17,7 +17,8 @@ function createModel() {
       gettingNote: false
     },
     reducers: {
-      getNote: function (state, data) {
+      createNote: function (state, data) {
+        console.log(data)
         return {
           path: data.path,
           filename: data.filename,
@@ -34,6 +35,17 @@ function createModel() {
       },
       hasNote: function (state, data) {
         return { hasNote: data }
+      },
+      clearNote: function (state, data) {
+        return {
+          path: null,
+          filename: null,
+          title: null,
+          body: null,
+          created: null,
+          modified: null,
+          hasNote: false
+        }
       }
     },
     effects: {
@@ -50,6 +62,21 @@ function getNote(state, data, send, done) {
   send('note:gettingNote', true, () => {
     send('note:hasNote', false, () => {
       send('note:clearNote', (err, value) => {
+        files.open(data, (f) => {
+          var noteData = {
+            path: data,
+            filename: data,
+            title: data,
+            body: f.data,
+            created: 'today',
+            modified: 'today'
+          }
+          send('note:createNote', noteData, (err, value) => {
+            send('note:gettingNote', false, () => {
+              send('note:gettingNote', true, done)
+            })
+          })
+        })
       })
     })
   })
