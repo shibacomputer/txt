@@ -24,9 +24,9 @@ npm start
 ✅ Text editor  
 ⬜️ Markdown support  
 ✅ Keychain support  
-⬜️ Export to Are.na
-⬜️ Export to Medium
-⬜️ Export to PDF
+⬜️ Export to Are.na  
+⬜️ Export to Medium  
+⬜️ Export to PDF  
 ⬜️ Automatic image management  
 ⬜️ Secure syncing  
 ⬜️ Windows & Linux support
