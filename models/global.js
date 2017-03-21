@@ -1,6 +1,4 @@
 const utils = require('../utils/utils')
-const remote = window.require('electron').remote
-const keytar = remote.require('keytar')
 
 module.exports = createModel
 
@@ -10,8 +8,7 @@ function createModel() {
     state: {
       authenticated: true,
       path: null,
-      theme: 'light',
-      keychain: true
+      theme: 'light'
     },
     reducers: {
       setDb: setDb
@@ -48,9 +45,4 @@ function writeDbPath (state, data, send, done) {
       done(null, value)
     })
   })
-}
-
-function toggleKeychain (state, data) {
-  if (keychain === data) return !data
-  else return data
 }

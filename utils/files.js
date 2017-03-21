@@ -10,22 +10,21 @@ const fs = require('fs')
 module.exports = {
 
   open: function(file) {
-    utils.getPath(file, (target) => {
-      fs.stat(target, (err, stats) => {
-        if (err) {
-          throw err
-        } else {
-            fs.readFile(target, (err, data) => {
-            if (err) {
-              throw err
-            } else  {
-              utils.decrypt(data, (plaintext) => {
-                console.log(plaintext)
-              })
-            }
-          })
-        }
-      })
+    var newFile = { }
+    fs.stat(file, (err, stats) => {
+      if (err) {
+        throw err
+      } else {
+          fs.readFile(file, (err, data) => {
+          if (err) {
+            throw err
+          } else  {
+            utils.decrypt(data, (plaintext) => {
+              console.log(plaintext)
+            })
+          }
+        })
+      }
     })
   },
   write: function(data, location) {
@@ -46,4 +45,9 @@ module.exports = {
       })
     })
   }
+}
+
+function mapFile (target, data, newFile, cb) {
+  //@TODO: Make file unit tests
+
 }

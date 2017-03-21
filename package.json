@@ -8,7 +8,6 @@
     "start": "NODE_ENV=development && electron .",
     "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --viewbox '0 0 24 24' --prefix txt-",
     "rebuild": "electron-rebuild -f -w keytar"
-
   },
   "repository": {
     "type": "git",
@@ -40,6 +39,7 @@
     "quill": "^1.2.0",
     "rimraf": "^2.6.1",
     "sheetify": "6.0.0",
+    "sheetify-nested": "^1.0.2",
     "tachyons": "^4.6.2",
     "yo-css": "^1.1.0"
   },
@@ -50,7 +50,6 @@
     "electron": "^1.4.14",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
-    "gulp": "^3.9.1",
     "spritesh": "^1.2.0",
     "svgo": "^0.7.2"
   },

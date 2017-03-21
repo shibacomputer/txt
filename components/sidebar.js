@@ -7,6 +7,7 @@ const onload = require('on-load')
 const remote = window.require('electron').remote
 const { shell } = remote.require('electron')
 const button = require('./button')
+const file = require('../utils/files')
 
 const base = css`
   :host {
@@ -16,7 +17,7 @@ const base = css`
     height: calc(100vh - 2px);
     border-radius: 5px;
     border-right: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: #27282B;
+    background-color: --var(k);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -196,7 +197,7 @@ function setupSidebar(state, prev, send) {
                   ${item.files.map( function (f) {
                     return html`
                       <li>
-                        <button class="fsItem c file">
+                        <button class="fsItem c file" onclick=${file.open(f.uri)}>
                           <div class="fsItemContent">
                             <svg viewBox="0 0 24 24" class="icon">
                               <use xlink:href="#txt-file" />
