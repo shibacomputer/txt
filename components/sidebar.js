@@ -171,11 +171,9 @@ function setupSidebar(state, prev, send) {
     if (authenticated) {
       if (hasFilesystem) {
         var fsItems
-        console.log('Setting up filesystem')
         return html`
           <nav class="${fsBase}">
             ${filesystem.map( function (item) {
-              console.log('Mapping item: ', item)
               return html`
                 <ul style="width: 100%">
                   ${item.subdirs.map( function (f) {

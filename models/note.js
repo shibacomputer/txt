@@ -14,11 +14,11 @@ function createModel() {
       modified: null,
       isEditing: false,
       hasNote: false,
-      gettingNote: false
+      gettingNote: false,
+      hasChanges: false
     },
     reducers: {
       createNote: function (state, data) {
-        console.log(data)
         return {
           path: data.path,
           filename: data.filename,
@@ -73,7 +73,7 @@ function getNote(state, data, send, done) {
           }
           send('note:createNote', noteData, (err, value) => {
             send('note:gettingNote', false, () => {
-              send('note:gettingNote', true, done)
+              send('note:hasNote', true, done)
             })
           })
         })

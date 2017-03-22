@@ -16,6 +16,7 @@ app.use(log())
 
 app.model(require('./models/global')())
 app.model(require('./models/filesystem')())
+app.model(require('./models/note')())
 
 app.router({ default: '/' }, [
   ['/', require('./windows/main')],

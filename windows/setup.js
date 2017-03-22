@@ -135,7 +135,7 @@ function setupWindow(state, prev, send) {
         <section class="b ${passphrase}">
           <label for="passphrase" class="passphrase-label">Passphrase</label>
           <div class="container">
-            <input type="text" name="passphrase" class="passphrase-input input"/>
+            <input type="text" name="passphrase" class="passphrase-input input" id="passphrase"/>
           </div>
           <p class="small w">Txt uses PGP to encrypt your notebook. Choose a strong phrase to best protect your entires.</p>
         </section>
@@ -153,7 +153,7 @@ function setupWindow(state, prev, send) {
   }
 
   function pickDirectory(e) {
-    var txtPath = state.path
+    var txtPath = state.global.path
     dialog.showOpenDialog({
       title: 'Choose Your Txt Location',
       desiredPath: txtPath,
@@ -169,5 +169,4 @@ function setupWindow(state, prev, send) {
   function saveSettings(e) {
     console.log('hi')
   }
-
 }

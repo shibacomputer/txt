@@ -15,11 +15,11 @@ function createModel() {
       addDir: function (state, data) {
         var unique = true
         state.dirs.forEach( (item) => {
-          if (item.name === data.name) unique = false
+          if (item.name === data.name) { unique = false }
         })
-        if (unique) return { dirs: state.dirs.concat(data) }
+        if (unique) { return { dirs: state.dirs.concat(data) } }
       },
-      clearDirs: function (state, data) {
+      clearDirs: function () {
         return { dirs: [] }
       },
       listingDirs: function (state, data) {

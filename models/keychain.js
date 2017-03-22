@@ -20,7 +20,7 @@ function createModel() {
         }
       },
       clear: function (state, data) {
-        keytar.replacePassword('KeytarTest', 'AccountName', secret);
+        // keytar.replacePassword('KeytarTest', 'AccountName', secret);
       }
     }
   }
