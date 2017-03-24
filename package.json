@@ -28,8 +28,11 @@
     "openpgp": "openpgp/dist/openpgp.worker.min.js"
   },
   "dependencies": {
-    "choo": "^4.1.0",
-    "choo-log": "^3.0.1",
+    "bel": "^4.5.1",
+    "choo": "^5.0.0",
+    "choo-expose": "^1.0.0",
+    "choo-log": "^5.0.1",
+    "choo-persist": "^3.0.0",
     "electron-settings": "^2.2.2",
     "electron-window": "^0.8.1",
     "keytar": "^3.0.2",
@@ -39,16 +42,13 @@
     "quill": "^1.2.0",
     "rimraf": "^2.6.1",
     "sheetify": "6.0.0",
-    "sheetify-nested": "^1.0.2",
-    "sheetify-postcss": "^1.1.0",
-    "tachyons": "^4.6.2",
-    "yo-css": "^1.1.0"
+    "sheetify-nested": "^1.0.2"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
     "budo": "^9.4.7",
     "devtron": "^1.4.0",
-    "electron": "^1.4.14",
+    "electron": "^1.6.2",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
     "spritesh": "^1.2.0",
