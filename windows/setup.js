@@ -171,18 +171,29 @@ function setupWindow(state, emit) {
   `
 
   function showTxtPath() {
-
+    emit('log:debug', 'Showing Txt target path')
   }
 
 
   // Interactions
-
   function newDirectory(e) {
+    emit('log:debug', 'Asking for new directory')
 
+    dialog.showOpenDialog({
+      title: 'Choose your Txt folder',
+      desiredPath: txtPath,
+      properties: [ 'openDirectory', 'createDirectory', 'promptToCreate']
+    }, function(filePaths) {
+      if (filePaths) {
+        //txtPath = path.normalize(filePaths[0])
+        emit()
+        send('global:writeDbPath', txtPath)
+      }
+    })
   }
 
   function saveSettings(e) {
-
+    emit('log:debug', 'Attempting an app state save')
   }
 }
 /*
