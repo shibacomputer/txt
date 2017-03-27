@@ -5,21 +5,20 @@ const choo    = require('choo'),
       css     = require('sheetify')
 
 // Setup global CSS
-/*
-css('./css/color.css')
-css('./css/frame.css')
-css('./css/common.css')
-css('./css/editor.css')
-*/
-
 css('./css/defs.css')
 css('./css/common.css')
 
 const app = choo()
+
+// App setup.
 app.use(persist())
 app.use(log())
 app.use(expose())
 
+// Stores
+app.use(require('./stores/global'))
+app.use(require('./stores/keychain'))
+// State setup.
 app.route('/', require('./windows/setup'))
 app.route('/setup', require('./windows/setup'))
 

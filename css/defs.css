@@ -2,6 +2,25 @@
   * Defs
   * Declare all CSS variables and common classes here.
   */
+  @font-face {  font-family: 'NovelMono';
+                font-weight: normal;
+                font-style: normal;
+                src:  url('assets/fonts/novelmono.ttf') format('truetype') }
+
+  @font-face {  font-family: 'NovelMono';
+                font-weight: normal;
+                font-style: italic;;
+                src:  url('assets/fonts/novelmono-italic.ttf') format('truetype') }
+
+  @font-face {  font-family: 'NovelMono';
+                font-weight: bold;
+                font-style: normal;
+                src:  url('assets/fonts/novelmono-bold.ttf') format('truetype') }
+
+  @font-face {  font-family: 'NovelMono';
+                font-weight: bold;
+                font-style: italic;
+                src:  url('assets/fonts/novelmono-bold-italic.ttf') format('truetype') }
 
 :root {
   /* Grid unit */
