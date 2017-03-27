@@ -2,10 +2,10 @@ const remote = window.require('electron').remote
 const keytar = remote.require('keytar')
 const { app } = remote.require('electron')
 
-module.exports = keychainStore
-
 const accountname = app.getPath('home').split('/').slice(-1)[0]
 const appId = 'Txt'
+
+module.exports = keychainStore
 
 function keychainStore (state, emitter) {
   if (!state.keychain) {

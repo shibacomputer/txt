@@ -19,7 +19,7 @@ app.use(expose())
 app.use(require('./stores/global'))
 app.use(require('./stores/keychain'))
 // State setup.
-app.route('/', require('./windows/setup'))
+app.route('/', require('./windows/main'))
 app.route('/setup', require('./windows/setup'))
 
 app.mount('body')

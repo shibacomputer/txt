@@ -1,11 +1,9 @@
 const path = require('path')
-const fs = require('fs')
 const remote = window.require('electron').remote
 const { app, ipc, dialog } = remote.require('electron')
 
 const html = require('bel')
 const css = require('sheetify')
-
 const utils = require('../utils/utils')
 
 const base = css`
@@ -196,7 +194,7 @@ function setupWindow(state, emit) {
   function saveSettings(e) {
     emit('log:debug', 'Attempting an app state save')
     var phrase = document.getElementById('passphrase').value
-    utils.setSetting('hasActiveInstall', true, () => {
+    utils.setSetting('isActiveInstall', true, () => {
       utils.setSetting('usesKeychain', true, () => {
         emit('keychain:create', phrase)
       })

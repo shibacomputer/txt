@@ -1,16 +1,19 @@
-'use strict'
-
-const html = require('choo/html')
+const html = require('bel')
 const css = require('sheetify')
-const icons = require('../utils/icons')
-const button = require('../components/button')
-const FileExplorer = require('../components/sidebar')
-const files = require('../utils/files')
-const folders = require('../utils/folders')
-const editor = require('../components/editor')
 
 module.exports = mainWindow
 
+function mainWindow(state, emit) {
+  emit('log:debug', 'Rendering main view')
+
+  return html`
+    <body>
+
+    </body>
+  `
+}
+
+/*
 const base = css`
   :host {
     display: flex;
@@ -36,7 +39,7 @@ const editContainer = css`
   }
 `
 
-function mainWindow(state, prev, send) {
+function mainWindow(state, emit) {
 
   const sidebar = FileExplorer(state, prev, send)
 
@@ -76,3 +79,4 @@ function mainWindow(state, prev, send) {
     </body>
   `
 }
+*/
