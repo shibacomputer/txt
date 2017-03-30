@@ -108,6 +108,22 @@ function sidebar (state, emit) {
                     <button data-uri="${f.uri}" class="${fitem}">
                       <div data-uri="${f.uri}" class="${flabel}">
                         <svg data-uri="${f.uri}" viewBox="0 0 24 24" class="${icon}">
+                          <use xlink:href="#txt-folder" />
+                        </svg>
+                        <span data-uri="${f.uri}" class="label">
+                          ${f.name}
+                        </span>
+                      </div>
+                    </button>
+                  </li>
+                `
+              })}
+              ${ item.files.map ( function(f) {
+                return html`
+                  <li>
+                    <button data-uri="${f.uri}" class="${fitem}">
+                      <div data-uri="${f.uri}" class="${flabel}">
+                        <svg data-uri="${f.uri}" viewBox="0 0 24 24" class="${icon}">
                           <use xlink:href="#txt-file" />
                         </svg>
                         <span data-uri="${f.uri}" class="label">
@@ -118,6 +134,7 @@ function sidebar (state, emit) {
                   </li>
                 `
               })}
+
             </ul>
             `
           })
