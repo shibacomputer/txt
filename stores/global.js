@@ -6,7 +6,7 @@ function globalStore (state, emitter) {
   if (!state.global) {
     state.global = {}
     utils.getSetting('hasDbLocationOf', (data) => {
-      state.global.path = data
+      state.global.path = data || null
       emitter.emit('render')
     })
 

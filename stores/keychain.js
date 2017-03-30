@@ -17,6 +17,7 @@ function keychainStore (state, emitter) {
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading Keychain Store')
 
+    // Handle the keychain
     emitter.on('keychain:create', create)
     emitter.on('keychain:update', update)
     emitter.on('keychain:destroy', destroy)
@@ -30,6 +31,9 @@ function keychainStore (state, emitter) {
     phrase = null
     state.keychain.save = true
     state.keychain.available = true
+
+    // Tell the global we're good to go.
+    emitter.emit('global:auth')
   }
 
   function update (phrase) {
@@ -47,5 +51,6 @@ function keychainStore (state, emitter) {
     state.keychain.available = false
     keytar.replacePassword(appId, accountname)
     console.log('🔏 ', appId, ' 💣 ', accountname)
+    emitter.emit('global:deauth')
   }
 }

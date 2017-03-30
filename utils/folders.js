@@ -23,8 +23,8 @@ module.exports = {
         if (err) {
           throw err
         } else {
-          mapDir(target, data, newDir, (result) => {
-            cb(result)
+          mapDir(target, data, newDir, (result, done) => {
+            if (done) { cb(result) }
           })
         }
       })
@@ -34,7 +34,7 @@ module.exports = {
     utils.getPath(name, (target) => {
       fs.stat(target, (err, stats) => {
         if (stats) {
-          console.log('Dir exists.')
+          console.log('📂 ‼️ Dir at path ', target, ' exists')
         } else {
           fs.mkdir(target, (err) => {
             if (err) {
@@ -58,12 +58,13 @@ module.exports = {
 
 function mapDir (target, data, newDir, cb) {
   //@TODO: Implement filesystem unit tests.
-  console.log('Mapping new Dir.')
+
   var counter = 0,
-      max = data.length
+      max = data.length,
+      done = false
 
   data.map((item) => {
-    counter ++
+
     // Define the properties we care about
     var name, uri, type
     name = item
@@ -71,6 +72,7 @@ function mapDir (target, data, newDir, cb) {
 
     // Determine type
     fs.stat(uri, (err, stats) => {
+      counter ++
       var diskItem = { }
       if (stats.isFile()) {
         type = mime.lookup(uri)
@@ -80,9 +82,9 @@ function mapDir (target, data, newDir, cb) {
             'uri': uri,
             'type': type
           }
-          console.log('Pushing file: ', diskItem)
           newDir.files.push(diskItem)
           if (counter === max) {
+            done = true
             cb(newDir)
           }
         }
@@ -93,12 +95,14 @@ function mapDir (target, data, newDir, cb) {
           'uri': uri,
           'type': 'directory'
         }
-        console.log('Pushing dir: ', diskItem)
         newDir.subdirs.push(diskItem)
         if (counter === max) {
-          cb(newDir)
+          done = true
+          cb(newDir, done)
         }
       }
+
     })
+
   })
 }

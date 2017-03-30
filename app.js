@@ -16,8 +16,10 @@ app.use(log())
 app.use(expose())
 
 // Stores
+app.use(require('./stores/filesystem'))
 app.use(require('./stores/global'))
 app.use(require('./stores/keychain'))
+
 // State setup.
 app.route('/', require('./windows/main'))
 app.route('/setup', require('./windows/setup'))

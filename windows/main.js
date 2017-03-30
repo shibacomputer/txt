@@ -1,13 +1,18 @@
 const html = require('bel')
 const css = require('sheetify')
+const sidebar = require ('../components/sidebar')
 
 module.exports = mainWindow
 
 function mainWindow(state, emit) {
+
   emit('log:debug', 'Rendering main view')
 
+  document.title = 'Txt'
+
   return html`
-    <body>
+    <body class="b-myc">
+      ${ sidebar(state, emit) }
 
     </body>
   `
