@@ -19,6 +19,7 @@ app.use(expose())
 app.use(require('./stores/filesystem'))
 app.use(require('./stores/global'))
 app.use(require('./stores/keychain'))
+app.use(require('./stores/note'))
 
 // State setup.
 app.route('/', require('./windows/main'))
