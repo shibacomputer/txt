@@ -49,7 +49,7 @@
     "browserify": "^13.3.0",
     "budo": "^9.4.7",
     "devtron": "^1.4.0",
-    "electron": "^1.6.4",
+    "electron": "^1.4.6",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
     "spritesh": "^1.2.0",
