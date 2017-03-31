@@ -75,6 +75,9 @@ function sidebar (state, emit) {
       }
       :host:focus {
         outline: none;
+      }
+      :host.file:focus {
+        outline: none;
         background-color: var(--c);
         color: var(--k);
       }
@@ -91,7 +94,7 @@ function sidebar (state, emit) {
       :host {
         width: 1rem;
         height: 1rem;
-        margin-right: 0.5rem;
+        margin-right: 0.25rem;
       }
     `
 
@@ -121,7 +124,7 @@ function sidebar (state, emit) {
               ${ item.files.map ( function(f) {
                 return html`
                   <li>
-                    <button data-uri="${f.uri}" class="${fitem}">
+                    <button data-uri="${f.uri}" class="${fitem} file">
                       <div data-uri="${f.uri}" class="${flabel}">
                         <svg data-uri="${f.uri}" viewBox="0 0 24 24" class="${icon}">
                           <use xlink:href="#txt-file" />

@@ -1,6 +1,7 @@
 const html = require('bel')
 const css = require('sheetify')
 const sidebar = require ('../components/sidebar')
+const icons = require('../utils/icons')
 
 module.exports = mainWindow
 
@@ -12,6 +13,7 @@ function mainWindow(state, emit) {
 
   return html`
     <body class="b-myc">
+      ${icons()}
       ${ sidebar(state, emit) }
 
     </body>
