@@ -83,6 +83,11 @@ function sidebar (state, emit) {
       }
     `
 
+    const label = css`
+      :host {
+        margin-top: 3px;
+      }
+    `
     const flabel = css`
       :host {
         display: flex;
@@ -108,12 +113,12 @@ function sidebar (state, emit) {
               ${ item.subdirs.map ( function(f) {
                 return html`
                   <li>
-                    <button data-uri="${f.uri}" class="${fitem}">
-                      <div data-uri="${f.uri}" class="${flabel}">
-                        <svg data-uri="${f.uri}" viewBox="0 0 24 24" class="${icon}">
+                    <button data-uri="${f.uri}" data-type="dir" class="${fitem}" onclick=${ open }>
+                      <div data-uri="${f.uri}" data-type="dir" class="${flabel}">
+                        <svg data-uri="${f.uri}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
                           <use xlink:href="#txt-folder" />
                         </svg>
-                        <span data-uri="${f.uri}" class="label">
+                        <span data-uri="${f.uri}" data-type="dir" class="${label}">
                           ${f.name}
                         </span>
                       </div>
@@ -124,12 +129,12 @@ function sidebar (state, emit) {
               ${ item.files.map ( function(f) {
                 return html`
                   <li>
-                    <button data-uri="${f.uri}" class="${fitem} file">
-                      <div data-uri="${f.uri}" class="${flabel}">
-                        <svg data-uri="${f.uri}" viewBox="0 0 24 24" class="${icon}">
+                    <button data-uri="${f.uri}" data-type="file" class="${fitem} file" onclick=${ open }>
+                      <div data-uri="${f.uri}" data-type="file" class="${flabel}">
+                        <svg data-uri="${f.uri}" data-type="file" viewBox="0 0 24 24" class="${icon}">
                           <use xlink:href="#txt-file" />
                         </svg>
-                        <span data-uri="${f.uri}" class="label">
+                        <span data-uri="${f.uri}" data-type="file" class="${label}">
                           ${f.name}
                         </span>
                       </div>
@@ -212,6 +217,10 @@ function sidebar (state, emit) {
         </div>
       </nav>
     `
+  }
+
+  function open (e) {
+    console.log(e)
   }
 }
 
