@@ -2,11 +2,11 @@ const html = require('bel')
 
 const Nanocomponent = require('nanocomponent')
 const nanologger = require('nanologger')
-const {EditorState} = require("prosemirror-state")
-const {EditorView} = require("prosemirror-view")
-const {Schema, DOMParser} = require("prosemirror-model")
-const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("prosemirror-markdown")
-
+const {EditorState} = require('prosemirror-state')
+const {EditorView} = require('prosemirror-view')
+const {Schema, DOMParser} = require('prosemirror-model')
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require('prosemirror-markdown')
+const {defaultSetup} = require('../utils/plugins.js')
 
 module.exports = Editor
 
@@ -60,7 +60,8 @@ Editor.prototype._createView = function (body) {
   this._log.info('create-view', body)
   let view = new EditorView(element, {
       state: EditorState.create({
-        doc: defaultMarkdownParser.parse(content) })
+        doc: defaultMarkdownParser.parse(content),
+      plugins: defaultSetup({schema})  })
   })
   this._view = view
 }
