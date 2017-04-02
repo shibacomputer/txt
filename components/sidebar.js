@@ -220,7 +220,10 @@ function sidebar (state, emit) {
   }
 
   function open (e) {
-    console.log(e)
+    var type = e.target.getAttribute('data-type')
+    var target = e.target.getAttribute('data-uri')
+    if (type === 'dir') { console.log('Clicked a dir')}
+    if (type === 'file') { emit('note:load', target) }
   }
 }
 

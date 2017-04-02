@@ -14,6 +14,7 @@ function noteStore (state, emitter) {
     state.note.date.created = null
     state.note.date.modified = null
     state.note.status = { }
+    state.note.status.loading = false
     state.note.status.modified = false
   }
 
@@ -29,12 +30,35 @@ function noteStore (state, emitter) {
 
   })
 
-  function create (at) {
+  function create (note) {
     emitter.emit('log:debug', 'Creating note')
+
+    spin()
+
+    new Date()
+
   }
 
   function load (note) {
     emitter.emit('log:debug', 'Loading a note')
+
+    spin(true)
+
+    file.open(note, (n) => {
+      var url = note.split('/')
+
+      state.note.path = note
+      state.note.filename = url[url.length-1]
+      state.note.title = url[url.length-1].replace(/\.[^/.]+$/, "")
+      state.note.body = n.data
+      state.note.date.created = 'today'
+      state.note.date.modified = 'today'
+      state.note.status.modified = false
+      console.log('📄 👀 ', state.note)
+
+      spin(false)
+      emitter.emit('render')
+    })
   }
 
   function unload (note) {
@@ -45,6 +69,8 @@ function noteStore (state, emitter) {
   function write (note) {
     emitter.emit('log:debug', 'Writing note to disk')
     // state.note.date.modified = today's date
+    var date = new Date()
+    state.note.date.modofied = date
     state.note.status.modified = false
   }
 
@@ -55,5 +81,10 @@ function noteStore (state, emitter) {
 
   function destroy (note) {
     emitter.emit('log.debug', 'Deleting note')
+  }
+
+  function spin (b) {
+    state.note.status.loading = b
+    emitter.emit('render')
   }
 }

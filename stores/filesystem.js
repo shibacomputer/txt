@@ -20,7 +20,6 @@ function filesystemStore (state, emitter) {
     // emitter.on('filesystem:destroy', destroy)
 
     emitter.emit('filesystem:addDir', '/')
-
   })
 
   function addDir(target) {
