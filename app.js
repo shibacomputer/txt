@@ -7,6 +7,7 @@ const choo    = require('choo'),
 // Setup global CSS
 css('./css/defs.css')
 css('./css/common.css')
+css('./css/editor.css')
 
 const app = choo()
 

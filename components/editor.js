@@ -1,57 +1,71 @@
-'use strict'
+const html = require('bel')
 
-const html = require('choo/html')
-const css = require('sheetify')
-const nano = require('nanocomponent')
-const Quill = require('quill')
+const Nanocomponent = require('nanocomponent')
+const nanologger = require('nanologger')
+const {EditorState} = require("prosemirror-state")
+const {EditorView} = require("prosemirror-view")
+const {Schema, DOMParser} = require("prosemirror-model")
+const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require("prosemirror-markdown")
 
-module.exports = editor
 
-const base = css`
-  :host {
-    width: auto;
-    height: 100%;
-    color: white;
-    display: flex;
-    flex: auto;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+module.exports = Editor
+
+function Editor () {
+
+  if (!(this instanceof Editor)) return new Editor()
+  Nanocomponent.call(this)
+
+  this._log = nanologger('Editor')
+  this._element = null
+  this._contents = null
+  this._view = null
+}
+
+Editor.prototype = Object.create(Nanocomponent.prototype)
+
+Editor.prototype._render = function (body) {
+  var self = this
+
+  if (!this._view) {
+    this._element = html`<div id="editor" class="editor"></div>`
+    this._content = body
+    this._createView()
   }
-`
+  return this._element
+}
 
-const box = css`
-  :host{
-    width: 100%;
-    max-width: 48rem;
-  }
-`
+Editor.prototype._update = function (body) {
+  return body
+}
 
-css('../css/editor.css')
+Editor.prototype._load = function () {
+  this._log.info('load')
+}
 
-function editor (state, emit) {
+Editor.prototype._unload = function () {
+  this._log.info('unload')
 
-  var editbox = nano({
-    onload: function(el) {
-      var quill = new Quill('#editbox', {
-        theme: 'bubble'
-      });
-      quill.setText(state.note.body, '\n');
-    },
+  this._content = null
+  this._body = null
+  this._view = null
+  this._element = null
+}
 
-    render: function() {
-      return html`
-        <div id="editbox" class="${box}"></div>
-      `
-    }
+Editor.prototype._createView = function (body) {
+  var element = this._element
+  var content = this._content
+
+  console.log(content)
+
+  this._log.info('create-view', body)
+  let view = new EditorView(element, {
+      state: EditorState.create({
+        doc: defaultMarkdownParser.parse(content) })
   })
+  this._view = view
+}
 
-  return html`
-    <div class="${base}">
-      <header class="title">
-      ${ state.note.title }
-      </header>
-      ${editbox()}
-    </div>
-  `
+Editor.prototype._updateView = function () {
+  var content = this._content
+  this._log.info('update-view', content)
 }

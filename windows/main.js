@@ -2,8 +2,10 @@ const html = require('choo/html')
 const css = require('sheetify')
 const sidebar = require ('../components/sidebar')
 const icons = require('../utils/icons')
-const editor = require('../components/editor')
+const Editor = require('../components/editor')
 const spinner = require('../components/spinner')
+
+var editor = Editor()
 
 module.exports = mainWindow
 
@@ -30,7 +32,31 @@ function mainWindow(state, emit) {
 
   function main (state, emit) {
     if (state.note.status.loading) { return html`${ spinner() }` }
-    else { return html`${ editor(state, emit) }`}
+    else { return html`${ editView(state, emit) }`}
+  }
+
+  function editView (state, emit) {
+    const base = css`
+      :host {
+        width: auto;
+        height: 100%;
+        color: white;
+        display: flex;
+        flex: auto;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+      }
+    `
+
+    return html`
+      <div class="${base}">
+        <header class="title">
+        ${ state.note.title }
+        </header>
+         ${editor.render(state.note.body)}
+      </div>
+    `
   }
 }
 /*
