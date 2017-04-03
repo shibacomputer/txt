@@ -6,8 +6,6 @@ const Editor = require('../components/editor')
 const spinner = require('../components/spinner')
 const toolbar = require('../components/toolbar')
 
-var editor = Editor()
-
 module.exports = mainWindow
 
 function mainWindow(state, emit) {
@@ -36,6 +34,7 @@ function mainWindow(state, emit) {
   }
 
   function editView (state, emit) {
+    var editor = Editor()
     const base = css`
       :host {
         width: auto;
@@ -47,6 +46,7 @@ function mainWindow(state, emit) {
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
+        box-sizing: border-box;
       }
     `
     const editview = css`
@@ -55,6 +55,7 @@ function mainWindow(state, emit) {
         overflow: scroll;
         width: 100%;
         height: calc(100vh - 5rem);
+        box-sizing: border-box;
       }
     `
 
@@ -62,7 +63,7 @@ function mainWindow(state, emit) {
       <main class="${base}">
         ${ toolbar ()}
         <div class="${editview}">
-          ${ editor.render(state.note.body) }
+          ${ editor.render(state.note, emit) }
         </div>
         ${ toolbar ()}
       </main>

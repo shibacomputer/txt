@@ -17,25 +17,26 @@ function Editor () {
 
   this._log = nanologger('Editor')
   this._element = null
-  this._contents = null
+  this._note = null
   this._view = null
+  this._emit = null
 }
 
 Editor.prototype = Object.create(Nanocomponent.prototype)
 
-Editor.prototype._render = function (body) {
+Editor.prototype._render = function (note, emit) {
   var self = this
-
   if (!this._view) {
     this._element = html`<div id="editor" class="editor"></div>`
-    this._content = body
+    this._note = note
+    this._emit = emit
     this._createView()
   }
   return this._element
 }
 
-Editor.prototype._update = function (body) {
-  return body
+Editor.prototype._update = function (note) {
+  return note
 }
 
 Editor.prototype._load = function () {
@@ -44,23 +45,28 @@ Editor.prototype._load = function () {
 
 Editor.prototype._unload = function () {
   this._log.info('unload')
+  var note = this._note
+  var emit = this._emit
 
-  this._content = null
+  emit('note:close', note)
+
   this._body = null
   this._view = null
   this._element = null
+  this._note = null
 }
 
-Editor.prototype._createView = function (body) {
+Editor.prototype._createView = function (note) {
   var element = this._element
-  var content = this._content
+  var note = this._note
+
   let view
-  
-  this._log.info('create-view', body)
-  if (content) {
+
+  this._log.info('create-view', note)
+  if (note.body) {
     view = new EditorView(element, {
         state: EditorState.create({
-          doc: defaultMarkdownParser.parse(content),
+          doc: defaultMarkdownParser.parse(note.body),
         plugins: defaultSetup({schema})  })
     })
   }
@@ -68,6 +74,6 @@ Editor.prototype._createView = function (body) {
 }
 
 Editor.prototype._updateView = function () {
-  var content = this._content
-  this._log.info('update-view', content)
+  var note = this._note
+  this._log.info('update-view', note)
 }

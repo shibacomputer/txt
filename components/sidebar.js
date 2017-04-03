@@ -3,10 +3,13 @@ const { shell } = remote.require('electron')
 
 const html = require('choo/html')
 const css = require('sheetify')
+const Microframe = require('microframe')
 
 // const button = require('./button')
 const file = require('../utils/files')
 const toolbar = require('./toolbar')
+
+var microframe = Microframe()
 
 module.exports = sidebar
 
@@ -173,6 +176,7 @@ function sidebar (state, emit) {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        box-sizing: border-box;
       }
     `
 
@@ -236,8 +240,13 @@ function sidebar (state, emit) {
   function open (e) {
     var type = e.target.getAttribute('data-type')
     var target = e.target.getAttribute('data-uri')
+
     if (type === 'dir') { console.log('Clicked a dir')}
-    if (type === 'file') { emit('note:load', target) }
+    if (type === 'file') {
+      microframe(function () {
+        emit('note:load', target)
+      })
+    }
   }
 }
 
