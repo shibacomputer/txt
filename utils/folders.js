@@ -24,7 +24,7 @@ module.exports = {
           throw err
         } else {
           mapDir(target, data, newDir, (result, done) => {
-            if (done) { cb(result) }
+            cb(result)
           })
         }
       })
