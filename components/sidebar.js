@@ -6,6 +6,7 @@ const css = require('sheetify')
 
 // const button = require('./button')
 const file = require('../utils/files')
+const toolbar = require('./toolbar')
 
 module.exports = sidebar
 
@@ -53,15 +54,23 @@ function sidebar (state, emit) {
         height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
+        justify-content: space-between;
       }
     `
+
+    const browser = css`
+      :host {
+        -webkit-overflow-scrolling: touch;
+        overflow: scroll;
+        flex: 1;
+      }
+    `
+
     const fitem = css`
       :host {
         text-align: left;
         font-family: 'NovelMono', monospace;
-        font-size: 13px;
+        font-size: 12px;
         width: 100%;
         padding: 0.35rem 1rem 0.35rem 1rem;
         background: none;
@@ -106,6 +115,8 @@ function sidebar (state, emit) {
 
     return html`
       <nav class="${base}">
+        ${ toolbar () }
+        <div class="${browser}">
         ${
           filesystem.map( (item) => {
             return html`
@@ -147,6 +158,8 @@ function sidebar (state, emit) {
             `
           })
         }
+        </div>
+        ${ toolbar () }
       </nav>
     `
   }

@@ -4,6 +4,7 @@ const sidebar = require ('../components/sidebar')
 const icons = require('../utils/icons')
 const Editor = require('../components/editor')
 const spinner = require('../components/spinner')
+const toolbar = require('../components/toolbar')
 
 var editor = Editor()
 
@@ -19,7 +20,6 @@ function mainWindow(state, emit) {
     :host {
       display: flex;
       flex-direction: row;
-
     }
   `
   return html`
@@ -39,7 +39,8 @@ function mainWindow(state, emit) {
     const base = css`
       :host {
         width: auto;
-        height: 100%;
+        height: 100vh;
+        overflow: hidden;
         color: white;
         display: flex;
         flex: auto;
@@ -48,14 +49,23 @@ function mainWindow(state, emit) {
         justify-content: flex-start;
       }
     `
+    const editview = css`
+      :host {
+        -webkit-overflow-scrolling: touch;
+        overflow: scroll;
+        width: 100%;
+        height: calc(100vh - 5rem);
+      }
+    `
 
     return html`
-      <div class="${base}">
-        <header class="title">
-        ${ state.note.title }
-        </header>
-         ${editor.render(state.note.body)}
-      </div>
+      <main class="${base}">
+        ${ toolbar ()}
+        <div class="${editview}">
+          ${ editor.render(state.note.body) }
+        </div>
+        ${ toolbar ()}
+      </main>
     `
   }
 }

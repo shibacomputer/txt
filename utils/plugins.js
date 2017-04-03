@@ -23,7 +23,7 @@ function defaultSetup(options) {
 
   return plugins.concat(new Plugin({
     props: {
-      attributes: {class: "ProseMirror-example-setup-style"}
+      attributes: {class: "ProseMirror-Txt-style"}
     }
   }))
 }
