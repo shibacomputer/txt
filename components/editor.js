@@ -54,15 +54,16 @@ Editor.prototype._unload = function () {
 Editor.prototype._createView = function (body) {
   var element = this._element
   var content = this._content
-
-  console.log(content)
-
+  let view
+  
   this._log.info('create-view', body)
-  let view = new EditorView(element, {
-      state: EditorState.create({
-        doc: defaultMarkdownParser.parse(content),
-      plugins: defaultSetup({schema})  })
-  })
+  if (content) {
+    view = new EditorView(element, {
+        state: EditorState.create({
+          doc: defaultMarkdownParser.parse(content),
+        plugins: defaultSetup({schema})  })
+    })
+  }
   this._view = view
 }
 

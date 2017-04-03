@@ -112,7 +112,6 @@ function sidebar (state, emit) {
       }
     `
 
-
     return html`
       <nav class="${base}">
         ${ toolbar () }
@@ -215,7 +214,9 @@ function sidebar (state, emit) {
 
     return html `
       <nav class="${base}">
-        <object data="/assets/illu/illu-writing.svg" style="width: 64px; height: 64px;" type="image/svg+xml" class="c"></object>
+        <svg style="width: 64px; height: 64px;" viewBox="0 0 64 64" type="image/svg+xml" class="c">
+          <use xlink:href="/assets/illu/illu-writing.svg" />
+        </svg>
         <div class="c ${message}">
           <p>Welcome to Txt.</p>
           <p>Each file in your Txt notebook is encrypted and stored in ~/Txt.</p>
@@ -224,7 +225,7 @@ function sidebar (state, emit) {
           New Entry +
         </button>
         <div class="b">
-          <button class="${textButton} b f-hover" onclick=${ function() { shell.openExternal("https://txtapp.io") } }>
+          <button class="${textButton} b f-hover" onclick=${ function() { shell.openExternal('https://txtapp.io') } }>
             Welcome Guide
           </button>
         </div>

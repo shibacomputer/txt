@@ -1,4 +1,3 @@
-const utils = require('../utils/utils')
 const folders = require('../utils/folders')
 
 module.exports = filesystemStore
@@ -19,12 +18,14 @@ function filesystemStore (state, emitter) {
     // emitter.on('filesystem:refresh', refresh)
     // emitter.on('filesystem:destroy', destroy)
 
-    emitter.emit('filesystem:addDir', '/')
+    if (state.filesystem.dirs.length === 0 ) {
+      emitter.emit('filesystem:addDir', '/')
+    }
   })
 
   function addDir(target) {
     var filesystem = []
-    emitter.emit('log:debug', 'Adding dir')
+
     folders.ls(target, (dir, done) => {
       console.log('📂 ', target, '   📂 ', dir.subdirs, ' | 📄 ', dir.files)
       filesystem.push(dir)
@@ -32,6 +33,7 @@ function filesystemStore (state, emitter) {
       emitter.emit('render')
     })
   }
+  
   function removeDir(target) {
     var filesystem = []
     emitter.emit('log:debug', 'Removing dir')

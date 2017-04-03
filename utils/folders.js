@@ -78,13 +78,16 @@ function mapDir (target, data, newDir, cb) {
         type = mime.lookup(uri)
         if (type === 'text/gpg') {
           diskItem = {
-            'name': name,
+            'name': name.replace(/\.[^/.]+$/, ''),
             'uri': uri,
-            'type': type
+            'type': type,
+            'created': stats.ctime,
+            'modified': stats.mtime
           }
           newDir.files.push(diskItem)
           if (counter === max) {
             done = true
+            console.log(newDir)
             cb(newDir)
           }
         }
@@ -93,11 +96,14 @@ function mapDir (target, data, newDir, cb) {
         diskItem = {
           'name': name,
           'uri': uri,
-          'type': 'directory'
+          'type': 'directory',
+          'created': stats.ctime,
+          'modified': stats.mtime
         }
         newDir.subdirs.push(diskItem)
         if (counter === max) {
           done = true
+          console.log(newDir)
           cb(newDir, done)
         }
       }
