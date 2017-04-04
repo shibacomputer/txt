@@ -46,10 +46,6 @@ Editor.prototype._load = function () {
 Editor.prototype._unload = function () {
   this._log.info('unload')
   var note = this._note
-  var emit = this._emit
-
-  emit('note:close', note)
-
   this._body = null
   this._view = null
   this._element = null
@@ -67,7 +63,7 @@ Editor.prototype._createView = function (note) {
     view = new EditorView(element, {
         state: EditorState.create({
           doc: defaultMarkdownParser.parse(note.body),
-        plugins: defaultSetup({schema})  })
+        plugins: defaultSetup({schema})})
     })
   }
   this._view = view

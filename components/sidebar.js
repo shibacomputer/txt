@@ -243,9 +243,7 @@ function sidebar (state, emit) {
 
     if (type === 'dir') { console.log('Clicked a dir')}
     if (type === 'file') {
-      microframe(function () {
-        emit('note:load', target)
-      })
+      emit('note:load', target)
     }
   }
 }
