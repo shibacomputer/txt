@@ -5,6 +5,21 @@ module.exports = noteStore
 
 function noteStore (state, emitter) {
   if (!state.note) {
+    newNote()
+  }
+
+  emitter.on('DOMContentLoaded', function () {
+    emitter.emit('log:debug', 'Loading Note Store')
+
+    emitter.on('note:create', create)
+    emitter.on('note:load', load)
+    emitter.on('note:close', unload)
+    emitter.on('note:update', update)
+    emitter.on('note:destroy', destroy)
+
+  })
+
+  function newNote() {
     state.note = { }
     state.note.path = null
     state.note.filename = null
@@ -17,18 +32,6 @@ function noteStore (state, emitter) {
     state.note.status.loading = false
     state.note.status.modified = false
   }
-
-  emitter.on('DOMContentLoaded', function () {
-    emitter.emit('log:debug', 'Loading Note Store')
-
-    emitter.on('note:create', create)
-    emitter.on('note:load', load)
-    emitter.on('note:unload', unload)
-    emitter.on('note:write', write)
-    emitter.on('note:update', update)
-    emitter.on('note:destroy', destroy)
-
-  })
 
   function create (note) {
     emitter.emit('log:debug', 'Creating note')
@@ -63,14 +66,28 @@ function noteStore (state, emitter) {
 
   function unload (note) {
     emitter.emit('log:debug', 'Unloading a note')
-
   }
 
-  function write (note) {
+  function close (note) {
+    state.note.status.modified = true
+    if (state.note.status.modified === true) {
+      console.log('Writing...')
+      write(note, (err) => {
+        if(!err) {
+          console.log('Complete')
+          newNote()
+        } else {
+          throw err
+        }
+      })
+    }
+  }
+
+  function write (note, cb) {
     emitter.emit('log:debug', 'Writing note to disk')
-    // state.note.date.modified = today's date
     var date = new Date()
-    state.note.date.modofied = date
+
+    state.note.date.modified = date
     state.note.status.modified = false
   }
 
