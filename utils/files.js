@@ -49,5 +49,13 @@ module.exports = {
         }
       })
     })
+  },
+
+  // :: delete
+  del: function(file, cb) {
+    var status = false
+    utils.getPath(file, (target) => {
+      fs.dele
+    })
   }
 }
