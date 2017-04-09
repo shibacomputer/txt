@@ -16,9 +16,38 @@ const base = css`
   }
 `
 
-module.exports = (elements, emit) => {
+module.exports = (elements, title, emit) => {
+  function build (pos) {
+    if (elements && elements[0]) {
+      return html `
+        <ul class="${pos}">
+          ${ elements[0].map( (item) => {
+            return html`
+              <li>
+                ${ item }
+              </li>
+              `
+            })}
+        </ul>
+      `
+    }
+  }
+
+  function center() {
+    if (title) {
+      return html`
+        <nav class="center">
+          ${ title }
+        </nav>
+      `
+    }
+  }
+
   return html`
     <header class="${base}">
+      ${ build('left') }
+      ${ center() }
+      ${ build('right') }
     </header>
   `
 }

@@ -20,6 +20,7 @@ function Editor () {
   this._note = null
   this._view = null
   this._emit = null
+  this._observer = null
 }
 
 Editor.prototype = Object.create(Nanocomponent.prototype)
@@ -30,12 +31,13 @@ Editor.prototype._render = function (note, emit) {
     this._element = html`<div id="editor" class="editor"></div>`
     this._note = note
     this._emit = emit
-    this._createView()
+    this._createView(note, emit)
   }
   return this._element
 }
 
-Editor.prototype._update = function (note) {
+Editor.prototype._update = function (note, emit) {
+
   return note
 }
 
@@ -45,20 +47,21 @@ Editor.prototype._load = function () {
 
 Editor.prototype._unload = function () {
   this._log.info('unload')
-  var note = this._note
   this._body = null
   this._view = null
   this._element = null
   this._note = null
+  this._observer = null
+
 }
 
-Editor.prototype._createView = function (note) {
+Editor.prototype._createView = function (note, emit) {
+  this._log.info('create-view', note.title)
   var element = this._element
   var note = this._note
 
   let view
 
-  this._log.info('create-view', note)
   if (note.body) {
     view = new EditorView(element, {
         state: EditorState.create({
@@ -69,7 +72,6 @@ Editor.prototype._createView = function (note) {
   this._view = view
 }
 
-Editor.prototype._updateView = function () {
-  var note = this._note
-  this._log.info('update-view', note)
+Editor.prototype._updateView = function (note, emit) {
+  this._log.info('update-view')
 }
