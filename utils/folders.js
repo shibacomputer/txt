@@ -1,5 +1,6 @@
 const utils = require('./utils')
 const mime = require('mime')
+const dirToJson = require('dir-to-json')
 
 const path = require('path')
 
@@ -9,25 +10,13 @@ const rimraf = require('rimraf')
 mime.define({ 'text/gpg': ['gpg'] })
 
 module.exports = {
-
-  ls: function (dir, cb) {
-    var newDir = {
-      'files': [],
-      'subdirs': []
-    }
-    utils.getPath (dir, (target) => {
-      newDir.name = dir
-      newDir.collapsed = true
-
-      fs.readdir(target, (err, data) => {
-        if (err) {
-          throw err
-        } else {
-          mapDir(target, data, newDir, (result, done) => {
-            cb(result)
-          })
-        }
-      })
+  init: function(dir, cb) {
+    dirToJson(dir, function(err, dirs) {
+      if (err) {
+        throw err
+      } else {
+        cb(dirs)
+      }
     })
   },
   mk: function(name, cb) {
@@ -54,61 +43,4 @@ module.exports = {
       })
     })
   }
-}
-
-function mapDir (target, data, newDir, cb) {
-  //@TODO: Implement filesystem unit tests.
-
-  var counter = 0,
-      max = data.length,
-      done = false
-
-  data.map((item) => {
-
-    // Define the properties we care about
-    var name, uri, type
-    name = item
-    uri = path.join(target, name)
-
-    // Determine type
-    fs.stat(uri, (err, stats) => {
-      counter ++
-      var diskItem = { }
-      if (stats.isFile()) {
-        type = mime.lookup(uri)
-        if (type === 'text/gpg') {
-          diskItem = {
-            'name': name.replace(/\.[^/.]+$/, ''),
-            'uri': uri,
-            'type': type,
-            'created': stats.ctime,
-            'modified': stats.mtime
-          }
-          newDir.files.push(diskItem)
-          if (counter === max) {
-            done = true
-            console.log(newDir)
-            cb(newDir)
-          }
-        }
-      }
-      if (stats.isDirectory()) {
-        diskItem = {
-          'name': name,
-          'uri': uri,
-          'type': 'directory',
-          'created': stats.ctime,
-          'modified': stats.mtime
-        }
-        newDir.subdirs.push(diskItem)
-        if (counter === max) {
-          done = true
-          console.log(newDir)
-          cb(newDir, done)
-        }
-      }
-
-    })
-
-  })
 }

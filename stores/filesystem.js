@@ -6,37 +6,25 @@ function filesystemStore (state, emitter) {
   var filesystem = []
 
   if (!state.filesystem) {
-    state.filesystem = {}
-    state.filesystem.dirs = filesystem
+    state.filesystem
   }
 
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
-    emitter.on('filesystem:addDir', addDir)
+    emitter.on('filesystem:init', init)
     state.filesystem.dirs = filesystem
-    // emitter.on('filesystem:refresh', refresh)
-    // emitter.on('filesystem:destroy', destroy)
 
-    if (state.filesystem.dirs.length === 0 ) {
-      emitter.emit('filesystem:addDir', '/')
-    }
+    emitter.emit('filesystem:init', state.global.path)
   })
 
-  function addDir(target) {
+  function init(target) {
     var filesystem = []
 
-    folders.ls(target, (dir, done) => {
-      console.log('📂 ', target, '   📂 ', dir.subdirs, ' | 📄 ', dir.files)
-      filesystem.push(dir)
-      state.filesystem.dirs = filesystem
+    folders.init(target, (dirs) => {
+      console.log('📂 ', dirs)
+      state.filesystem = dirs
       emitter.emit('render')
     })
-  }
-  
-  function removeDir(target) {
-    var filesystem = []
-    emitter.emit('log:debug', 'Removing dir')
-    emitter.emit('render')
   }
 }
