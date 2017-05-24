@@ -2,7 +2,7 @@ const path = require('path')
 const remote = window.require('electron').remote
 const { app, ipc, dialog } = remote.require('electron')
 
-const html = require('bel')
+const html = require('choo/html')
 const css = require('sheetify')
 const utils = require('../utils/utils')
 

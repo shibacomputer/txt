@@ -13,7 +13,8 @@ function filesystemStore (state, emitter) {
     emitter.emit('log:debug', 'Loading Filesystem')
 
     emitter.on('filesystem:init', init)
-    state.filesystem.dirs = filesystem
+
+    emitter.on('filesystem:open', open)
 
     emitter.emit('filesystem:init', state.global.path)
   })
@@ -26,5 +27,10 @@ function filesystemStore (state, emitter) {
       state.filesystem = dirs
       emitter.emit('render')
     })
+  }
+
+  function open(target) {
+
+    emitter.emit('render')
   }
 }
