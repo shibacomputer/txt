@@ -1,26 +1,29 @@
-const choo = require('choo')
-const mount = require ('choo/mount')
-const log = require('choo-log')
-
-const css = require('sheetify')
+const choo    = require('choo'),
+      expose  = require('choo-expose'),
+      log     = require('choo-log'),
+      persist = require('choo-persist'),
+      css     = require('sheetify')
 
 // Setup global CSS
-css('tachyons')
-css('./css/color.css')
-css('./css/frame.css')
+css('./css/defs.css')
 css('./css/common.css')
 css('./css/editor.css')
 
 const app = choo()
+
+// App setup.
+app.use(persist())
 app.use(log())
+app.use(expose())
 
-app.model(require('./models/global')())
-app.model(require('./models/filesystem')())
-app.model(require('./models/note')())
+// Stores
+app.use(require('./stores/global'))
+app.use(require('./stores/filesystem'))
+app.use(require('./stores/keychain'))
+app.use(require('./stores/note'))
 
-app.router({ default: '/' }, [
-  ['/', require('./windows/main')],
-  ['/setup', require('./windows/setup')]
-])
+// State setup.
+app.route('/', require('./windows/main'))
+app.route('/setup', require('./windows/setup'))
 
-mount('body', app.start())
+app.mount('body')

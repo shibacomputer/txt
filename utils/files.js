@@ -9,15 +9,17 @@ const fs = require('fs')
 
 module.exports = {
 
+  // :: open
+  // Asynchronously opens a file. Assumes a valid path, but still checks for
+  // the file's existence.
   open: function(file, cb) {
-    var newFile = { }
     fs.stat(file, (err, stats) => {
       if (err) {
-        throw err
+        cb(err)
       } else {
           fs.readFile(file, (err, data) => {
           if (err) {
-            throw err
+            cb(err)
           } else  {
             utils.decrypt(data, (plaintext) => {
               cb(plaintext)
@@ -27,27 +29,33 @@ module.exports = {
       }
     })
   },
-  write: function(data, location) {
-    utils.getPath(location, (target) => {
+
+  // :: write
+  // Write to disk. We assume a valid path but we still check to ensure we
+  // have permission to write.
+  write: function(data, cb) {
+    utils.getPath(data.path, (target) => {
       fs.stat(target, (err, stats) => {
         if (err) {
-          throw err
+          cb(err)
         } else {
           fs.writeFile(target, data, (err) => {
             if (err) {
-              throw err
+              cb(err)
             } else {
-              console.log(data)
-              console.log('SAVED')
+              cb()
             }
           })
         }
       })
     })
+  },
+
+  // :: delete
+  del: function(file, cb) {
+    var status = false
+    utils.getPath(file, (target) => {
+      fs.dele
+    })
   }
-}
-
-function mapFile (target, data, newFile, cb) {
-  //@TODO: Make file unit tests
-
 }

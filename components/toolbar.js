@@ -1,12 +1,11 @@
-'use strict'
-
-const html = require('yo-yo')
+const html = require('choo/html')
 const css = require('sheetify')
-const button = require('./button')
 
 const base = css`
   :host {
-    flex: 0 2.5rem;
+    width: 100%;
+    height: 2.5rem;
+    box-sizing: border-box;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -17,20 +16,38 @@ const base = css`
   }
 `
 
-module.exports = (props) => {
+module.exports = (elements, title, emit) => {
+  function build (pos) {
+    if (elements && elements[0]) {
+      return html `
+        <ul class="${pos}">
+          ${ elements[0].map( (item) => {
+            return html`
+              <li>
+                ${ item }
+              </li>
+              `
+            })}
+        </ul>
+      `
+    }
+  }
+
+  function center() {
+    if (title) {
+      return html`
+        <nav class="center">
+          ${ title }
+        </nav>
+      `
+    }
+  }
+
   return html`
     <header class="${base}">
-      <nav class="left">
-        ${props.left}
-      </nav>
-
-      <nav class="mid">
-        ${props.mid}
-      </nav>
-
-      <nav class="right">
-        ${props.right}
-      </nav>
+      ${ build('left') }
+      ${ center() }
+      ${ build('right') }
     </header>
   `
 }
