@@ -35,11 +35,6 @@ function noteStore (state, emitter) {
 
   function create (note) {
     emitter.emit('log:debug', 'Creating note')
-
-    spin()
-
-    new Date()
-
   }
 
   function load (note) {
