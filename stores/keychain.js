@@ -23,6 +23,10 @@ function keychainStore (state, emitter) {
     emitter.on('keychain:destroy', destroy)
   })
 
+  // :: create
+  // Generates they keychain element, saves it to the user's keychain, and
+  // then sets a preference allowing for a saved state.
+  // @params: phrase (string):   The passphrase string supplied by the user.
   function create (phrase) {
     state.keychain.save = false
     state.keychain.available = false
@@ -36,6 +40,9 @@ function keychainStore (state, emitter) {
     emitter.emit('global:auth')
   }
 
+  // :: update
+  // Update then save the existing authentication in the user's keychain.
+  // @params: phrase (string):  The new passphrase supplied by the user.
   function update (phrase) {
     state.keychain.save = false
     state.keychain.available = false
@@ -46,6 +53,9 @@ function keychainStore (state, emitter) {
     state.keychain.available = true
   }
 
+  // :: destroy
+  // Destroys the keychain element and tells the user's keychain that the app
+  // cannot be auto-logged in again.
   function destroy () {
     state.keychain.save = false
     state.keychain.available = false
