@@ -24,7 +24,7 @@ function sidebar (state, emit) {
       max-width: 20rem;
       border-radius: 5px;
       border-right: 1px solid rgba(255, 255, 255, 0.05);
-      background-color: --var(k);
+
       display: flex;
       flex-direction: column;
     }
@@ -38,7 +38,7 @@ function sidebar (state, emit) {
 
   // This is where the decision is made to display a sidebar or empty state
   function aSidebar () {
-    if(state.filesystem.children.length > 0) {
+    if(state.filesystem.children) {
       return fileSidebar(state.filesystem)
     } else {
       return emptySidebar()
@@ -135,12 +135,12 @@ function sidebar (state, emit) {
             if(item.type === 'directory') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-type="dir" class="${fitem}" onclick=${ open }">
-                    <div data-uri="${item.path}" data-type="dir" class="${flabel}">
-                      <svg data-uri="${item.path}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
+                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem}" onclick=${ open }">
+                    <div data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${flabel}">
+                      <svg data-uri="${item.path}" data-status="${item.open}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
                         <use xlink:href="#txt-folder" />
                       </svg>
-                      <span data-uri="${item.path}" data-type="dir" class="${label}">
+                      <span data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${label}">
                         ${item.name}
                       </span>
                     </div>
@@ -244,14 +244,10 @@ function sidebar (state, emit) {
 
   function open (e) {
     var type = e.target.getAttribute('data-type')
+    var status = e.target.getAttribute('data-status')
     var target = e.target.getAttribute('data-uri')
 
-    if (type === 'dir') {
-      emit('filesystem:open', target)
-    }
-
-    if (type === 'file') {
-      emit('note:load', target)
-    }
+    if (type === 'dir') emit('filesystem:open', target)
+    if (type === 'file') emit('note:open', target)
   }
 }
