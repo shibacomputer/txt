@@ -149,7 +149,7 @@ function sidebar (state, emit) {
                 </li>
               `
             }
-            if(item.type === 'file') {
+            if(item.type === 'file' && item.mime === 'text/gpg') {
               return html`
                 <li>
                   <button data-uri="${item.path}" data-type="file" class="${fitem}" onclick=${ open }>
