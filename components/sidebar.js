@@ -140,11 +140,11 @@ function sidebar (state, emit) {
       <ul class="${fblock}">
         ${
           items.map ( (item) => {
-            var highlight = selected === item.path
+            item.selected = selected === item.path
             if(item.type === 'directory') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem} ${ highlight? fopen : null }" onclick=${ open }">
+                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem} ${ item.selected? fopen : null }" onclick=${ open }">
                     <div data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${flabel}">
                       <svg data-uri="${item.path}" data-status="${item.open}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
                         <use xlink:href="#txt-folder" />
@@ -161,7 +161,7 @@ function sidebar (state, emit) {
             if(item.type === 'file' && item.mime === 'text/gpg') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-type="file" class="${fitem} ${ highlight? fopen : null }" onclick=${ open }>
+                  <button data-uri="${item.path}" data-type="file" class="${fitem} ${ item.selected? fopen : null }" onclick=${ open }>
                     <div data-uri="${item.path}" data-type="file" class="${flabel}">
                       <svg data-uri="${item.path}" data-type="file" viewBox="0 0 24 24" class="${icon}">
                         <use xlink:href="#txt-file" />
