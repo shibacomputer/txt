@@ -10,6 +10,8 @@ const toolbar = require('./toolbar')
 
 module.exports = sidebar
 
+var selected = null
+
 function sidebar (state, emit) {
   emit('log:debug', 'Setting up a sidebar')
 
@@ -79,7 +81,9 @@ function sidebar (state, emit) {
   function folder(items) {
     const fblock = css`
       :host {
-        padding-left: 12px;
+        list-style:none;
+        margin:0;
+        padding:0;
       }
     `
     const fitem = css`
@@ -88,10 +92,11 @@ function sidebar (state, emit) {
         font-family: 'NovelMono', monospace;
         font-size: 12px;
         width: 100%;
-        padding: 0.35rem 0rem 0.35rem 0rem;
+        padding: 0.3rem 0rem 0.3rem 0rem;
         background: none;
         border: none;
         color: var(--c);
+        box-sizing: border-box;
       }
       :host.current {
         outline: none;
@@ -107,7 +112,6 @@ function sidebar (state, emit) {
         color: var(--k);
       }
     `
-
     const label = css`
       :host {
         margin-top: 3px;
@@ -119,7 +123,6 @@ function sidebar (state, emit) {
         flex-direction: row;
       }
     `
-
     const icon = css`
       :host {
         width: 1rem;
@@ -127,15 +130,21 @@ function sidebar (state, emit) {
         margin-right: 0.5rem;
       }
     `
-    console.log(items)
+    const fopen = css`
+      :host {
+        background-color: rgba(0,0,0,0.25);
+      }
+    `
+
     return html`
       <ul class="${fblock}">
         ${
           items.map ( (item) => {
+            var highlight = selected === item.path
             if(item.type === 'directory') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem}" onclick=${ open }">
+                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem} ${ highlight? fopen : null }" onclick=${ open }">
                     <div data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${flabel}">
                       <svg data-uri="${item.path}" data-status="${item.open}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
                         <use xlink:href="#txt-folder" />
@@ -152,7 +161,7 @@ function sidebar (state, emit) {
             if(item.type === 'file' && item.mime === 'text/gpg') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-type="file" class="${fitem}" onclick=${ open }>
+                  <button data-uri="${item.path}" data-type="file" class="${fitem} ${ highlight? fopen : null }" onclick=${ open }>
                     <div data-uri="${item.path}" data-type="file" class="${flabel}">
                       <svg data-uri="${item.path}" data-type="file" viewBox="0 0 24 24" class="${icon}">
                         <use xlink:href="#txt-file" />
@@ -220,7 +229,6 @@ function sidebar (state, emit) {
         outline: white;
       }
     `
-
     return html `
       <nav class="${base}">
         <svg style="width: 64px; height: 64px;" viewBox="0 0 64 64" type="image/svg+xml" class="c">
@@ -246,6 +254,8 @@ function sidebar (state, emit) {
     var type = e.target.getAttribute('data-type')
     var status = e.target.getAttribute('data-status')
     var target = e.target.getAttribute('data-uri')
+
+    selected = target
 
     if (type === 'dir') emit('filesystem:open', target)
     if (type === 'file') emit('note:open', target)
