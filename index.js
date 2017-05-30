@@ -65,6 +65,8 @@ const lockWindowConfig = {
 const opts = {
   debug: process.env.NODE_ENVIRONMENT !== 'production',
   verbose: true,
+  port: 8001,
+  host: 'localhost',
   live: true,
   stream: process.stdout,
   pushstate: true,
