@@ -3,7 +3,6 @@ const { shell } = remote.require('electron')
 
 const html = require('choo/html')
 const css = require('sheetify')
-const Mousetrap = require('mousetrap')
 
 // const button = require('./button')
 const file = require('../utils/files')
@@ -87,21 +86,6 @@ function sidebar (state, emit) {
       width: 1rem;
     }
   `
-
-  // Finally, set up some global key bindings
-
-  // Command N for new file
-  Mousetrap.bind('command+n', () => {
-    console.log('New note')
-  })
-
-  Mousetrap.bind('command+shift+n', () => {
-    console.log('New directory')
-  })
-
-  Mousetrap.bind('command+backspace', () => {
-    console.log('Delete from sidebar')
-  })
 
   return html`
     <aside class="${base}">
