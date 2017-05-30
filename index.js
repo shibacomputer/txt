@@ -100,6 +100,11 @@ app.on('ready', () => {
   setupWin = window.createWindow(setupWindowConfig)
   lockWin = window.createWindow(lockWindowConfig)
 
+  // Setup menus
+  const commonMenu = Menu.buildFromTemplate(menuConfig.commonMenu)
+  Menu.setApplicationMenu(commonMenu)
+
+
   // Start the dev server
   var server = budo('app.js', opts)
 
