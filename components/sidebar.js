@@ -3,6 +3,7 @@ const { shell } = remote.require('electron')
 
 const html = require('choo/html')
 const css = require('sheetify')
+const Mousetrap = require('mousetrap')
 
 // const button = require('./button')
 const file = require('../utils/files')
@@ -20,15 +21,14 @@ function sidebar (state, emit) {
   // Use emit 'render' in stores/filesystem.js to re-render the sidebar.
   const base = css`
     :host {
-      height: 100vh;
-      width: 25vw;
-      min-width: 12rem;
-      max-width: 20rem;
       border-radius: 5px;
       border-right: 1px solid rgba(255, 255, 255, 0.05);
-
       display: flex;
       flex-direction: column;
+      height: 100vh;
+      max-width: 20rem;
+      min-width: 12rem;
+      width: 25vw;
     }
   `
 
@@ -58,9 +58,11 @@ function sidebar (state, emit) {
     :host a:before {
       content: '';
       height: 1.75rem;
-      position: absolute;
       left: 0;
-      right: 0;
+      max-width: 20rem;
+      min-width: 12rem;
+      position: fixed;
+      width: 25vw;
       z-index: 1;
     }
     :host a:hover:before {
@@ -73,8 +75,10 @@ function sidebar (state, emit) {
       align-items: center;
       display: flex;
       flex-direction: row;
+      padding-right: 0.5rem;
       position: relative;
       z-index: 5;
+      white-space: nowrap;
     }
     :host svg {
       height: 1rem;
@@ -83,6 +87,21 @@ function sidebar (state, emit) {
       width: 1rem;
     }
   `
+
+  // Finally, set up some global key bindings
+
+  // Command N for new file
+  Mousetrap.bind('command+n', () => {
+    console.log('New note')
+  })
+
+  Mousetrap.bind('command+shift+n', () => {
+    console.log('New directory')
+  })
+
+  Mousetrap.bind('command+backspace', () => {
+    console.log('Delete from sidebar')
+  })
 
   return html`
     <aside class="${base}">
@@ -122,6 +141,7 @@ function sidebar (state, emit) {
         flex: 1;
         overflow: scroll;
         overflow-x: scroll;
+
       }
     `
 
