@@ -4,7 +4,7 @@ const css = require('sheetify')
 const base = css`
   :host {
     width: 100%;
-    height: 2.5rem;
+    height: 2.15rem;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
