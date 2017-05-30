@@ -32,6 +32,58 @@ function sidebar (state, emit) {
     }
   `
 
+  // Load the dir items once.
+  const dirItem = css`
+    :host {
+      position: relative;
+    }
+    :host a + ul {
+      padding-left: 1rem;
+    }
+    :host, :host ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    :host a {
+      color: var(--c);
+      display: flex;
+      flex-direction: row;
+      font-family: 'NovelMono', monospace;
+      font-size: 12px;
+      height: 1.75rem;
+      padding-left: 1rem;
+      z-index: 5;
+    }
+    :host a:before {
+      content: '';
+      height: 1.75rem;
+      position: absolute;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+    :host a:hover:before {
+      background-color: rgba(0,0,0,0.15);
+    }
+    :host a.highlight:before {
+      background-color: rgba(0,0,0,0.25)
+    }
+    :host a div {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      z-index: 5;
+    }
+    :host svg {
+      height: 1rem;
+      margin-right: 0.45rem;
+      margin-top: -4px;
+      width: 1rem;
+    }
+  `
+
   return html`
     <aside class="${base}">
       ${ aSidebar() }
@@ -41,7 +93,11 @@ function sidebar (state, emit) {
   // This is where the decision is made to display a sidebar or empty state
   function aSidebar () {
     if(state.filesystem) {
-      return fileSidebar(state.filesystem)
+      if(state.filesystem.children.length > 0) {
+        return fileSidebar(state.filesystem)
+      } else {
+        return emptySidebar() //Make sure we handle the init filesystem.
+      }
     } else {
       return emptySidebar()
     }
@@ -61,9 +117,11 @@ function sidebar (state, emit) {
 
     const view = css`
       :host {
+        -webkit-app-region: no-drag;
         -webkit-overflow-scrolling: touch;
-        overflow: scroll;
         flex: 1;
+        overflow: scroll;
+        overflow-x: scroll;
       }
     `
 
@@ -78,58 +136,10 @@ function sidebar (state, emit) {
     `
   }
 
+  // : tree
+  // Create a directory tree and iterate over its returned subdirectories.
+  // @params: items (object):   A filesystem object
   function tree(items) {
-
-    const dirItem = css`
-      :host {
-        position: relative;
-      }
-      :host a + ul {
-        padding-left: 1rem;
-      }
-      :host, :host ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-      :host a {
-        color: var(--c);
-        display: flex;
-        flex-direction: row;
-        font-family: 'NovelMono', monospace;
-        font-size: 12px;
-        height: 1.75rem;
-        padding-left: 1rem;
-        z-index: 5;
-      }
-      :host a:before {
-        content: '';
-        height: 1.75rem;
-        position: absolute;
-        left: 0;
-        right: 0;
-        z-index: 1;
-      }
-      :host a:hover:before {
-        background-color: rgba(0,0,0,0.15);
-      }
-      :host a.highlight:before {
-        background-color: rgba(0,0,0,0.25)
-      }
-      :host a div {
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-        position: relative;
-        z-index: 5;
-      }
-      :host svg {
-        height: 1rem;
-        margin-right: 0.5rem;
-        margin-top: -4px;
-        width: 1rem;
-      }
-    `
 
     return html`
       <ul class="${dirItem}">
@@ -177,7 +187,6 @@ function sidebar (state, emit) {
 
   // No filesystem, no sidebar
   function emptySidebar () {
-
     const base = css`
       :host {
         height: 100vh;
