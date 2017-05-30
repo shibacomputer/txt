@@ -40,7 +40,7 @@ function sidebar (state, emit) {
 
   // This is where the decision is made to display a sidebar or empty state
   function aSidebar () {
-    if(state.filesystem.children) {
+    if(state.filesystem) {
       return fileSidebar(state.filesystem)
     } else {
       return emptySidebar()
@@ -59,7 +59,7 @@ function sidebar (state, emit) {
       }
     `
 
-    const browser = css`
+    const view = css`
       :host {
         -webkit-overflow-scrolling: touch;
         overflow: scroll;
@@ -70,107 +70,102 @@ function sidebar (state, emit) {
     return html`
       <nav class="${base}">
         ${ toolbar () }
-        <div class="${browser}">
-        ${ folder(filesystem.children) }
+        <div class="${view}">
+        ${ tree(filesystem.children) }
         </div>
         ${ toolbar () }
       </nav>
     `
   }
 
-  function folder(items) {
-    const fblock = css`
+  function tree(items) {
+
+    const dirItem = css`
       :host {
-        list-style:none;
-        margin:0;
-        padding:0;
+        position: relative;
       }
-    `
-    const fitem = css`
-      :host {
-        text-align: left;
-        font-family: 'NovelMono', monospace;
-        font-size: 12px;
-        width: 100%;
-        padding: 0.3rem 0rem 0.3rem 0rem;
-        background: none;
-        border: none;
+      :host a + ul {
+        padding-left: 1rem;
+      }
+      :host, :host ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      :host a {
         color: var(--c);
-        box-sizing: border-box;
-      }
-      :host.current {
-        outline: none;
-        background-color: var(--b);
-        color: var(--k);
-      }
-      :host:focus {
-        outline: none;
-      }
-      :host.file:focus {
-        outline: none;
-        background-color: var(--c);
-        color: var(--k);
-      }
-    `
-    const label = css`
-      :host {
-        margin-top: 3px;
-      }
-    `
-    const flabel = css`
-      :host {
         display: flex;
         flex-direction: row;
+        font-family: 'NovelMono', monospace;
+        font-size: 12px;
+        height: 1.75rem;
+        padding-left: 1rem;
+        z-index: 5;
       }
-    `
-    const icon = css`
-      :host {
-        width: 1rem;
+      :host a:before {
+        content: '';
+        height: 1.75rem;
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: 1;
+      }
+      :host a:hover:before {
+        background-color: rgba(0,0,0,0.15);
+      }
+      :host a.highlight:before {
+        background-color: rgba(0,0,0,0.25)
+      }
+      :host a div {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        z-index: 5;
+      }
+      :host svg {
         height: 1rem;
         margin-right: 0.5rem;
-      }
-    `
-    const fopen = css`
-      :host {
-        background-color: rgba(0,0,0,0.25);
+        margin-top: -4px;
+        width: 1rem;
       }
     `
 
     return html`
-      <ul class="${fblock}">
+      <ul class="${dirItem}">
         ${
           items.map ( (item) => {
             item.selected = selected === item.path
             if(item.type === 'directory') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${fitem} ${ item.selected? fopen : null }" onclick=${ open }">
-                    <div data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${flabel}">
-                      <svg data-uri="${item.path}" data-status="${item.open}" data-type="dir" viewBox="0 0 24 24" class="${icon}">
+                  <a data-uri="${item.path}" data-open="${item.open}" data-type="dir" class="${item.selected? 'highlight' : null}" onclick=${open}>
+                    <div data-uri="${item.path}" data-type="dir">
+                      <svg data-uri="${item.path}" data-type="dir" viewBox="0 0 24 24">
                         <use xlink:href="#txt-folder" />
                       </svg>
-                      <span data-uri="${item.path}" data-status="${item.open}" data-type="dir" class="${label}">
+                      <span data-uri="${item.path}" data-type="dir">
                         ${item.name}
                       </span>
                     </div>
-                  </button>
-                  ${ item.open ? folder(item.children) : null }
+                  </a>
+                  ${ item.open ? tree(item.children) : null }
                 </li>
               `
             }
             if(item.type === 'file' && item.mime === 'text/gpg') {
               return html`
                 <li>
-                  <button data-uri="${item.path}" data-type="file" class="${fitem} ${ item.selected? fopen : null }" onclick=${ open }>
-                    <div data-uri="${item.path}" data-type="file" class="${flabel}">
-                      <svg data-uri="${item.path}" data-type="file" viewBox="0 0 24 24" class="${icon}">
+                  <a data-uri="${item.path}" data-type="file" class="${item.selected? 'highlight' : null}" onclick=${open}>
+                    <div data-uri="${item.path}" data-type="file">
+                      <svg data-uri="${item.path}" data-type="file" viewBox="0 0 24 24">
                         <use xlink:href="#txt-file" />
                       </svg>
-                      <span data-uri="${item.path}" data-type="dir" class="${label}">
+                      <span data-uri="${item.path}" data-type="dir">
                         ${item.name}
                       </span>
                     </div>
-                  </button>
+                  </a>
                 </li>
               `
             }
