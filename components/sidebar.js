@@ -48,8 +48,9 @@ function sidebar (state, emit) {
       color: var(--c);
       display: flex;
       flex-direction: row;
-      font-family: 'NovelMono', monospace;
-      font-size: 12px;
+      font-family: 'FiraCode', monospace;
+      font-style: normal;
+      font-size: 11px;
       height: 1.75rem;
       padding-left: 1rem;
       z-index: 5;
@@ -214,7 +215,7 @@ function sidebar (state, emit) {
       :host {
         padding: 1rem;
         font-size: 13px;
-        font-family: "NovelMono", monospace;
+        font-family: "FiraCode", monospace;
         border: none;
         padding: 0.85rem 1rem 0.65rem 1rem;
       }
@@ -227,7 +228,7 @@ function sidebar (state, emit) {
       :host {
         padding: 0.25rem;
         font-size: 13px;
-        font-family: "NovelMono", monospace;
+        font-family: "FiraCode", monospace;
 
         background: none;
         border: none;

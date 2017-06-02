@@ -10,7 +10,7 @@ const base = css`
   :host {
     height: 100vh;
     padding: 1.5rem 1rem;
-    font-family: 'NovelMono';
+    font-family: 'FiraCode';
 
     display: flex;
     flex-direction: column;
@@ -64,7 +64,7 @@ const button = css`
   :host {
     font-size: 14px;
     padding: 0.85rem 1rem 0.65rem 1rem;
-    font-family: 'NovelMono';
+    font-family: 'FiraCode';
 
     border: none;
   }
@@ -101,7 +101,7 @@ const dirinput = css`
     background: none;
     font-size: 14px;
     padding: 0.85rem 1rem 0.65rem 1rem;
-    font-family: 'NovelMono';
+    font-family: 'FiraCode';
   }
 `
 
@@ -111,7 +111,7 @@ const input = css`
     background: none;
     font-size: 14px;
     padding: 0.85rem 1rem 0.65rem 1rem;
-    font-family: 'NovelMono';
+    font-family: 'FiraCode';
     font-weight: bold;
     outline: none;
   }
