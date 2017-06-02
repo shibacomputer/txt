@@ -57,7 +57,8 @@
     "prosemirror-transform": "^0.19.0",
     "prosemirror-view": "^0.19.1",
     "rimraf": "^2.6.1",
-    "sheetify": "6.0.0"
+    "sheetify": "6.0.0",
+    "trash": "^4.0.1"
   },
   "devDependencies": {
     "browserify": "^13.3.0",
