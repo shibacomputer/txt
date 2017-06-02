@@ -13,6 +13,7 @@ function filesystemStore (state, emitter) {
 
     emitter.on('filesystem:init', init)
     emitter.on('filesystem:open', open)
+    emitter.on('filesystem:destroy', destroy)
     emitter.on('filesystem:refresh', refresh)
     emitter.emit('filesystem:init', state.global.path)
   })
@@ -57,6 +58,27 @@ function filesystemStore (state, emitter) {
     }
   }
 
+  // :: destroy
+  // Deletes the selected file from the filesystem
+  // @params: target (string):      The path to the delete target.
+  function destroy(context) {
+    if (!context) context = state.filesystem.children
+
+    console.log('Finding item to delete 🗑')
+    context.filter( (f) => {
+      if (f.selected) {
+        folders.rm(f.path, (target) => {
+          console.log('❌ Found, deleted ❌', f.path)
+          emitter.emit('filesystem:init', state.global.path)
+          return
+        })
+      } else {
+        if (f.children && f.children.length > 0) {
+          destroy(f.children)
+        }
+      }
+    })
+  }
   // :: refresh
   // Refreshes the filesystem. This is called when Keyp adds a note, enters the
   // foreground, or otherwise needs to do a system refresh.
