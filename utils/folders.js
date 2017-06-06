@@ -5,7 +5,7 @@ const dirToJson = require('dir-to-json')
 const path = require('path')
 
 const fs = require('fs')
-const rimraf = require('rimraf')
+const trash = require('trash')
 
 mime.define({ 'text/gpg': ['gpg'] })
 
@@ -38,7 +38,7 @@ module.exports = {
   },
   rm: function(name, cb) {
     utils.getPath(name, (target) => {
-      rimraf(target, () => {
+      trash(target).then(() => {
         cb(name)
       })
     })
