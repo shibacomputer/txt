@@ -8,6 +8,7 @@ module.exports = filesystemStore
 function filesystemStore (state, emitter) {
   var filesystem = []
 
+
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
@@ -44,6 +45,7 @@ function filesystemStore (state, emitter) {
         // Account for top level results.
         if (f.path === target) {
           f.open = !f.open
+          // state.system.select = true
           emitter.emit('render')
           return
         } else { // Recursive sub directories.
@@ -68,7 +70,7 @@ function filesystemStore (state, emitter) {
     context.filter( (f) => {
       if (f.selected) {
         folders.rm(f.path, (target) => {
-          console.log('❌ Found, deleted ❌', f.path)
+          // state.system.select = false
           emitter.emit('filesystem:init', state.global.path)
           return
         })
