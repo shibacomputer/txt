@@ -50,6 +50,16 @@ const commonMenu = [
         type: 'separator'
       },
       {
+        label: 'Delete from Notebook',
+        accelerator: 'CmdOrCtrl+Shift+backspace',
+        click (item, focusedWindow, event) {
+          console.log('Export')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
         label: 'Export…',
         accelerator: 'CmdOrCtrl+Shift+E',
         click (item, focusedWindow, event) {
