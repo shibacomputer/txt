@@ -17,7 +17,8 @@ app.use(log())
 app.use(expose())
 
 // Stores
-app.use(require('./stores/global'))
+app.use(require('./stores/system')) // This is handling the UI.
+app.use(require('./stores/global')) // This is for the app's global state.
 app.use(require('./stores/filesystem'))
 app.use(require('./stores/keychain'))
 app.use(require('./stores/note'))
