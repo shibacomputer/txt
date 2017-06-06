@@ -71,6 +71,7 @@ function filesystemStore (state, emitter) {
       if (f.selected) {
         folders.rm(f.path, (target) => {
           // state.system.select = false
+          emitter.emit('ui:menu:selectActive', false)
           emitter.emit('filesystem:init', state.global.path)
           return
         })

@@ -23,7 +23,7 @@ function sidebar (state, emit) {
   Mousetrap.bind('backspace', function() {
     emit('filesystem:destroy')
   })
-  
+
   const base = css`
     :host {
       border-radius: 5px;
@@ -271,7 +271,7 @@ function sidebar (state, emit) {
     var target = e.target.getAttribute('data-uri')
 
     selected = target
-
+    emit('ui:menu:selectActive', true)
     if (type === 'dir') emit('filesystem:open', target)
     if (type === 'file') emit('note:open', target)
   }
