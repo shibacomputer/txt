@@ -7,7 +7,6 @@ const css = require('sheetify')
 // const button = require('./button')
 const file = require('../utils/files')
 const toolbar = require('./toolbar')
-const Mousetrap = require('mousetrap')
 
 module.exports = sidebar
 
@@ -19,10 +18,6 @@ function sidebar (state, emit) {
   // First we set up the base sidebar.
   // This allows for a simple decision tree about which sidebar to show.
   // Use emit 'render' in stores/filesystem.js to re-render the sidebar.
-
-  Mousetrap.bind('backspace', function() {
-    emit('filesystem:destroy')
-  })
 
   const base = css`
     :host {
