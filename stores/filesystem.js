@@ -15,7 +15,7 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:init', init)
     emitter.on('filesystem:open', open)
     emitter.on('filesystem:destroy', destroy)
-    emitter.on('filesystem:refresh', refresh)
+    emitter.on('filesystem:make', make)
     emitter.emit('filesystem:init', state.global.path)
   })
   // :: init
@@ -61,8 +61,8 @@ function filesystemStore (state, emitter) {
   }
 
   // :: destroy
-  // Deletes the selected file from the filesystem
-  // @params: target (string):      The path to the delete target.
+  // Deletes the selected file from the filesystem.
+  // @params: context (string):      The path to the delete target.
   function destroy(context) {
     if (!context) context = state.filesystem.children
 
@@ -82,10 +82,13 @@ function filesystemStore (state, emitter) {
       }
     })
   }
-  // :: refresh
-  // Refreshes the filesystem. This is called when Keyp adds a note, enters the
-  // foreground, or otherwise needs to do a system refresh.
-  function refresh() {
 
+  // :: new
+  // Create a new folder in the filesystem.
+  // @params: context (string):    The parent of the new directory.
+  function make(context) {
+    folders.mk(context, () => {
+      emitter.emit('filesystem:init', state.global.path)
+    })
   }
 }

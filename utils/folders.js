@@ -1,11 +1,9 @@
-const utils = require('./utils')
+const fs = require('fs')
 const mime = require('mime')
+const trash = require('trash')
 const dirToJson = require('dir-to-json')
 
-const path = require('path')
-
-const fs = require('fs')
-const trash = require('trash')
+const utils = require('./utils')
 
 mime.define({ 'text/gpg': ['gpg'] })
 
