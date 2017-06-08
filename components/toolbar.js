@@ -12,7 +12,6 @@ module.exports = (left, right, title, emit) => {
       font-size: 12px;
       height: 2.15rem;
       justify-content: space-between;
-      padding: 0 0.5rem;
       width: 100%;
     }
     :host ul {
@@ -23,6 +22,20 @@ module.exports = (left, right, title, emit) => {
     :host .group {
       display: flex;
       flex-direction: row;
+      flex-basis: 33%;
+    }
+    :host .left {
+      justify-content: flex-start;
+    }
+    :host .center {
+      color: var(--c);
+      justify-content: center;
+    }
+    :host .right {
+      justify-content: flex-end;
+    }
+    :host .right li {
+      margin-left: 8px;
     }
   `
   function build (pos) {
@@ -30,14 +43,14 @@ module.exports = (left, right, title, emit) => {
     return html`
       <div class="${pos} group">
         <ul>
-          ${ typeof items === undefined ? null : items.map( (item) => {
+          ${ items? items.map( (item) => {
             console.log(item)
               return html`
                 <li>
                   ${ item }
                 </li>
               `
-            })
+            }) : null
           }
         </ul>
       </div>
@@ -56,9 +69,9 @@ module.exports = (left, right, title, emit) => {
 
   return html`
     <header class="${base}">
-      ${ left? build('left') : null }
+      ${ build('left') }
       ${ center() }
-      ${ right? build('right') : null }
+      ${ build('right') }
     </header>
   `
 }

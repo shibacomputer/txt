@@ -59,7 +59,7 @@ function sidebar (state, emit) {
     :host a:before {
       content: '';
       height: 1.75rem;
-      left: 0;
+      left: 1px;
       max-width: 20rem;
       min-width: 12rem;
       position: fixed;
@@ -138,11 +138,11 @@ function sidebar (state, emit) {
           [
             button({
               name: 'new',
-              classes: 'c'
-            }),
-            button({
-              name: 'new',
-              classes: 'c'
+              classes: 'c',
+              icon: 'new-folder',
+              click: function() {
+                emit('filesystem:make', selected)
+              }
             })
           ],
           'Keyp',

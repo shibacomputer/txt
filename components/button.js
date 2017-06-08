@@ -5,11 +5,18 @@ module.exports = (props, click) => {
 
   const base = css`
     :host {
-      background: var(--c);
       border: none;
+      background: none;
       color: var(--c);
+      padding: 0;
+    }
+    :host svg {
+      fill: currentColor;
       height: 1.5rem;
       width: 1.5rem;
+    }
+    :host:active {
+      color: var(--w);
     }
   `
 
@@ -17,7 +24,7 @@ module.exports = (props, click) => {
 
   return html`
     <button onclick=${props.click} class=${base} name=${props.name}>
-      <svg viewBox="0 0 24 24" class=${base}>
+      <svg viewBox="0 0 24 24">
         <use xlink:href="#txt-${props.icon}" />
       </svg>
     </button>
