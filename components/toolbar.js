@@ -1,42 +1,53 @@
 const html = require('choo/html')
 const css = require('sheetify')
 
-const base = css`
-  :host {
-    width: 100%;
-    height: 2.15rem;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background-color: rgba(0,0,0,0.1);
-    padding: 0 0.5rem;
-    font-size: 12px;
-  }
-`
-
-module.exports = (elements, title, emit) => {
-  function build (pos) {
-    if (elements && elements[0]) {
-      return html `
-        <ul class="${pos}">
-          ${ elements[0].map( (item) => {
-            return html`
-              <li>
-                ${ item }
-              </li>
-              `
-            })}
-        </ul>
-      `
+module.exports = (left, right, title, emit) => {
+  const base = css`
+    :host {
+      align-items: center;
+      background-color: rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: row;
+      font-size: 12px;
+      height: 2.15rem;
+      justify-content: space-between;
+      padding: 0 0.5rem;
+      width: 100%;
     }
+    :host ul {
+      display: flex;
+      flex-direction: row;
+      list-style: none;
+    }
+    :host .group {
+      display: flex;
+      flex-direction: row;
+    }
+  `
+  function build (pos) {
+    var items = pos === 'left'? left : right
+    return html`
+      <div class="${pos} group">
+        <ul>
+          ${ typeof items === undefined ? null : items.map( (item) => {
+            console.log(item)
+              return html`
+                <li>
+                  ${ item }
+                </li>
+              `
+            })
+          }
+        </ul>
+      </div>
+    `
   }
 
   function center() {
     if (title) {
       return html`
-        <nav class="center">
+        <nav class="center group">
           ${ title }
         </nav>
       `
@@ -45,9 +56,9 @@ module.exports = (elements, title, emit) => {
 
   return html`
     <header class="${base}">
-      ${ build('left') }
+      ${ left? build('left') : null }
       ${ center() }
-      ${ build('right') }
+      ${ right? build('right') : null }
     </header>
   `
 }

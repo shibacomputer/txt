@@ -4,7 +4,7 @@ const { shell } = remote.require('electron')
 const html = require('choo/html')
 const css = require('sheetify')
 
-// const button = require('./button')
+const button = require('./button')
 const file = require('../utils/files')
 const toolbar = require('./toolbar')
 
@@ -133,7 +133,20 @@ function sidebar (state, emit) {
 
     return html`
       <nav class="${base}">
-        ${ toolbar () }
+        ${ toolbar (
+          null,
+          [
+            button({
+              name: 'new',
+              classes: 'c'
+            }),
+            button({
+              name: 'new',
+              classes: 'c'
+            })
+          ],
+          'Keyp',
+          emit) }
         <div class="${view}">
         ${ tree(filesystem.children) }
         </div>
@@ -142,7 +155,7 @@ function sidebar (state, emit) {
     `
   }
 
-  // : tree
+  // :: tree
   // Create a directory tree and iterate over its returned subdirectories.
   // @params: items (object):   A filesystem object
   function tree(items) {

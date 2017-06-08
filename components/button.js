@@ -1,20 +1,23 @@
-'use strict'
-
 const html = require('choo/html')
-const css = require('yo-css')
+const css = require('sheetify')
 
 module.exports = (props, click) => {
+
+  const base = css`
+    :host {
+      background: var(--c);
+      border: none;
+      color: var(--c);
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+  `
+
   if (typeof click === 'function') props.click = click
 
-  const style = {
-    fill: 'currentColor',
-    width: '1.5rem',
-    height: '1.5rem',
-  }
-
   return html`
-    <button onclick=${props.click} class=${props.classes} name=${props.name}>
-      <svg viewBox="0 0 24 24" style=${css(style)}>
+    <button onclick=${props.click} class=${base} name=${props.name}>
+      <svg viewBox="0 0 24 24" class=${base}>
         <use xlink:href="#txt-${props.icon}" />
       </svg>
     </button>
