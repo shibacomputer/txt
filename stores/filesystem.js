@@ -16,6 +16,7 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:open', open)
     emitter.on('filesystem:destroy', destroy)
     emitter.on('filesystem:make', make)
+    emitter.on('filesystem:rename', rename)
     emitter.emit('filesystem:init', state.global.path)
   })
   // :: init
@@ -82,12 +83,25 @@ function filesystemStore (state, emitter) {
       }
     })
   }
+  // :: rename
+  // Rename a folder from old name -> new name.
+  // @params: target (object):     The data for your old/new path
 
-  // :: new
+  function rename(target) {
+    folders.rn(target.oldPath, target.newPath, (err) => {
+      if (err) console.log(err)
+      else emitter.emit('filesystem:init', state.global.path)
+    })
+  }
+
+  // :: make
   // Create a new folder in the filesystem.
   // @params: context (string):    The parent of the new directory.
   function make(context) {
-    folders.mk(context, () => {
+    folders.mk(context, (err) => {
+      // if (err) {
+        // var retryPath = context +
+      // }
       emitter.emit('filesystem:init', state.global.path)
     })
   }

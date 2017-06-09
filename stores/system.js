@@ -17,7 +17,6 @@ function systemStore (state, emitter) {
   })
 
   function selectActive(bool) {
-    console.log('ui menu select ', bool)
     ui.menu.selectActive = bool
   }
 }

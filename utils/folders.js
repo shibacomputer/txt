@@ -24,12 +24,29 @@ module.exports = {
           console.log('📂 ‼️ Dir at path ', target, ' exists')
         } else {
           fs.mkdir(target, (err) => {
-            if (err) {
-              throw err
-            } else {
-              cb(name)
-            }
+            cb(err)
           })
+        }
+      })
+    })
+  },
+  rn: function(oldPath, newPath, cb) { // Remember the paths are relative.
+    utils.getPath(oldPath, (oldTarget) => {
+      fs.stat(oldTarget, (err, stats) => {
+        if (stats) {
+          utils.getPath(newPath, (newTarget) => {
+            fs.stat(newTarget, (err, stats) => {
+              if (stats) {
+                cb('File already exists') // @TODO: Do better work with errors
+              } else {
+                fs.rename(oldTarget, newTarget, (err) => {
+                  cb(err)
+                })
+              }
+            })
+          })
+        } else {
+          cb('Can\'t find target') // @TODO: Do better work with errors
         }
       })
     })

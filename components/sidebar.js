@@ -1,5 +1,5 @@
 const remote = window.require('electron').remote
-const { shell } = remote.require('electron')
+const { shell, dialog } = remote.require('electron')
 
 const html = require('choo/html')
 const css = require('sheetify')
@@ -41,6 +41,7 @@ function sidebar (state, emit) {
       padding-left: 1rem;
     }
     :host, :host ul {
+      color: var(--c);
       list-style: none;
       margin: 0;
       padding: 0;
@@ -72,9 +73,14 @@ function sidebar (state, emit) {
     :host a.highlight:before {
       background-color: rgba(0,0,0,0.25)
     }
+    :host a.editing {
+      color: var(--w);
+    }
+
     :host a div {
       align-items: center;
       display: flex;
+      flex-basis: 100%;
       flex-direction: row;
       padding-right: 0.5rem;
       position: relative;
@@ -86,6 +92,26 @@ function sidebar (state, emit) {
       margin-right: 0.45rem;
       margin-top: -4px;
       width: 1rem;
+    }
+
+    :host input {
+      background: none;
+      border: none;
+      box-sizing: border-box;
+      color: var(--w);
+      font-family: 'FiraCode', monospace;
+      font-style: normal;
+      font-size: 11px;
+      padding: 0;
+      outline: none;
+      width: auto;
+    }
+    :host input::selection {
+      background-color: var(--c);
+    }
+
+    :host .rename {
+      color: var(--w);
     }
   `
 
@@ -159,7 +185,6 @@ function sidebar (state, emit) {
   // Create a directory tree and iterate over its returned subdirectories.
   // @params: items (object):   A filesystem object
   function tree(items) {
-
     return html`
       <ul class="${dirItem}">
         ${
@@ -168,13 +193,16 @@ function sidebar (state, emit) {
             if(item.type === 'directory') {
               return html`
                 <li>
-                  <a data-uri="${item.path}" data-open="${item.open}" data-type="dir" class="${item.selected? 'highlight' : null}" onclick=${open}>
-                    <div data-uri="${item.path}" data-type="dir">
-                      <svg data-uri="${item.path}" data-type="dir" viewBox="0 0 24 24">
+                  <a data-uri=${item.path} data-open=${item.open} data-type="dir" class="${item.selected? 'highlight' : ''} ${item.editing? '' : 'editing'}" onclick=${open}>
+                    <div data-uri=${item.path} data-type="dir">
+                      <svg data-uri=${item.path} data-type="dir" viewBox="0 0 24 24">
                         <use xlink:href="#txt-folder" />
                       </svg>
-                      <span data-uri="${item.path}" data-type="dir">
-                        ${item.name}
+                      <span data-uri=${item.path} data-type="dir">
+                        ${ item.editing ?
+                          html`${item.name}` :
+                          html`<input type="text" data-uri=${item.path} data-type="dir" value=${item.name} onenter=${(e) => { console.log('hello')}} onblur=${(e) => { rename(e) }}>`
+                        }
                       </span>
                     </div>
                   </a>
@@ -265,12 +293,20 @@ function sidebar (state, emit) {
           New Entry +
         </button>
         <div class="b">
-          <button class="${textButton} b f-hover" onclick=${ function() { shell.openExternal('https://txtapp.io') } }>
+          <button class="${textButton} b f-hover" onclick=${ () => { shell.openExternal('https://txtapp.io') } }>
             Welcome Guide
           </button>
         </div>
       </nav>
     `
+  }
+
+  function rename (e) {
+    var target = {}
+    target.oldPath = e.target.getAttribute('data-uri')
+    target.type = e.target.getAttribute('data-type')
+    target.newPath = e.target.value
+    emit('filesystem:rename', target)
   }
 
   function open (e) {
