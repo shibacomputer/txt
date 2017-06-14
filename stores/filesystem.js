@@ -98,7 +98,11 @@ function filesystemStore (state, emitter) {
   // Create a new folder in the filesystem.
   // @params: context (string):    The parent of the new directory.
   function make(context) {
-    folders.mk(context, (err) => {
+    if (!context) context = ''
+    var target = context + '/Untitled'
+    console.log('New directory at: ', target)
+
+    folders.mk(target, (err) => {
       // if (err) {
         // var retryPath = context +
       // }
