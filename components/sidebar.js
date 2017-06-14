@@ -201,7 +201,7 @@ function sidebar (state, emit) {
                       <span data-uri=${item.path} data-type="dir">
                         ${ item.editing ?
                           html`${item.name}` :
-                          html`<input type="text" data-uri=${item.path} data-type="dir" value=${item.name} onenter=${(e) => { console.log('hello')}} onblur=${(e) => { rename(e) }}>`
+                          html`<input type="text" data-uri=${item.path} data-parent=${item.parent} data-type="dir" value=${item.name} onenter=${(e) => { console.log('hello')}} onblur=${(e) => { rename(e) }}>`
                         }
                       </span>
                     </div>
@@ -301,9 +301,12 @@ function sidebar (state, emit) {
     `
   }
 
+  function startEditing (e) {
+
+  }
   function rename (e) {
     var target = {}
-    target.oldPath = e.target.getAttribute('data-uri')
+    target.oldPath = e.target.getAttribute('data-parent')
     target.type = e.target.getAttribute('data-type')
     target.newPath = e.target.value
     emit('filesystem:rename', target)
