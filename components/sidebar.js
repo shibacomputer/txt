@@ -3,6 +3,7 @@ const { shell, dialog } = remote.require('electron')
 
 const html = require('choo/html')
 const css = require('sheetify')
+const path = require('path')
 
 const button = require('./button')
 const file = require('../utils/files')
@@ -201,7 +202,7 @@ function sidebar (state, emit) {
                       <span data-uri=${item.path} data-type="dir">
                         ${ item.editing ?
                           html`${item.name}` :
-                          html`<input type="text" data-uri=${item.path} data-parent=${item.parent} data-type="dir" value=${item.name} onenter=${(e) => { console.log('hello')}} onblur=${(e) => { rename(e) }}>`
+                          html`<input type="text" data-uri=${item.path} data-parent=${item.parent} data-name=${item.name} data-type="dir" value=${item.name} onblur=${(e) => { rename(e) }}>`
                         }
                       </span>
                     </div>
@@ -304,11 +305,12 @@ function sidebar (state, emit) {
   function startEditing (e) {
 
   }
+
   function rename (e) {
     var target = {}
-    target.oldPath = e.target.getAttribute('data-parent')
+    target.oldPath = path.join(e.target.getAttribute('data-parent'), e.target.getAttribute('data-name'))
     target.type = e.target.getAttribute('data-type')
-    target.newPath = e.target.value
+    target.newPath = path.join(e.target.getAttribute('data-parent'), e.target.value)
     emit('filesystem:rename', target)
   }
 
