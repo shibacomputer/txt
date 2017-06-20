@@ -199,12 +199,14 @@ function sidebar (state, emit) {
                       <svg data-uri=${item.path} data-type="dir" viewBox="0 0 24 24">
                         <use xlink:href="#txt-folder" />
                       </svg>
-                      <span data-uri=${item.path} data-type="dir">
                         ${ item.editing ?
-                          html`${item.name}` :
-                          html`<input type="text" data-uri=${item.path} data-parent=${item.parent} data-name=${item.name} data-type="dir" value=${item.name} onblur=${(e) => { rename(e) }}>`
+                          html`<input type="text" data-uri=${item.path} data-parent=${item.parent} data-name=${item.name} data-type="dir" value=${item.name} onblur=${(e) => { rename(e) }}>` :
+                          html`
+                            <span data-uri=${item.path} ondblclick=${item.editing = true} data-type="dir">
+                              ${item.name}
+                            </span>
+                          `
                         }
-                      </span>
                     </div>
                   </a>
                   ${ item.open ? tree(item.children) : null }
@@ -219,7 +221,7 @@ function sidebar (state, emit) {
                       <svg data-uri="${item.path}" data-type="file" viewBox="0 0 24 24">
                         <use xlink:href="#txt-file" />
                       </svg>
-                      <span data-uri="${item.path}" data-type="dir">
+                      <span data-uri="${item.path}" data-type="file">
                         ${item.name}
                       </span>
                     </div>

@@ -83,10 +83,10 @@ function filesystemStore (state, emitter) {
       }
     })
   }
+
   // :: rename
   // Rename a folder from old name -> new name.
   // @params: target (object):     The data for your old/new path
-
   function rename(target) {
     folders.rn(target.oldPath, target.newPath, (err) => {
       if (err) console.log(err)
