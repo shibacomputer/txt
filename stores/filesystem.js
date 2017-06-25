@@ -16,6 +16,7 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:open', open)
     emitter.on('filesystem:destroy', destroy)
     emitter.on('filesystem:make', make)
+    emitter.on('filesystem:edit', edit)
     emitter.on('filesystem:rename', rename)
     emitter.emit('filesystem:init', state.global.path)
   })
@@ -30,6 +31,10 @@ function filesystemStore (state, emitter) {
     })
   }
 
+  function get(target, context, opts, cb) {
+    var err
+    if (!context) context = state.filesystem.children
+  }
   // :: open
   // Flags a directory as open or closed. Recursively checks the filesystem object
   // until a match is found.
@@ -84,13 +89,38 @@ function filesystemStore (state, emitter) {
     })
   }
 
+  // :: edit
+  // Tell the file browser you want to rename something
+  // @params: target (string):     The path for your flag
+
+  function edit(target, context) {
+    if (!context) context = state.filesystem.children
+
+    context.filter( (f) => {
+      // Account for top level results.
+      if (f.path === target) {
+        f.rename = !f.rename
+        // state.system.select = true
+        emitter.emit('render')
+        return
+      } else { // Recursive sub directories.
+        // @TODO: Implement better recursive searching.
+        if (f.children && f.children.length > 0) { // Don't search empty dirs.
+          edit(target, f.children)
+        }
+      }
+    })
+  }
   // :: rename
   // Rename a folder from old name -> new name.
   // @params: target (object):     The data for your old/new path
   function rename(target) {
-    folders.rn(target.oldPath, target.newPath, (err) => {
+    folders.rn(target.oldName, target.newName, (err) => {
       if (err) console.log(err)
-      else emitter.emit('filesystem:init', state.global.path)
+      else {
+        rename(target)
+        emitter.emit('filesystem:init', state.global.path)
+      }
     })
   }
 

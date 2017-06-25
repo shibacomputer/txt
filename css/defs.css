@@ -2,26 +2,6 @@
   * Defs
   * Declare all CSS variables and common classes here.
   */
-  @font-face {  font-family: 'NovelMono';
-                font-weight: normal;
-                font-style: normal;
-                src:  url('assets/fonts/novelmono.ttf') format('opentype') }
-
-  @font-face {  font-family: 'NovelMono';
-                font-weight: normal;
-                font-style: italic;;
-                src:  url('assets/fonts/novelmono-italic.ttf') format('opentype') }
-
-  @font-face {  font-family: 'NovelMono';
-                font-weight: bold;
-                font-style: normal;
-                src:  url('assets/fonts/novelmono-bold.ttf') format('opentype') }
-
-  @font-face {  font-family: 'NovelMono';
-                font-weight: bold;
-                font-style: italic;
-                src:  url('assets/fonts/novelmono-bold-italic.ttf') format('opentype') }
-
 
   @font-face {  font-family: 'FiraCode';
                 font-weight: normal;
@@ -32,6 +12,18 @@
                 font-weight: bold;
                 font-style: normal;
                 src:  url('assets/fonts/fc-bold.otf') format('opentype') }
+
+
+  @font-face {  font-family: 'HKG';
+                font-weight: normal;
+                font-style: normal;
+                src:  url('assets/fonts/hkg-r.otf') format('opentype') }
+
+  @font-face {  font-family: 'HKG';
+                font-weight: bold;
+                font-style: normal;
+                src:  url('assets/fonts/hkg-m.otf') format('opentype') }
+
 :root {
   /* Grid unit */
   --u: 16px;
@@ -46,6 +38,7 @@
   --b:      #00D7FF;
   --f:      #FFFFFF;
   --r:      #ff0000;
+  --s:      #C3C3C3;
 
   /* Gradients */
   --myc:   linear-gradient(0deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
