@@ -1,5 +1,3 @@
-'use strict'
-
 const utils = require('./utils')
 
 const path = require('path')

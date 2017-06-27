@@ -56,9 +56,9 @@ var style = css`
     border: none;
     box-sizing: border-box;
     color: var(--w);
-    font-family: 'FiraCode', monospace;
+    font-family: 'HKG', sans-serif;
     font-style: normal;
-    font-size: 11px;
+    font-size: 13px;
     padding: 0;
     outline: none;
     width: auto;

@@ -82,7 +82,6 @@ module.exports = {
   // @params: data (object):   The desired object to pack.
   //          options (array): Options for packing.
   pack: function(data, options, cb) {
-
     cb()
   }
 }
