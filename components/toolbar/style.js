@@ -8,10 +8,10 @@ var style = css`
     display: flex;
     flex-direction: row;
     font-size: 12px;
-    height: auto;
+    height: 2.25rem;
     padding: 0.3rem 0.5rem;
-    justify-content: space-between;
     min-height: 2rem;
+    justify-content: space-between;
     width: 100%;
   }
   :host ul {
@@ -32,6 +32,7 @@ var style = css`
     font-family: 'HKG', sans-serif;
     font-size: 15px;
     justify-content: center;
+    margin-top: 2px;
   }
 
   :host .right {

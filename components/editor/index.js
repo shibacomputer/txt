@@ -7,7 +7,7 @@ const {EditorState} = require('prosemirror-state')
 const {EditorView} = require('prosemirror-view')
 const {Schema, DOMParser} = require('prosemirror-model')
 const {schema, defaultMarkdownParser, defaultMarkdownSerializer} = require('prosemirror-markdown')
-const {defaultSetup} = require('../utils/plugins.js')
+const {defaultSetup} = require('../../utils/plugins.js')
 
 module.exports = Editor
 

@@ -20,7 +20,7 @@ function mainWindow(state, emit) {
       button({
         name: 'new',
         classes: 'c',
-        icon: 'new-folder',
+        icon: 'new',
         click: function() {
           console.log('hello')
         }
@@ -35,17 +35,7 @@ function mainWindow(state, emit) {
     view: tree(state, emit)
   }
 
-  const editorToolbar = toolbar( null,
-    [
-      button({
-        name: 'share',
-        classes: 'c',
-        icon: 'new',
-        click: function() {
-          console.log('Click')
-        }
-     })
-   ], null, emit)
+  const editorToolbar = toolbar( null, null, null, emit)
 
 
   const editor = {
