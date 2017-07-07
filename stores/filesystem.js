@@ -20,6 +20,7 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:rename', rename)
     emitter.emit('filesystem:init', state.global.path)
   })
+
   // :: init
   // Initialises the filesystem for the first time.
   // @params: target (string):    The path to initalise. Also state.global.path.
@@ -31,10 +32,12 @@ function filesystemStore (state, emitter) {
     })
   }
 
+  // :: get
+  //
   function get(target, context, opts, cb) {
-    var err
     if (!context) context = state.filesystem.children
   }
+
   // :: open
   // Flags a directory as open or closed. Recursively checks the filesystem object
   // until a match is found.
@@ -92,7 +95,6 @@ function filesystemStore (state, emitter) {
   // :: edit
   // Tell the file browser you want to rename something
   // @params: target (string):     The path for your flag
-
   function edit(target, context) {
     if (!context) context = state.filesystem.children
 

@@ -15,7 +15,7 @@ function treeCell(item, emit) {
     return html`
       <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${open} ondblclick=${startRename}>
         <div data-path=${item.path}>
-          <svg data-path=${item.path} data-uri=${item.path} viewBox="0 0 16 12">
+          <svg data-path=${item.path} data-uri=${item.path}>
             <use data-path=${item.path} xlink:href="#txt-${item.open? 'dir-open' : 'dir' }" />
           </svg>
           ${ item.rename?
@@ -31,7 +31,7 @@ function treeCell(item, emit) {
     return html`
       <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${openFile} ondblclick=${startRename}>
         <div data-path=${item.path}>
-          <svg data-path=${item.path} viewBox="0 0 16 12">
+          <svg data-path=${item.path}>
             <use data-path=${item.path} xlink:href="#txt-${item.changed? 'file-changed' : 'file' }" />
           </svg>
           ${ item.rename?
