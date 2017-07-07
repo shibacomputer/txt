@@ -16,7 +16,7 @@ app.use(persist())
 app.use(log())
 app.use(expose())
 
-// Stores
+// State
 app.use(require('./stores/system')) // This is handling the UI.
 app.use(require('./stores/global')) // This is for the app's global state.
 app.use(require('./stores/filesystem')) // This is all file IO

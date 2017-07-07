@@ -6,9 +6,6 @@ const path = require('path')
 module.exports = filesystemStore
 
 function filesystemStore (state, emitter) {
-  var filesystem = []
-
-
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
@@ -18,7 +15,9 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:make', make)
     emitter.on('filesystem:edit', edit)
     emitter.on('filesystem:rename', rename)
-    emitter.emit('filesystem:init', state.global.path)
+    if (!state.filesystem) {
+      emitter.emit('filesystem:init', state.global.path)
+    }
   })
 
   // :: init
@@ -95,6 +94,7 @@ function filesystemStore (state, emitter) {
   // :: edit
   // Tell the file browser you want to rename something
   // @params: target (string):     The path for your flag
+
   function edit(target, context) {
     if (!context) context = state.filesystem.children
 

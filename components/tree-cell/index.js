@@ -52,6 +52,7 @@ function treeCell(item, emit) {
   function openFile(e) {
     if (!item.rename) {
       var target = e.target.getAttribute('data-path')
+      emit('note:open', target)
     }
   }
   function startRename(e) {

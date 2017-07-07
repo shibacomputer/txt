@@ -5,14 +5,18 @@ const html = require('choo/html'),
       icons = require('../../utils/icons'),
       button = require('../../components/button'),
       toolbar = require('../../components/toolbar'),
-      tree = require('../../components/tree')
-      sidebarView = require('../../components/sidebar-view/')
+      tree = require('../../components/tree'),
+      sidebarView = require('../../components/sidebar-view'),
+      editorView = require('../../components/editor-view'),
+      textEditor = require('../../components/editor')
 
 module.exports = mainWindow
 
 function mainWindow(state, emit) {
   document.title = 'Keyp'
-  var browserToolbar = toolbar( null,
+
+  // Set up our components
+  const browserToolbar = toolbar( null,
     [
       button({
         name: 'new',
@@ -26,17 +30,37 @@ function mainWindow(state, emit) {
     strings.en.title,
     emit )
   const browserFooter = toolbar ()
-  const fileTree = tree(state, emit)
-  const elements = {
+  const sidebar = {
     toolbar: browserToolbar,
     footer: browserFooter,
-    view: fileTree
+    view: tree(state, emit)
   }
+
+  const editorToolbar = toolbar( null,
+    [
+      button({
+        name: 'share',
+        classes: 'c',
+        icon: 'new',
+        click: function() {
+          console.log('Click')
+        }
+     })
+   ], null, emit)
+
+
+  const editor = {
+    toolbar: editorToolbar,
+    footer: toolbar (),
+    view: textEditor(state, emit)
+  }
+
 
   return html`
     <body class="b-myc ${style}">
       ${ icons() }
-      ${ sidebarView(state, emit, 'fileSidebar', elements) }
+      ${ sidebarView(state, emit, 'sidebar', sidebar) }
+      ${ editorView(state, emit, 'editor', editor)}
     </body>
   `
 }

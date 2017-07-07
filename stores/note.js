@@ -5,21 +5,21 @@ module.exports = noteStore
 
 function noteStore (state, emitter) {
   if (!state.note) {
-    newNote()
+    initNote()
   }
 
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading Note Store')
 
     emitter.on('note:create', create)
-    emitter.on('note:load', load)
+    emitter.on('note:open', open)
     emitter.on('note:close', unload)
     emitter.on('note:update', update)
     emitter.on('note:destroy', destroy)
 
   })
 
-  function newNote() {
+  function initNote() {
     state.note = { }
     state.note.path = null
     state.note.filename = null
@@ -37,12 +37,11 @@ function noteStore (state, emitter) {
     emitter.emit('log:debug', 'Creating note')
   }
 
-  function load (note) {
-    emitter.emit('log:debug', 'Loading a note')
-
-    spin(true)
+  function open (note) {
+    emitter.emit('log:debug', 'Opening a note')
 
     file.open(note, (n) => {
+      console.log(n)
       var url = note.split('/')
 
       state.note.path = note

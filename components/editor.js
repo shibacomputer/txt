@@ -11,6 +11,7 @@ const {defaultSetup} = require('../utils/plugins.js')
 module.exports = Editor
 
 function Editor () {
+  console.log ('Hello')
 
   if (!(this instanceof Editor)) return new Editor()
   Nanocomponent.call(this)
