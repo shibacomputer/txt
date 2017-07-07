@@ -7,8 +7,7 @@ const html = require('choo/html'),
       toolbar = require('../../components/toolbar'),
       tree = require('../../components/tree'),
       sidebarView = require('../../components/sidebar-view'),
-      editorView = require('../../components/editor-view'),
-      textEditor = require('../../components/editor')
+      editorView = require('../../components/editor-view')
 
 module.exports = mainWindow
 
@@ -51,8 +50,7 @@ function mainWindow(state, emit) {
 
   const editor = {
     toolbar: editorToolbar,
-    footer: toolbar (),
-    view: textEditor(state, emit)
+    footer: toolbar ()
   }
 
 
