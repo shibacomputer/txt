@@ -23,7 +23,7 @@ time, mark, audio, video {
 
 *::selection {
   color: var(--f);
-  background: var(--y);
+  background: var(--c);
 }
 
 html {

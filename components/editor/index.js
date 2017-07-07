@@ -2,6 +2,7 @@ const html = require('choo/html')
 
 const Nanocomponent = require('nanocomponent')
 const nanologger = require('nanologger')
+
 const {EditorState} = require('prosemirror-state')
 const {EditorView} = require('prosemirror-view')
 const {Schema, DOMParser} = require('prosemirror-model')
@@ -11,7 +12,6 @@ const {defaultSetup} = require('../utils/plugins.js')
 module.exports = Editor
 
 function Editor () {
-  console.log ('Hello')
 
   if (!(this instanceof Editor)) return new Editor()
   Nanocomponent.call(this)
