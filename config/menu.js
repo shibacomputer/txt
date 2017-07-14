@@ -1,5 +1,4 @@
-const {app, Menu} = require('electron')
-const {ipcRenderer} = require('electron')
+const {app, BrowserWindow, Menu} = require('electron')
 
 const commonMenu = [
   {
@@ -8,14 +7,14 @@ const commonMenu = [
       {
         label: 'New Note…',
         accelerator: 'CmdOrCtrl+N',
-        click (item, focusedWindow, event) {
-          console.log('New Note')
+        click (item, win, event) {
+          win.webContents.send()
         }
       },
       {
         label: 'New Folder…',
         accelerator: 'CmdOrCtrl+Shift+N',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('New Folder')
         }
       },
@@ -25,7 +24,7 @@ const commonMenu = [
       {
         label: 'Import...',
         accelerator: 'CmdOrCtrl+I',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Import')
         }
       },
@@ -35,14 +34,14 @@ const commonMenu = [
       {
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Save')
         }
       },
       {
         label: 'Save As…',
         accelerator: 'CmdOrCtrl+Shift+S',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Save As')
         }
       },
@@ -52,7 +51,7 @@ const commonMenu = [
       {
         label: 'Delete from Notebook',
         accelerator: 'CmdOrCtrl+Shift+backspace',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Export')
         }
       },
@@ -62,7 +61,7 @@ const commonMenu = [
       {
         label: 'Export…',
         accelerator: 'CmdOrCtrl+Shift+E',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Export')
         }
       }
@@ -162,7 +161,7 @@ if (process.platform === 'darwin') {
       },
       {
         label: 'Check for Update',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Import')
         }
       },
@@ -171,7 +170,7 @@ if (process.platform === 'darwin') {
       },
       {
         label: 'Preferences…',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Preferences')
         }
       },
@@ -180,7 +179,7 @@ if (process.platform === 'darwin') {
       },
       {
         label: 'Lock…',
-        click (item, focusedWindow, event) {
+        click (item, win, event) {
           console.log('Lock')
         }
       },
