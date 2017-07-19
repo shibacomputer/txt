@@ -1,13 +1,13 @@
-const html = require('choo/html'),
-      style = require('./style'),
-      strings = require('./strings'),
+const html = require('choo/html')
+const style = require('./style')
+const strings = require('./strings')
 
-      icons = require('../../utils/icons'),
-      button = require('../../components/button'),
-      toolbar = require('../../components/toolbar'),
-      tree = require('../../components/tree'),
-      sidebarView = require('../../components/sidebar-view'),
-      editorView = require('../../components/editor-view')
+const icons = require('../../utils/icons')
+const button = require('../../components/button')
+const toolbar = require('../../components/toolbar')
+const tree = require('../../components/tree')
+const sidebarView = require('../../components/sidebar-view')
+const editorView = require('../../components/editor-view')
 
 module.exports = mainWindow
 
@@ -48,7 +48,7 @@ function mainWindow(state, emit) {
     <body class="b-myc ${style}">
       ${ icons() }
       ${ sidebarView(state, emit, 'sidebar', sidebar) }
-      ${ editorView(state, emit, 'editor', editor)}
+      ${ editorView(state, emit, 'editor', editor) }
     </body>
   `
 }

@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu} = require('electron')
+const { ipcMain } = require('electron')
 
 const commonMenu = [
   {
@@ -8,7 +9,7 @@ const commonMenu = [
         label: 'New Note…',
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
-          win.webContents.send()
+          console.log('New Note')
         }
       },
       {
@@ -22,20 +23,10 @@ const commonMenu = [
         type: 'separator'
       },
       {
-        label: 'Import...',
-        accelerator: 'CmdOrCtrl+I',
-        click (item, win, event) {
-          console.log('Import')
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
-          console.log('Save')
+          win.webContents.send('menu:note:save')
         }
       },
       {
@@ -49,22 +40,12 @@ const commonMenu = [
         type: 'separator'
       },
       {
-        label: 'Delete from Notebook',
+        label: 'Trash',
         accelerator: 'CmdOrCtrl+Shift+backspace',
         click (item, win, event) {
           console.log('Export')
         }
       },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Export…',
-        accelerator: 'CmdOrCtrl+Shift+E',
-        click (item, win, event) {
-          console.log('Export')
-        }
-      }
     ]
   },
   {
@@ -210,7 +191,7 @@ if (process.platform === 'darwin') {
     ]
   })
   // Edit menu
-  commonMenu[1].submenu.push(
+  commonMenu[2].submenu.push(
     {
       type: 'separator'
     },

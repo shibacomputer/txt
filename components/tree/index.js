@@ -1,14 +1,13 @@
-const html = require('choo/html'),
-      style = require('./style'),
-
-      treeCell = require('../tree-cell')
+const html = require('choo/html')
+const style = require('./style')
+const treeCell = require('../tree-cell')
 
 module.exports = tree
 
 function tree(state, emit) {
   if (state.filesystem || state.filesystem.children.length != 0) return initTree()
   else console.log('empty')
-  
+
   return html` ${initTree()}`
 
   function initTree () {

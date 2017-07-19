@@ -14,8 +14,9 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:destroy', destroy)
     emitter.on('filesystem:make', make)
     emitter.on('filesystem:edit', edit)
+    emitter.on('filesystem:select', select)
     emitter.on('filesystem:rename', rename)
-    if (!state.filesystem) {
+    if (!state.filesystem || !state.filesystem.childen) {
       emitter.emit('filesystem:init', state.global.path)
     }
   })
@@ -113,6 +114,27 @@ function filesystemStore (state, emitter) {
       }
     })
   }
+
+  // :: select
+  function select(target, context) {
+    if (!context) context = state.filesystem.children
+    context.filter( (f) => {
+      // Account for top level results.
+      if (f.path === target) {
+        f.selected = !f.selected
+        // state.system.select = true
+        emitter.emit('render')
+        return
+      } else { // Recursive sub directories.
+        // @TODO: Implement better recursive searching.
+        f.selected = false
+        if (f.children && f.children.length > 0) { // Don't search empty dirs.
+          edit(target, f.children)
+        }
+      }
+    })
+  }
+
   // :: rename
   // Rename a folder from old name -> new name.
   // @params: target (object):     The data for your old/new path

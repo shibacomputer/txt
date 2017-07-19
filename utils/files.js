@@ -39,12 +39,15 @@ module.exports = {
         if (err) {
           cb(err)
         } else {
-          fs.writeFile(target, data, (err) => {
-            if (err) {
-              cb(err)
-            } else {
-              cb()
-            }
+          utils.encrypt(data.liveBody, (ciphertext) => {
+            encrypted = ciphertext.message.packets.write()
+            fs.writeFile(target, encrypted, (err) => {
+              if (err) {
+                cb(err)
+              } else {
+                cb()
+              }
+            })
           })
         }
       })

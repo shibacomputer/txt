@@ -1,5 +1,6 @@
 const utils = require('../utils/utils')
 const file = require('../utils/files')
+const { ipcRenderer } = window.require('electron')
 
 module.exports = noteStore
 
@@ -15,8 +16,8 @@ function noteStore (state, emitter) {
     emitter.on('note:open', open)
     emitter.on('note:close', unload)
     emitter.on('note:update', update)
+    emitter.on('note:save', save)
     emitter.on('note:destroy', destroy)
-
   })
 
   function initNote() {
@@ -24,7 +25,8 @@ function noteStore (state, emitter) {
     state.note.path = null
     state.note.filename = null
     state.note.title = null
-    state.note.body = null
+    state.note.savedBody = null
+    state.note.liveBody = null
     state.note.date = { }
     state.note.date.created = null
     state.note.date.modified = null
@@ -39,23 +41,22 @@ function noteStore (state, emitter) {
 
   function open (note) {
     emitter.emit('log:debug', 'Opening a note')
+    if (note != state.note.path) {
+      file.open(note, (n) => {
+        var url = note.split('/')
 
-    file.open(note, (n) => {
-      console.log(n)
-      var url = note.split('/')
+        state.note.path = note
+        state.note.filename = url[url.length-1]
+        state.note.title = url[url.length-1].replace(/\.[^/.]+$/, "")
+        state.note.savedBody = n.data
+        state.note.date.created = 'today'
+        state.note.date.modified = 'today'
+        state.note.status.modified = false
+        console.log('📄 👀 ', state.note)
 
-      state.note.path = note
-      state.note.filename = url[url.length-1]
-      state.note.title = url[url.length-1].replace(/\.[^/.]+$/, "")
-      state.note.body = n.data
-      state.note.date.created = 'today'
-      state.note.date.modified = 'today'
-      state.note.status.modified = false
-      console.log('📄 👀 ', state.note)
-
-      spin(false)
-      emitter.emit('render')
-    })
+        emitter.emit('render')
+      })
+    }
   }
 
   function unload (note) {
@@ -77,25 +78,33 @@ function noteStore (state, emitter) {
     }
   }
 
-  function write (note, cb) {
-    emitter.emit('log:debug', 'Writing note to disk')
+  function save (note) {
+    emitter.emit('log:debug', 'Beginning save process')
+    if (!note || !note.status.modified) return  // Don't do redundant work
     var date = new Date()
-
-    state.note.date.modified = date
-    state.note.status.modified = false
+    note.date.modified = date
+    file.write(note, (err) => {
+      state.note.date.modified = date
+      state.note.status.modified = false
+    })
   }
 
+
   function update (note) {
-    emitter.emit('log:debug', 'Detecting changes to note')
-    state.note.status.modified = true
+    if (state.note.liveBody != state.note.savedBody) {
+      state.note.status.modified = true
+    }
+    ipcRenderer.send('menu:note:modified', state.note.status.modified)
+    state.note.liveBody = note
   }
 
   function destroy (note) {
     emitter.emit('log.debug', 'Deleting note')
   }
 
-  function spin (b) {
-    state.note.status.loading = b
-    emitter.emit('render')
-  }
+  // IPC Routes
+  ipcRenderer.on('menu:note:save', (event) => {
+    emitter.emit('note:save', state.note)
+  })
+
 }

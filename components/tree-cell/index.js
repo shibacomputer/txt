@@ -1,6 +1,6 @@
-const html = require('choo/html'),
-      path = require('path'),
-      style = require('./style')
+const html = require('choo/html')
+const path = require('path')
+const style = require('./style')
 
 module.exports = treeCell
 
@@ -13,9 +13,9 @@ function treeCell(item, emit) {
 
   function initDir() {
     return html`
-      <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${open} ondblclick=${startRename}>
+      <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${select} ondblclick=${open}>
         <div data-path=${item.path}>
-          <svg data-path=${item.path} data-uri=${item.path}>
+          <svg data-path=${item.path} data-uri=${item.path} onclick=${open}>
             <use data-path=${item.path} xlink:href="#txt-${item.open? 'dir-open' : 'dir' }" />
           </svg>
           ${ item.rename?
@@ -29,7 +29,7 @@ function treeCell(item, emit) {
   function initFile() {
     var filename = item.name.replace('.txt.gpg', '')
     return html`
-      <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${openFile} ondblclick=${startRename}>
+      <a data-path=${item.path} class="${style} ${item.selected? 'highlight' : ''} ${item.rename? 'editing' : ''}" onclick=${select} ondblclick=${openFile}>
         <div data-path=${item.path}>
           <svg data-path=${item.path}>
             <use data-path=${item.path} xlink:href="#txt-${item.changed? 'file-changed' : 'file' }" />
@@ -49,12 +49,21 @@ function treeCell(item, emit) {
       emit('filesystem:open', target)
     }
   }
+
+  function select(e) {
+    if(!item.rename) {
+      var target = e.target.getAttribute('data-path')
+      emit('filesystem:select', target)
+    }
+  }
+
   function openFile(e) {
     if (!item.rename) {
       var target = e.target.getAttribute('data-path')
       emit('note:open', target)
     }
   }
+
   function startRename(e) {
     if (!item.rename) {
       var target = e.target.getAttribute('data-path')

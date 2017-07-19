@@ -1,6 +1,6 @@
 const html = require('choo/html')
 const style = require('./style')
-const Editor = require('../editor')
+const editor = require('../editor')
 
 module.exports = editorView
 
@@ -11,14 +11,13 @@ module.exports = editorView
 //    - View: Pass the view you'd like as the main part of the sidebar.
 function editorView (state, emit, role, elements) {
 
-  var editor = Editor ()
   return html`
     <main data-role=${role} class=${style}>
       <header>
         ${ elements.toolbar }
       </header>
       <div>
-        ${ editor.render(state.note, emit) }
+        ${ editor(state, emit) }
       </div>
       <footer>
         ${ elements.footer }
