@@ -4,7 +4,6 @@ const pell = require('pell')
 module.exports = editor
 
 function editor (state, emit) {
-  console.log(state)
   var el = html`
     <div id="pell"></div>
   `

@@ -5,10 +5,7 @@ const treeCell = require('../tree-cell')
 module.exports = tree
 
 function tree(state, emit) {
-  if (state.fs || state.fs.children.length != 0) return initTree()
-  else console.log('empty')
-
-  return html` ${initTree()}`
+  if (state.fs) return initTree()
 
   function initTree () {
     return html`${ tree(state.fs.children) }`

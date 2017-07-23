@@ -11,19 +11,14 @@ function sysState (state, emitter) {
     state.sys.path = {}
     state.sys.path.active = null
     state.sys.path.selected = null
-
-    utils.getSetting('workingPath', (data) => {
-      state.sys.path.working = data || null
-      emitter.emit('render')
-    })
-
+    state.sys.path.working = null
     state.sys.auth = false
     state.sys.ui = {}
     state.sys.ui.theme = 'dark'
   }
 
   emitter.on('DOMContentLoaded', function() {
-    emitter.emit('log:debug', 'Setting up UI State')
+    emitter.emit('log:debug', 'Sys State')
 
     // Handling paths
     emitter.on('sys:path:active:update', setActivePath)
@@ -35,6 +30,12 @@ function sysState (state, emitter) {
 
     // Handling auth
     emitter.on('sys:auth:update', toggleAuth)
+
+    // Initialise
+    utils.getSetting('workingPath', (data, err) => {
+      emitter.emit('sys:path:working:update', data)
+    })
+
   })
 
   // :: setActivePath
@@ -44,7 +45,7 @@ function sysState (state, emitter) {
     utils.getPath(target, (validPath, err) => {
       if (!err) {
         emitter.emit('log:debug', 'setActivePath: ', validPath)
-        state.sys.activePath = validPath
+        state.sys.path.active = validPath
       }
     })
   }
@@ -57,7 +58,7 @@ function sysState (state, emitter) {
     utils.getPath(newPath, (validPath, err) => {
       if (!err) {
         emitter.emit('log:debug', 'setSelectedPath: ', validPath)
-        state.sys.selectedPath = validPath
+        state.sys.path.selected = validPath
       }
     })
   }
@@ -66,15 +67,7 @@ function sysState (state, emitter) {
   // Set a new full disk path for a notebook and tell the settings db about it.
   // @params: newPath (string):   A new absolute path.
   function setWorkingPath(newPath) {
-    emitter.emit('log:debug', 'setWorkingPath ', newPath)
-    // Update app settings
-    utils.setSetting('workingPath', newPath, (err) => {
-      // Set the path.
-      if (!err) {
-        state.sys.working = newPath
-        emitter.emit('render')
-      }
-    })
+    state.sys.path.working = newPath
   }
 
   // :: setTheme
@@ -82,7 +75,7 @@ function sysState (state, emitter) {
   // @params: newTheme (string):    A new theme.
   function setTheme(newTheme) {
     // @TODO: Validate a theme.
-    emitter.emit('log:debug', 'setTheme: ', newPath)
+    emitter.emit('log:debug', 'setTheme: ', newTheme)
     utils.setSetting('theme', newTheme, (err) => {
       if (!err) {
         state.sys.ui.theme = newTheme
