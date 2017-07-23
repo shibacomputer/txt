@@ -53,6 +53,7 @@ function treeCell(item, emit) {
   function select(e) {
     if(!item.rename) {
       var target = e.target.getAttribute('data-path')
+      emit('sys:setSelectedPath', target)
       emit('filesystem:select', target)
     }
   }

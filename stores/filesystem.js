@@ -123,6 +123,7 @@ function filesystemStore (state, emitter) {
       if (f.path === target) {
         f.selected = !f.selected
         // state.system.select = true
+        emitter.emit('sys:setSelectedPath', f.path)
         emitter.emit('render')
         return
       } else { // Recursive sub directories.
@@ -152,7 +153,6 @@ function filesystemStore (state, emitter) {
   // Create a new folder in the filesystem.
   // @params: context (string):    The parent of the new directory.
   function make(context) {
-    if (!context) context = ''
     var target = context + '/Untitled'
     console.log('New directory at: ', target)
 
