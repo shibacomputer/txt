@@ -18,9 +18,9 @@ app.use(expose())
 
 // State
 app.use(require('./state/sys')) // This is handling the UI.
-app.use(require('./state/fs')) // This is all file IO
 app.use(require('./state/key')) // This handles the keychain and passphrase.
 app.use(require('./state/note')) // This is where you store your note.
+app.use(require('./state/fs')) // This is all file IO
 
 // State setup.
 app.route('/', require('./windows/editor/'))

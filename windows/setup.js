@@ -194,10 +194,8 @@ function setupWindow(state, emit) {
   function saveSettings(e) {
     emit('log:debug', 'Attempting an app state save')
     var phrase = document.getElementById('passphrase').value
-    utils.setSetting('isActiveInstall', true, () => {
-      utils.setSetting('usesKeychain', true, () => {
-        emit('keychain:create', phrase)
-      })
-    })
+    utils.setSetting('active', true)
+    utils.setSetting('keychain', true)
+    emit('keychain:create', phrase)
   }
 }

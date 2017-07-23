@@ -89,12 +89,16 @@ let setupWin
 app.on('ready', () => {
 
   // Check for settings defaults
-  settings.defaults({
-    hasDbLocationOf: path.join(app.getPath('home') + '/Txt'),
-    isActiveInstall: false, // Have we performed setup?
-    usesKeychain: false, // Save passphrase in the keychain?
-    usesTheme: 'dark' // What theme are we using?
-  })
+  if (!settings.has('workingPath')) {
+    settings.setAll({
+      'workingPath': path.join(app.getPath('home') + '/Txt'),
+      'active': false,
+      'keychain': false,
+      'theme': 'dark'
+    })
+  }
+
+  var active = settings.get('active')
 
   // Get our windows in order, since any of the three can be called at any time.
   mainWin = window.createWindow(mainWindowConfig)
@@ -112,18 +116,16 @@ app.on('ready', () => {
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
     // Check to see whether this we have a Txt folder set up.
-    settings.get('isActiveInstall').then( (val) => {
-      if(val === false) {
-        setupWin.showUrl(ev.uri + 'setup')
-        setupWin.webContents.openDevTools({ mode: 'detach' })
-      } else {
-        mainWin.showUrl(ev.uri)
-        mainWin.webContents.openDevTools({ mode: 'detach' })
-        mainWin.once('close', function () {
-          server.close()
-        })
-      }
-    })
+    if (active) {
+      setupWin.showUrl(ev.uri + 'setup')
+      setupWin.webContents.openDevTools({ mode: 'detach' })
+    } else {
+      mainWin.showUrl(ev.uri)
+      mainWin.webContents.openDevTools({ mode: 'detach' })
+      mainWin.once('close', function () {
+        server.close()
+      })
+    }
   })
 
   .on('update', function(file, contents) {

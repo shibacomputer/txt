@@ -7,6 +7,9 @@ const path = require('path')
 module.exports = fsState
 
 function fsState (state, emitter) {
+  if (!state.fs) {
+    state.fs = null
+  }
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
@@ -17,10 +20,8 @@ function fsState (state, emitter) {
     emitter.on('fs:edit', edit)
     emitter.on('fs:select', select)
     emitter.on('fs:rename', rename)
-    
-    if (!state.fs || !state.fs.childen) {
-      emitter.emit('fs:init', state.sys.path.working)
-    }
+
+    emitter.emit('fs:init', state.sys.path.working)
   })
 
   // :: init

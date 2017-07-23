@@ -13,9 +13,18 @@ module.exports = {
   // Prepends the user-set path, validate, then return a valid path.
   // Used to kickoff filesystem read/write functions.
   getPath: function(filename, cb) {
-    settings.get('hasDbLocationOf').then((value) => {
-      cb(path.join(value, filename))
-    })
+    var newPath
+    var err
+    if (settings.has('workingPath')) {
+      newPath = path.join(settings.get('workingPath'), filename)
+    } else {
+      err = {
+        title: 'No Notebook',
+        body: 'You need to reset your notebook',
+        route: 'reboot'
+      }
+    }
+    cb(newPath, err)
   },
 
   // :: getSetting
@@ -23,10 +32,20 @@ module.exports = {
   // Pass a default value here if you want to prevent an error.
   // Callback returns the key and status.
   getSetting: function(key, cb) {
-    settings.get(key).then((value) => {
-      console.log('⚙️ ♽ ' + key + ': ' + value)
-      cb(value)
-    })
+    var value
+    var err
+    if (settings.has(key)) {
+      value = settings.get(key)
+      console.log('⚙️ ' + key + ': ' + value)
+    }
+    else {
+      err = {
+        title: 'No setting',
+        body: 'No setting',
+        route: 'reset'
+      }
+    }
+    cb(value, err)
   },
 
   // :: setSetting
@@ -34,10 +53,10 @@ module.exports = {
   // electron-settings.
   // Callback returns the key and a status (if there was one).
   setSetting: function(key, value, cb) {
-    settings.set(key, value).then( () => {
-      console.log('⚙️ → ' + key + ': ' + value)
-      cb(key)
-    })
+    var err
+    console.log('⚙️ → ' + key + ': ' + value)
+    settings.set(key, value)
+    cb(err)
   },
 
   // :: decrypt
