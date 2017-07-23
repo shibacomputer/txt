@@ -1,33 +1,35 @@
 // @TODO: Better documentation for this file.
-
+const remote = window.require('electron').remote
+const { app, Menu } = remote.require('electron')
 const folders = require('../utils/folders')
 const path = require('path')
 
-module.exports = filesystemStore
+module.exports = fsState
 
-function filesystemStore (state, emitter) {
+function fsState (state, emitter) {
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
-    emitter.on('filesystem:init', init)
-    emitter.on('filesystem:open', open)
-    emitter.on('filesystem:destroy', destroy)
-    emitter.on('filesystem:make', make)
-    emitter.on('filesystem:edit', edit)
-    emitter.on('filesystem:select', select)
-    emitter.on('filesystem:rename', rename)
-    if (!state.filesystem || !state.filesystem.childen) {
-      emitter.emit('filesystem:init', state.global.path)
+    emitter.on('fs:init', init)
+    emitter.on('fs:open', open)
+    emitter.on('fs:destroy', destroy)
+    emitter.on('fs:make', make)
+    emitter.on('fs:edit', edit)
+    emitter.on('fs:select', select)
+    emitter.on('fs:rename', rename)
+    
+    if (!state.fs || !state.fs.childen) {
+      emitter.emit('fs:init', state.sys.path.working)
     }
   })
 
   // :: init
   // Initialises the filesystem for the first time.
-  // @params: target (string):    The path to initalise. Also state.global.path.
+  // @params: target (string):    The path to initalise. Also state.sys.path.working.
   function init(target) {
     folders.init(target, (dirs) => {
       console.log('📂 ', dirs)
-      state.filesystem = dirs
+      state.fs = dirs
       emitter.emit('render')
     })
   }
@@ -35,7 +37,7 @@ function filesystemStore (state, emitter) {
   // :: get
   //
   function get(target, context, opts, cb) {
-    if (!context) context = state.filesystem.children
+    if (!context) context = state.fs.children
   }
 
   // :: open
@@ -46,7 +48,7 @@ function filesystemStore (state, emitter) {
   function open(target, context) {
     // Don't ever break. If you don't get a context,
     // we default to root.
-    if (!context) context = state.filesystem.children
+    if (!context) context = state.fs.children
 
     // First thing, don't search empty dirs.
     if (context.length > 0) {
@@ -73,7 +75,7 @@ function filesystemStore (state, emitter) {
   // Deletes the selected file from the filesystem.
   // @params: context (string):      The path to the delete target.
   function destroy(context) {
-    if (!context) context = state.filesystem.children
+    if (!context) context = state.fs.children
 
     console.log('Finding item to delete 🗑')
     context.filter( (f) => {
@@ -81,7 +83,7 @@ function filesystemStore (state, emitter) {
         folders.rm(f.path, (target) => {
           // state.system.select = false
           emitter.emit('ui:menu:selectActive', false)
-          emitter.emit('filesystem:init', state.global.path)
+          emitter.emit('fs:init', state.sys.path.working)
           return
         })
       } else {
@@ -97,7 +99,7 @@ function filesystemStore (state, emitter) {
   // @params: target (string):     The path for your flag
 
   function edit(target, context) {
-    if (!context) context = state.filesystem.children
+    if (!context) context = state.fs.children
 
     context.filter( (f) => {
       // Account for top level results.
@@ -117,7 +119,7 @@ function filesystemStore (state, emitter) {
 
   // :: select
   function select(target, context) {
-    if (!context) context = state.filesystem.children
+    if (!context) context = state.fs.children
     context.filter( (f) => {
       // Account for top level results.
       if (f.path === target) {
@@ -144,7 +146,7 @@ function filesystemStore (state, emitter) {
       if (err) console.log(err)
       else {
         rename(target)
-        emitter.emit('filesystem:init', state.global.path)
+        emitter.emit('fs:init', state.sys.path.working)
       }
     })
   }
@@ -160,7 +162,7 @@ function filesystemStore (state, emitter) {
       // if (err) {
         // var retryPath = context +
       // }
-      emitter.emit('filesystem:init', state.global.path)
+      emitter.emit('fs:init', state.sys.path.working)
     })
   }
 }

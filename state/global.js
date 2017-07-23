@@ -6,7 +6,7 @@ function globalStore (state, emitter) {
   if (!state.global) {
     state.global = {}
     utils.getSetting('hasDbLocationOf', (data) => {
-      state.global.path = data || null
+      state.sys.path.working = data || null
       emitter.emit('render')
     })
 
@@ -36,7 +36,7 @@ function globalStore (state, emitter) {
     emitter.emit('log:debug', 'Setting a new path: ', newPath)
     // @TODO: Do a secondary check here for path validity.
     utils.setSetting('hasDbLocationOf', newPath, () => {
-      state.global.path = newPath
+      state.sys.path.working = newPath
       emitter.emit('render')
     })
   }

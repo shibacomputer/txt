@@ -124,9 +124,9 @@ function sidebar (state, emit) {
 
   // This is where the decision is made to display a sidebar or empty state
   function aSidebar () {
-    if(state.filesystem) {
-      if(state.filesystem.children.length > 0) {
-        return fileSidebar(state.filesystem)
+    if(state.fs) {
+      if(state.fs.children.length > 0) {
+        return fileSidebar(state.fs)
       } else {
         return emptySidebar() //Make sure we handle the init filesystem.
       }
@@ -168,7 +168,7 @@ function sidebar (state, emit) {
               classes: 'c',
               icon: 'new-folder',
               click: function() {
-                emit('filesystem:make', selected)
+                emit('fs:make', selected)
               }
             })
           ],
@@ -313,7 +313,7 @@ function sidebar (state, emit) {
     target.oldPath = path.join(e.target.getAttribute('data-parent'), e.target.getAttribute('data-name'))
     target.type = e.target.getAttribute('data-type')
     target.newPath = path.join(e.target.getAttribute('data-parent'), e.target.value)
-    emit('filesystem:rename', target)
+    emit('fs:rename', target)
   }
 
   function open (e) {
@@ -323,7 +323,7 @@ function sidebar (state, emit) {
 
     selected = target
     emit('ui:menu:selectActive', true)
-    if (type === 'dir') emit('filesystem:open', target)
+    if (type === 'dir') emit('fs:open', target)
     if (type === 'file') emit('note:open', target)
   }
 }

@@ -2,9 +2,9 @@ const utils = require('../utils/utils')
 const file = require('../utils/files')
 const { ipcRenderer } = window.require('electron')
 
-module.exports = noteStore
+module.exports = noteState
 
-function noteStore (state, emitter) {
+function noteState (state, emitter) {
   if (!state.note) {
     initNote()
   }

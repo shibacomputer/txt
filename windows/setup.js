@@ -171,14 +171,14 @@ function setupWindow(state, emit) {
 
   function currentPath() {
     emit('log:debug', 'Showing Txt target path')
-    return state.global.path
+    return state.sys.path.working
   }
 
 
   // Interactions
   function newDirectory(e) {
     emit('log:debug', 'Asking for new directory')
-    var dbPath = state.global.path
+    var dbPath = state.sys.path.working
     dialog.showOpenDialog({
       title: 'Choose your Txt folder',
       desiredPath: dbPath,

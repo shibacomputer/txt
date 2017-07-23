@@ -46,7 +46,7 @@ function treeCell(item, emit) {
   function open(e){
     if (!item.rename) {
       var target = e.target.getAttribute('data-path')
-      emit('filesystem:open', target)
+      emit('fs:open', target)
     }
   }
 
@@ -54,7 +54,7 @@ function treeCell(item, emit) {
     if(!item.rename) {
       var target = e.target.getAttribute('data-path')
       emit('sys:setSelectedPath', target)
-      emit('filesystem:select', target)
+      emit('fs:select', target)
     }
   }
 
@@ -68,7 +68,7 @@ function treeCell(item, emit) {
   function startRename(e) {
     if (!item.rename) {
       var target = e.target.getAttribute('data-path')
-      emit('filesystem:edit', target)
+      emit('fs:edit', target)
     }
   }
 
@@ -79,8 +79,8 @@ function treeCell(item, emit) {
         newName: path.join(e.target.getAttribute('data-parent'), e.target.value)
       }
 
-      emit('filesystem:edit', target.oldName)
-      emit('filesystem:rename', target)
+      emit('fs:edit', target.oldName)
+      emit('fs:rename', target)
     }
 
   }
