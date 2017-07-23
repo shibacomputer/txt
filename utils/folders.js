@@ -35,6 +35,7 @@ module.exports = {
       fs.stat(oldTarget, (err, stats) => {
         if (stats) {
           utils.getPath(newPath, (newTarget) => {
+            console.log('new path: ', newTarget)
             fs.stat(newTarget, (err, stats) => {
               if (stats) {
                 cb('File already exists') // @TODO: Do better work with errors

@@ -63,16 +63,15 @@ module.exports = {
   // @params: data (binary):    Packaged data from the UI,
   //          secret (string):  User sercret from entry or keychain.
   encrypt: function(data, cb) {
-    openpgp.config.aead_protect = true
 
     var options, encrypted
     options = {
         data: data,
-        password: 'Test',
+        passwords: ['Test'],
         armor: false
     };
-    openpgp.encrypt(options).then((plaintext) => {
-      cb(plaintext)
+    openpgp.encrypt(options).then((ciphertext) => {
+      cb(ciphertext)
     });
   },
 
@@ -82,7 +81,6 @@ module.exports = {
   // @params: data (object):   The desired object to pack.
   //          options (array): Options for packing.
   pack: function(data, options, cb) {
-
     cb()
   }
 }

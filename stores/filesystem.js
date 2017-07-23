@@ -6,9 +6,6 @@ const path = require('path')
 module.exports = filesystemStore
 
 function filesystemStore (state, emitter) {
-  var filesystem = []
-
-
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Loading Filesystem')
 
@@ -16,9 +13,14 @@ function filesystemStore (state, emitter) {
     emitter.on('filesystem:open', open)
     emitter.on('filesystem:destroy', destroy)
     emitter.on('filesystem:make', make)
+    emitter.on('filesystem:edit', edit)
+    emitter.on('filesystem:select', select)
     emitter.on('filesystem:rename', rename)
-    emitter.emit('filesystem:init', state.global.path)
+    if (!state.filesystem || !state.filesystem.childen) {
+      emitter.emit('filesystem:init', state.global.path)
+    }
   })
+
   // :: init
   // Initialises the filesystem for the first time.
   // @params: target (string):    The path to initalise. Also state.global.path.
@@ -28,6 +30,12 @@ function filesystemStore (state, emitter) {
       state.filesystem = dirs
       emitter.emit('render')
     })
+  }
+
+  // :: get
+  //
+  function get(target, context, opts, cb) {
+    if (!context) context = state.filesystem.children
   }
 
   // :: open
@@ -84,13 +92,60 @@ function filesystemStore (state, emitter) {
     })
   }
 
+  // :: edit
+  // Tell the file browser you want to rename something
+  // @params: target (string):     The path for your flag
+
+  function edit(target, context) {
+    if (!context) context = state.filesystem.children
+
+    context.filter( (f) => {
+      // Account for top level results.
+      if (f.path === target) {
+        f.rename = !f.rename
+        // state.system.select = true
+        emitter.emit('render')
+        return
+      } else { // Recursive sub directories.
+        // @TODO: Implement better recursive searching.
+        if (f.children && f.children.length > 0) { // Don't search empty dirs.
+          edit(target, f.children)
+        }
+      }
+    })
+  }
+
+  // :: select
+  function select(target, context) {
+    if (!context) context = state.filesystem.children
+    context.filter( (f) => {
+      // Account for top level results.
+      if (f.path === target) {
+        f.selected = !f.selected
+        // state.system.select = true
+        emitter.emit('sys:setSelectedPath', f.path)
+        emitter.emit('render')
+        return
+      } else { // Recursive sub directories.
+        // @TODO: Implement better recursive searching.
+        f.selected = false
+        if (f.children && f.children.length > 0) { // Don't search empty dirs.
+          edit(target, f.children)
+        }
+      }
+    })
+  }
+
   // :: rename
   // Rename a folder from old name -> new name.
   // @params: target (object):     The data for your old/new path
   function rename(target) {
-    folders.rn(target.oldPath, target.newPath, (err) => {
+    folders.rn(target.oldName, target.newName, (err) => {
       if (err) console.log(err)
-      else emitter.emit('filesystem:init', state.global.path)
+      else {
+        rename(target)
+        emitter.emit('filesystem:init', state.global.path)
+      }
     })
   }
 
@@ -98,7 +153,6 @@ function filesystemStore (state, emitter) {
   // Create a new folder in the filesystem.
   // @params: context (string):    The parent of the new directory.
   function make(context) {
-    if (!context) context = ''
     var target = context + '/Untitled'
     console.log('New directory at: ', target)
 

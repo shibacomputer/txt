@@ -85,6 +85,7 @@ let mainWin
 let lockWin
 let setupWin
 
+
 app.on('ready', () => {
 
   // Check for settings defaults

@@ -24,7 +24,7 @@ module.exports = (props, click) => {
 
   return html`
     <button onclick=${props.click} class=${base} name=${props.name}>
-      <svg viewBox="0 0 24 24">
+      <svg>
         <use xlink:href="#txt-${props.icon}" />
       </svg>
     </button>
