@@ -22,7 +22,8 @@ function mainWindow(state, emit) {
         classes: 'c',
         icon: 'new',
         click: function() {
-          console.log('hello')
+          console.log(state.sys.path.selected)
+          emit('fs:make', state.sys.path.selected)
         }
       })
     ],

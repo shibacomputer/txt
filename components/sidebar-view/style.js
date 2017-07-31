@@ -6,7 +6,7 @@ var style = css`
     border-right: 1px solid #303033;
     display: flex;
     flex-direction: column;
-    height: calc(100vh-1px);
+    height: calc(100vh - 2px);
     max-width: 20rem;
     min-width: 14rem;
     width: 25vw;

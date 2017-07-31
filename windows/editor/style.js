@@ -4,6 +4,7 @@ var style = css`
   :host {
     display: flex;
     flex-direction: row;
+    z-index: 5;
   }
 `
 

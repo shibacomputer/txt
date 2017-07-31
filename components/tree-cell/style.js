@@ -22,7 +22,7 @@ var style = css`
     max-width: 20rem;
     min-width: 12rem;
     position: fixed;
-    width: 25vw;
+    width: calc(100% - 1px);
     z-index: 1;
   }
   :host:hover:before {

@@ -18,38 +18,34 @@ module.exports = {
     })
   },
   mk: function(name, cb) {
-    utils.getPath(name, (target) => {
-      fs.stat(target, (err, stats) => {
-        if (stats) {
-          console.log('📂 ‼️ Dir at path ', target, ' exists')
-        } else {
-          fs.mkdir(target, (err) => {
-            cb(err)
-          })
-        }
-      })
+    fs.stat(name, (err, stats) => {
+      if (stats) {
+        console.log('📂 ‼️ Dir at path ', name, ' exists')
+      } else {
+        fs.mkdir(name, (err) => {
+          cb(err)
+        })
+      }
     })
   },
   rn: function(oldPath, newPath, cb) { // Remember the paths are relative.
-    utils.getPath(oldPath, (oldTarget) => {
-      fs.stat(oldTarget, (err, stats) => {
-        if (stats) {
-          utils.getPath(newPath, (newTarget) => {
-            console.log('new path: ', newTarget)
-            fs.stat(newTarget, (err, stats) => {
-              if (stats) {
-                cb('File already exists') // @TODO: Do better work with errors
-              } else {
-                fs.rename(oldTarget, newTarget, (err) => {
-                  cb(err)
-                })
-              }
-            })
+    fs.stat(oldTarget, (err, stats) => {
+      if (stats) {
+        utils.getPath(newPath, (newTarget) => {
+          console.log('new path: ', newTarget)
+          fs.stat(newTarget, (err, stats) => {
+            if (stats) {
+              cb('File already exists') // @TODO: Do better work with errors
+            } else {
+              fs.rename(oldTarget, newTarget, (err) => {
+                cb(err)
+              })
+            }
           })
-        } else {
-          cb('Can\'t find target') // @TODO: Do better work with errors
-        }
-      })
+        })
+      } else {
+        cb('Can\'t find target') // @TODO: Do better work with errors
+      }
     })
   },
   rm: function(name, cb) {

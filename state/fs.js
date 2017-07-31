@@ -7,6 +7,7 @@ const path = require('path')
 module.exports = fsState
 
 function fsState (state, emitter) {
+
   if (!state.fs) {
     state.fs = null
   }
@@ -57,7 +58,6 @@ function fsState (state, emitter) {
         // Account for top level results.
         if (f.path === target) {
           f.open = !f.open
-          // state.system.select = true
           emitter.emit('render')
           return
         } else { // Recursive sub directories.
@@ -124,16 +124,16 @@ function fsState (state, emitter) {
     context.filter( (f) => {
       // Account for top level results.
       if (f.path === target) {
-        f.selected = !f.selected
+        f.selected = true
         // state.system.select = true
-        emitter.emit('sys:setSelectedPath', f.path)
+        emitter.emit('sys:path:selected:update', f.path)
         emitter.emit('render')
         return
       } else { // Recursive sub directories.
         // @TODO: Implement better recursive searching.
         f.selected = false
         if (f.children && f.children.length > 0) { // Don't search empty dirs.
-          edit(target, f.children)
+          select(target, f.children)
         }
       }
     })
@@ -155,11 +155,13 @@ function fsState (state, emitter) {
   // :: make
   // Create a new folder in the filesystem.
   // @params: context (string):    The parent of the new directory.
-  function make(context) {
-    var target = context + '/Untitled'
-    console.log('New directory at: ', target)
+  function make(target) {
+    if (!target) target = state.sys.path.working
 
+    var target = target + '/Untitled'
+    console.log('New directory at: ', target)
     folders.mk(target, (err) => {
+      console.log(err)
       // if (err) {
         // var retryPath = context +
       // }

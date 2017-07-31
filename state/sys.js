@@ -13,8 +13,10 @@ function sysState (state, emitter) {
     state.sys.path.selected = null
     state.sys.path.working = null
     state.sys.auth = false
-    state.sys.ui = {}
-    state.sys.ui.theme = 'dark'
+    state.sys.appearance = {}
+    state.sys.appearance.theme = 'dark'
+    state.sys.actions = {}
+    state.sys.actions.showNewSidebarOptions = false
   }
 
   emitter.on('DOMContentLoaded', function() {
@@ -26,7 +28,10 @@ function sysState (state, emitter) {
     emitter.on('sys:path:working:update', setWorkingPath)
 
     // Handling appearance
-    emitter.on('sys:ui:theme:update', setTheme)
+    emitter.on('sys:appearance:theme:update', setTheme)
+
+    // actions
+    emitter.on('sys:actions:sidebar:newOptions', setShowNewOptions)
 
     // Handling auth
     emitter.on('sys:auth:update', toggleAuth)
@@ -78,7 +83,7 @@ function sysState (state, emitter) {
     emitter.emit('log:debug', 'setTheme: ', newTheme)
     utils.setSetting('theme', newTheme, (err) => {
       if (!err) {
-        state.sys.ui.theme = newTheme
+        state.sys.appearance.theme = newTheme
       }
     })
   }
@@ -90,6 +95,11 @@ function sysState (state, emitter) {
     state.sys.auth = !state.sys.auth
   }
 
+  // :: setShowNewOptions
+  function setShowNewOptions () {
+    emitter.emit('log:debug', 'setShowNewOptions: ', !state.sys.actions.showNewSidebarOptions)
+    state.sys.actions.showNewSidebarOptions = !state.sys.actions.showNewSidebarOptions
+  }
   //
   // IPC ROUTES
   //
