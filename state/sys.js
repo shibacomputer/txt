@@ -8,6 +8,11 @@ module.exports = sysState
 function sysState (state, emitter) {
   if (!state.sys) {
     state.sys = {}
+    state.sys.status = {}
+    state.sys.status.focus = null
+    state.sys.status.active = null
+    state.sys.status.open = []
+    state.sys.status.rename = null
     state.sys.path = {}
     state.sys.path.active = null
     state.sys.path.selected = null
@@ -22,9 +27,13 @@ function sysState (state, emitter) {
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Sys State')
 
+    // Handling working state
+    emitter.on('sys:status:focus:update', setFocus)
+    emitter.on('sys:status:active:update', setActive)
+    emitter.on('sys:status:open:update', setOpen)
+    emitter.on('sys:status:rename:update', setRename)
+
     // Handling paths
-    emitter.on('sys:path:active:update', setActivePath)
-    emitter.on('sys:path:selected:update', setSelectedPath)
     emitter.on('sys:path:working:update', setWorkingPath)
 
     // Handling appearance
@@ -43,29 +52,51 @@ function sysState (state, emitter) {
 
   })
 
-  // :: setActivePath
-  // Update the active path, specifically for working with notes.
-  // @params: newPath (string):   A new relative path.
-  function setActivePath(newPath) {
-    utils.getPath(target, (validPath, err) => {
-      if (!err) {
-        emitter.emit('log:debug', 'setActivePath: ', validPath)
-        state.sys.path.active = validPath
-      }
-    })
+  // :: setFocus
+  // Store the focused item
+  function setFocus(id) {
+    id = typeof id != 'number' ? Number(id) : id
+    if (state.sys.status.focus != id) {
+      state.sys.status.focus = id
+      emitter.emit('render')
+    } else {
+      return
+    }
   }
 
-  // :: setSelectedPath
-  // The current selected directory or note. Use this when you want to
-  // work with commands that require a specific directory (new item, delete, etc)
-  // @params: newPath (string):   A new relative path.
-  function setSelectedPath(newPath) {
-    utils.getPath(newPath, (validPath, err) => {
-      if (!err) {
-        emitter.emit('log:debug', 'setSelectedPath: ', validPath)
-        state.sys.path.selected = validPath
-      }
-    })
+  // :: setActive
+  // Store the active item
+  function setActive(id) {
+    id = typeof id != 'number' ? Number(id) : id
+    if (state.sys.status.active != id) {
+      state.sys.status.active = id
+      emitter.emit('render')
+    } else {
+      return
+    }
+  }
+
+  // :: setDetail
+  // Store the open items
+  function setOpen(id) {
+    id = typeof id != 'number' ? Number(id) : id
+    var index = state.sys.status.open.indexOf(id)
+    if (index > -1) state.sys.status.open.splice(index, 1)
+    else state.sys.status.open.push(id)
+    console.log(state.sys.status.open)
+    emitter.emit('render')
+  }
+
+  // :: setRename
+  // Store the active item
+  function setRename(id) {
+    id = typeof id != 'number' ? Number(id) : id
+    if (state.sys.status.rename != id) {
+      state.sys.status.rename = id
+      emitter.emit('render')
+    } else {
+      return
+    }
   }
 
   // :: setWorkingPath

@@ -1,8 +1,9 @@
-const choo    = require('choo'),
-      expose  = require('choo-expose'),
-      log     = require('choo-log'),
-      persist = require('choo-persist'),
-      css     = require('sheetify')
+const choo    = require('choo')
+const expose  = require('choo-expose')
+const log     = require('choo-log')
+const persist = require('choo-persist')
+const css     = require('sheetify')
+const tools   = require('choo-devtools')
 
 // Setup global CSS
 css('./css/defs.css')
@@ -15,6 +16,7 @@ const app = choo()
 app.use(persist())
 app.use(log())
 app.use(expose())
+app.use(tools())
 
 // State
 app.use(require('./state/sys')) // This is handling the UI.

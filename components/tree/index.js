@@ -5,6 +5,12 @@ const treeCell = require('../tree-cell')
 module.exports = tree
 
 function tree(state, emit) {
+  var opts = {
+    open: state.sys.status.open,
+    focus: state.sys.status.focus,
+    rename: state.sys.status.rename,
+  }
+
   if (state.fs) return initTree()
 
   function initTree () {
@@ -19,8 +25,8 @@ function tree(state, emit) {
             if (f.mime === 'text/gpg' || f.type === 'directory') {
               return html`
                 <li>
-                  ${ treeCell(f, emit) }
-                  ${ f.type === 'directory' && f.open ? tree(f.children) : null }
+                  ${ treeCell(f, opts, emit) }
+                  ${ f.type === 'directory' && opts.open.indexOf(f.id) > -1 ? tree(f.children) : null }
                 </li>
               `
             }

@@ -14,13 +14,12 @@ function editor (state, emit) {
     },
     styleWithCSS: true,
     classes: {
-      actionbar: 'pell-actionbar-custom-name',
-      button: 'pell-button-custom-name',
-      content: 'pell-content-custom-name'
+      actionbar: 'editor-actionbar',
+      button: 'editor-button',
+      content: 'editor-content'
     }
   })
 
   editor.content.innerHTML = state.note.savedBody
   return el
-
 }

@@ -18,8 +18,6 @@ function fsState (state, emitter) {
     emitter.on('fs:open', open)
     emitter.on('fs:destroy', destroy)
     emitter.on('fs:make', make)
-    emitter.on('fs:edit', edit)
-    emitter.on('fs:select', select)
     emitter.on('fs:rename', rename)
 
     emitter.emit('fs:init', state.sys.path.working)
@@ -34,12 +32,6 @@ function fsState (state, emitter) {
       state.fs = dirs
       emitter.emit('render')
     })
-  }
-
-  // :: get
-  //
-  function get(target, context, opts, cb) {
-    if (!context) context = state.fs.children
   }
 
   // :: open
@@ -95,50 +87,6 @@ function fsState (state, emitter) {
     })
   }
 
-  // :: edit
-  // Tell the file browser you want to rename something
-  // @params: target (string):     The path for your flag
-
-  function edit(target, context) {
-    if (!context) context = state.fs.children
-
-    context.filter( (f) => {
-      // Account for top level results.
-      if (f.path === target) {
-        f.rename = !f.rename
-        // state.system.select = true
-        emitter.emit('render')
-        return
-      } else { // Recursive sub directories.
-        // @TODO: Implement better recursive searching.
-        if (f.children && f.children.length > 0) { // Don't search empty dirs.
-          edit(target, f.children)
-        }
-      }
-    })
-  }
-
-  // :: select
-  function select(target, context) {
-    if (!context) context = state.fs.children
-    context.filter( (f) => {
-      // Account for top level results.
-      if (f.path === target) {
-        f.selected = true
-        // state.system.select = true
-        emitter.emit('sys:path:selected:update', f.path)
-        emitter.emit('render')
-        return
-      } else { // Recursive sub directories.
-        // @TODO: Implement better recursive searching.
-        f.selected = false
-        if (f.children && f.children.length > 0) { // Don't search empty dirs.
-          select(target, f.children)
-        }
-      }
-    })
-  }
-
   // :: rename
   // Rename a folder from old name -> new name.
   // @params: target (object):     The data for your old/new path
@@ -158,9 +106,8 @@ function fsState (state, emitter) {
   function make(target) {
     if (!target) target = state.sys.path.working
 
-    var target = target + '/Untitled'
-    console.log('New directory at: ', target)
-    folders.mk(target, (err) => {
+    var newPath = newPath + '/New Folder'
+    folders.mk(newPath, (err) => {
       console.log(err)
       // if (err) {
         // var retryPath = context +
