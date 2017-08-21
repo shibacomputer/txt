@@ -17,11 +17,14 @@ npm start
 
 ✨ 📝 🚀!
 ```
+## Disclaimer
+
+🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
+🚫 **THIS IS A HUGE WORK IN PROGRESS** 🚫
 
 ## Features
 
-This is an ever-changing list.
-
+So far:  
 ✅ Simple PGP-managed filesystem-based notekeeping  
 ✅ Text editor  
 ⬜️ Markdown support  
