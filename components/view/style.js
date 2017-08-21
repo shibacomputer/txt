@@ -14,6 +14,7 @@ var style = css`
   }
   :host > header {
     border-bottom: 1px solid #303033;
+    min-height: 0;
   }
   :host > div {
     -webkit-app-region: no-drag;
@@ -25,6 +26,7 @@ var style = css`
   }
   :host > footer {
     border-top: 1px solid #303033;
+    min-height: 0;
   }
 `
 
