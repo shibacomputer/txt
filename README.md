@@ -38,4 +38,8 @@ So far:
 ⬜️ Secure syncing  
 ⬜️ Windows & Linux support  
 
+## Big todos
+⬜️ Move PGP to main process  
+⬜️ Add file management  
+
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
