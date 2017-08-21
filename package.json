@@ -50,6 +50,7 @@
     "electron": "^1.4.6",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
+    "envobj": "^1.0.4",
     "spritesh": "^1.2.0",
     "svgo": "^0.7.2"
   },
