@@ -3,10 +3,10 @@ const style = require('./style')
 
 module.exports = toolbar
 
-function toolbar (left, right, title, emit) {
+function toolbar (elements, emit) {
 
   function init (pos) {
-    var items = pos === 'left'? left : right
+    var items = pos === 'left'? elements.left : elements.right
     return html`
       <div class="${pos} group">
         <ul>
@@ -27,7 +27,7 @@ function toolbar (left, right, title, emit) {
     if (title) {
       return html`
         <nav class="center group">
-          ${ title }
+          ${ elements.center }
         </nav>
       `
     }
