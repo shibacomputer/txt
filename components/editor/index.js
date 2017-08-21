@@ -20,6 +20,6 @@ function editor (state, emit) {
     }
   })
 
-  editor.content.innerHTML = state.note.savedBody
+  // editor.content.innerHTML = state.note.savedBody
   return el
 }

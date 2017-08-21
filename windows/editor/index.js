@@ -13,27 +13,22 @@ module.exports = mainWindow
 function mainWindow(state, emit) {
   document.title = 'Keyp'
 
-  var editorView = buildEditorView()
-
   // Set up our components
   return html`
     <body class="b-myc ${style}">
       ${ icons() }
-      ${ editorView(state, emit, 'editor', editorView) }
+      ${ view(state, emit, 'editor', buildEditorView()) }
     </body>
   `
 
   function buildEditorView() {
-    var elements = {}
-
     // Set up our components
-
-    const editor = {
+    const elements = {
       toolbar: toolbar(),
       footer: toolbar(),
-      view: editor()
+      view: editor(state, emit)
     }
 
-    return editor
+    return elements
   }
 }

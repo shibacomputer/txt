@@ -43,7 +43,7 @@ function toolbar (elements, emit) {
         typeof elements.center === "object" ? center() : null
       }
       ${
-        typeof elements.right === "object" ? init('right') : null }
+        typeof elements.right === "object" ? init('right') : null
       }
     </header>
   `
