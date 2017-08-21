@@ -7,8 +7,8 @@ const tools   = require('choo-devtools')
 
 // Setup global CSS
 css('./css/defs.css')
-css('./css/common.css')
 css('./css/editor.css')
+css('./css/common.css')
 
 const app = choo()
 

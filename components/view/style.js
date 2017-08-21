@@ -19,8 +19,8 @@ var style = css`
   :host > div {
     -webkit-app-region: no-drag;
     -webkit-overflow-scrolling: touch;
+    display: flex;
     flex-grow: 1;
-    margin-top: 1rem;
     overflow: scroll;
 
   }

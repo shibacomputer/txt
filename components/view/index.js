@@ -16,7 +16,7 @@ function view (state, emit, role, elements) {
         ${ elements.toolbar }
       </header>
       <div>
-        ${ elements.interface }
+        ${ elements.view }
       </div>
       <footer>
         ${ elements.footer }

@@ -1,1 +1,15 @@
-.pell{border-radius:5px;box-shadow:0 2px 3px hsla(0,0%,4%,.1),0 0 0 1px hsla(0,0%,4%,.1)}.pell,.pell-content{box-sizing:border-box;width:100%}.pell-content{height:300px;outline:0;overflow-y:auto;padding:10px}.pell-actionbar{background-color:#fff;border-bottom:1px solid hsla(0,0%,4%,.1);border-top-left-radius:5px;border-top-right-radius:5px;width:100%}.pell-button{background-color:transparent;border:none;cursor:pointer;height:30px;outline:0;width:30px}
+.editor {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.editor .editor-content {
+  box-sizing: border-box;
+  outline: none;
+  flex-grow: 1;
+  font-size: 14px;
+  padding: 1rem;
+  max-width: 64rem;
+  width: 100%;
+}

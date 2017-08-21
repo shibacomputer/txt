@@ -5,7 +5,7 @@ module.exports = editor
 
 function editor (state, emit) {
   var el = html`
-    <div id="pell"></div>
+    <div class="editor"></div>
   `
   const editor = pell.init({
     element: el,
@@ -13,8 +13,9 @@ function editor (state, emit) {
       emit('note:update', contents)
     },
     styleWithCSS: true,
+    actions: [],
     classes: {
-      actionbar: 'editor-actionbar',
+      actionbar: 'editor-actions',
       button: 'editor-button',
       content: 'editor-content'
     }

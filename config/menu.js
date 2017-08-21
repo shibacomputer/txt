@@ -103,9 +103,6 @@ const commonMenu = [
       {
         role: 'minimize'
       },
-      {
-        role: 'close'
-      }
     ]
   },
   {
@@ -125,30 +122,6 @@ if (process.platform === 'darwin') {
     submenu: [
       {
         role: 'about'
-      },
-      {
-        label: 'Check for Update',
-        click (item, win, event) {
-          console.log('Import')
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Preferences…',
-        click (item, win, event) {
-          console.log('Preferences')
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        label: 'Lock…',
-        click (item, win, event) {
-          console.log('Lock')
-        }
       },
       {
         type: 'separator'
@@ -196,9 +169,6 @@ if (process.platform === 'darwin') {
 
   // Window menu
   commonMenu[3].submenu = [
-    {
-      role: 'close'
-    },
     {
       role: 'minimize'
     },
