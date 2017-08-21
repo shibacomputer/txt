@@ -9,24 +9,6 @@ const openpgp = require('openpgp')
 
 module.exports = {
 
-  // :: getPath
-  // Prepends the user-set path, validate, then return a valid path.
-  // Used to kickoff filesystem read/write functions.
-  getPath: function(filename, cb) {
-    var newPath
-    var err
-    if (settings.has('workingPath')) {
-      newPath = path.join(settings.get('workingPath'), filename)
-    } else {
-      err = {
-        title: 'No Notebook',
-        body: 'You need to reset your notebook',
-        route: 'reboot'
-      }
-    }
-    cb(newPath, err)
-  },
-
   // :: getSetting
   // Gets a setting for a key using electron-settings.
   // Pass a default value here if you want to prevent an error.
@@ -82,7 +64,6 @@ module.exports = {
   // @params: data (binary):    Packaged data from the UI,
   //          secret (string):  User sercret from entry or keychain.
   encrypt: function(data, cb) {
-
     var options, encrypted
     options = {
         data: data,
@@ -92,14 +73,5 @@ module.exports = {
     openpgp.encrypt(options).then((ciphertext) => {
       cb(ciphertext)
     });
-  },
-
-  // :: pack
-  // Receives data from the UI, and creates an archive format if there are
-  // assets other than text that require bundling. Returns a zip.
-  // @params: data (object):   The desired object to pack.
-  //          options (array): Options for packing.
-  pack: function(data, options, cb) {
-    cb()
   }
 }
