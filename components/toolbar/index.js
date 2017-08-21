@@ -4,8 +4,9 @@ const style = require('./style')
 module.exports = toolbar
 
 function toolbar (elements, emit) {
-
+  elements = typeof elements === "object" ? elements : {}
   function init (pos) {
+
     var items = pos === 'left'? elements.left : elements.right
     return html`
       <div class="${pos} group">
@@ -35,9 +36,15 @@ function toolbar (elements, emit) {
 
   return html`
     <header class="${style}">
-      ${ init('left') }
-      ${ center() }
-      ${ init('right') }
+      ${
+        typeof elements.left === "object" ? init('left') : null
+      }
+      ${
+        typeof elements.center === "object" ? center() : null
+      }
+      ${
+        typeof elements.right === "object" ? init('right') : null }
+      }
     </header>
   `
 }

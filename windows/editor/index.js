@@ -6,6 +6,7 @@ const icons = require('../../utils/icons')
 const button = require('../../components/button')
 const toolbar = require('../../components/toolbar')
 const view = require('../../components/view')
+const editor = require('../../components/editor')
 
 module.exports = mainWindow
 
@@ -26,35 +27,13 @@ function mainWindow(state, emit) {
     var elements = {}
 
     // Set up our components
-    const browserToolbar = toolbar( null,
-      [
-        button({
-          name: 'new',
-          classes: 'c',
-          icon: 'new',
-          click: function() {
-            console.log(state.sys.path.selected)
-            emit('fs:make', state.sys.path.selected)
-          }
-        })
-      ],
-      strings.en.title,
-      emit )
-    const browserFooter = toolbar ()
-    const sidebar = {
-      toolbar: browserToolbar,
-      footer: browserFooter,
-      view: editor(state, emit)
-    }
-
-    const editorToolbar = toolbar( null, null, null, emit)
-
 
     const editor = {
-      toolbar: editorToolbar,
-      footer: toolbar ()
+      toolbar: toolbar(),
+      footer: toolbar(),
+      view: editor()
     }
 
-    return elements
+    return editor
   }
 }

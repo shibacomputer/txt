@@ -6,15 +6,15 @@ const commonMenu = [
     label: 'File',
     submenu: [
       {
-        label: 'New Note…',
+        label: 'New Note',
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
           console.log('New Note')
         }
       },
       {
-        label: 'New Folder…',
-        accelerator: 'CmdOrCtrl+Shift+N',
+        label: 'Open…',
+        accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
           console.log('New Folder')
         }
@@ -40,8 +40,8 @@ const commonMenu = [
         type: 'separator'
       },
       {
-        label: 'Trash',
-        accelerator: 'CmdOrCtrl+Shift+backspace',
+        label: 'Close',
+        accelerator: 'CmdOrCtrl+W',
         click (item, win, event) {
           console.log('Export')
         }
@@ -106,20 +106,6 @@ const commonMenu = [
       {
         role: 'close'
       }
-    ]
-  },
-  {
-    label: 'Debug',
-    submenu: [
-      {
-        role: 'reload'
-      },
-      {
-        role: 'forcereload'
-      },
-      {
-        role: 'toggledevtools'
-      },
     ]
   },
   {
