@@ -39,6 +39,7 @@ So far:
 ⬜️ Windows & Linux support  
 
 ## Big todos
+⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜️ Move PGP to main process  
 ⬜️ Add file management  
 
