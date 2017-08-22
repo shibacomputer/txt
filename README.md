@@ -1,7 +1,7 @@
 ![Txt Logo](icon.png)
 # Txt.app
 
-Txt is a cute little private journalling app that keeps your work safe with [proven encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).
+Txt is a cute little private journalling app that keeps your work safe with [well-known encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).
 
 https://txtapp.io
 
@@ -20,7 +20,7 @@ npm start
 ## Disclaimer
 
 🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
-🚫 **THIS IS A HUGE WORK IN PROGRESS** 🚫
+🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED** 🚫
 
 ## Features
 
