@@ -40,7 +40,9 @@ So far:
 
 ## Big todos
 ⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)  
-⬜️ Move PGP to main process  
+⬜️ Move PGP from renderer to main process (lmao)  
 ⬜️ Add file management  
+⬜️ Add support for keys instead of passwords  
+⬜️ Better support for file permission edge cases  
 
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
