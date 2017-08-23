@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu} = require('electron')
+const {app, BrowserWindow, Menu, dialog} = require('electron')
 const { ipcMain } = require('electron')
 
 const commonMenu = [
@@ -16,8 +16,17 @@ const commonMenu = [
         label: 'Open…',
         accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
-          console.log('New Folder')
-        }
+          dialog.showOpenDialog({
+            title: 'Open encytped text file',
+            buttonLabel: 'Open',
+            properties: ['openFile'],
+            filters: [
+              { name: 'Encrypted Text', extensions: ['gpg', 'txt.gpg'] }
+            ]
+          }, (filePath) => {
+            win.webContents.send('menu:note:open', filePath)
+          }
+        )
       },
       {
         type: 'separator'
@@ -33,7 +42,7 @@ const commonMenu = [
         label: 'Save As…',
         accelerator: 'CmdOrCtrl+Shift+S',
         click (item, win, event) {
-          console.log('Save As')
+          win.webContents.send('menu:note:duplicate')
         }
       },
       {
