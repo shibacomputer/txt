@@ -5,9 +5,7 @@ const { ipcRenderer } = window.require('electron')
 module.exports = noteState
 
 function noteState (state, emitter) {
-  if (!state.note) {
-    initNote()
-  }
+  initNote()
 
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading Note Store')

@@ -10,7 +10,7 @@
   flex-grow: 1;
   font-size: 14px;
   max-width: 64rem;
-  padding: 1rem;
+  padding: 2rem 1.5rem 0rem 1.5rem;
   transition: background-color linear 100ms;
   width: 100%;
 }
