@@ -1,7 +1,8 @@
 ![Txt Logo](icon.png)
 # Txt.app
 
-Txt is a cute little private journalling app that keeps your work safe with [well-known encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).
+Txt is a cute little private journalling app that keeps your work safe with
+[well-documented encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).
 
 https://txtapp.io
 
@@ -27,10 +28,10 @@ npm start
 So far:  
 ✅ Simple PGP-managed filesystem-based notekeeping  
 ✅ Text editor  
-⬜️ Markdown support  
-✅ Dark UI  
-⬜️ Light UI  
 ✅ Keychain support  
+✅ Dark UI  
+⬜️ Markdown support  
+⬜️ Light UI  
 ⬜️ Export to [Are.na](https://are.na)  
 ⬜️ Export to [Medium](https://medium.com)  
 ⬜️ Export to PDF  
