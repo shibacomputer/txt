@@ -7,6 +7,7 @@ var style = css`
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
+    flex-shrink: 0;
     font-size: 12px;
     height: 2.25rem;
     padding: 0.3rem 0.5rem;
