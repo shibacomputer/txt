@@ -1,5 +1,6 @@
 const {app, BrowserWindow, Menu, dialog} = require('electron')
 const { ipcMain } = require('electron')
+const path = require('path')
 
 const commonMenu = [
   {
@@ -23,10 +24,12 @@ const commonMenu = [
             filters: [
               { name: 'Encrypted Text', extensions: ['gpg', 'txt.gpg'] }
             ]
-          }, (filePath) => {
-            win.webContents.send('menu:note:open', filePath)
-          }
-        )
+          }, function(filePath) {
+            if (filePath) {
+              win.webContents.send('menu:note:open', path.normalize(filePath[0]))
+            }
+          })
+        }
       },
       {
         type: 'separator'
