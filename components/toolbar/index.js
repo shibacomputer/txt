@@ -11,7 +11,7 @@ function toolbar (elements, emit) {
     return html`
       <div class="${pos} group">
         <ul>
-          ${ items? items.map( (item) => {
+          ${ typeof items === "object" ? items.map( (item) => {
               return html`
                 <li>
                   ${ item }
@@ -25,25 +25,23 @@ function toolbar (elements, emit) {
   }
 
   function center() {
-    if (title) {
-      return html`
-        <nav class="center group">
-          ${ elements.center }
-        </nav>
-      `
-    }
+    return html`
+      <nav class="center group">
+        ${ elements.center }
+      </nav>
+    `
   }
 
   return html`
     <header class="${style}">
       ${
-        typeof elements.left === "object" ? init('left') : null
+        init('left')
       }
       ${
-        typeof elements.center === "object" ? center() : null
+        center()
       }
       ${
-        typeof elements.right === "object" ? init('right') : null
+        init('right')
       }
     </header>
   `

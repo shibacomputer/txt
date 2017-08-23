@@ -7,6 +7,7 @@ const button = require('../../components/button')
 const toolbar = require('../../components/toolbar')
 const view = require('../../components/view')
 const editor = require('../../components/editor')
+const noteTitle = require('../../components/note-title')
 
 module.exports = mainWindow
 
@@ -24,7 +25,9 @@ function mainWindow(state, emit) {
   function buildEditorView() {
     // Set up our components
     const elements = {
-      toolbar: toolbar(),
+      toolbar: toolbar({
+        center: noteTitle(state.note.title)
+      }),
       footer: toolbar(),
       view: editor(state, emit)
     }

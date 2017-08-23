@@ -9,7 +9,12 @@
   outline: none;
   flex-grow: 1;
   font-size: 14px;
-  padding: 1rem;
   max-width: 64rem;
+  padding: 1rem;
+  transition: background-color linear 100ms;
   width: 100%;
+}
+
+.editor .editor-content:hover {
+  background-color: #1D1D23;
 }

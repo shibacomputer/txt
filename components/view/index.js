@@ -12,15 +12,11 @@ function view (state, emit, role, elements) {
 
   return html`
     <main data-role=${role} class=${style}>
-      <header>
-        ${ elements.toolbar }
-      </header>
+      ${ elements.toolbar }
       <div>
         ${ elements.view }
       </div>
-      <footer>
-        ${ elements.footer }
-      </footer>
+      ${ elements.footer }
     </main>
   `
 }
