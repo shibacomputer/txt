@@ -9,6 +9,7 @@
   outline: none;
   flex-grow: 1;
   font-size: 14px;
+  line-height: 1.8;
   max-width: 64rem;
   padding: 2rem 1.5rem 0rem 1.5rem;
   transition: background-color linear 100ms;

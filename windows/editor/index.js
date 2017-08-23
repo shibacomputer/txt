@@ -26,9 +26,40 @@ function mainWindow(state, emit) {
     // Set up our components
     const elements = {
       toolbar: toolbar({
-        center: noteTitle(state.note.title)
+        center: noteTitle(state.note.title),
+        right: [
+          button({
+            name: 'new',
+            classes: 'c',
+            icon: 'new',
+            click: function() {
+              console.log('new file')
+            }
+          })
+        ]
       }),
-      footer: toolbar(),
+      footer: toolbar({
+        left: [
+          button({
+            name: 'settings',
+            classes: 'c',
+            icon: 'settings',
+            click: function() {
+              console.log('settings')
+            }
+         })
+       ],
+       right: [
+         button({
+           name: 'report',
+           classes: 'c',
+           icon: 'issue',
+           click: function() {
+             console.log('report issue')
+           }
+         })
+       ]
+      }),
       view: editor(state, emit)
     }
 

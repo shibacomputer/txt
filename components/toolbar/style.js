@@ -27,6 +27,7 @@ var style = css`
   }
   :host .left {
     justify-content: flex-start;
+    margin-top: 1px;
   }
   :host .center {
     color: var(--c);
@@ -38,6 +39,7 @@ var style = css`
 
   :host .right {
     justify-content: flex-end;
+    margin-top: 1px;
   }
   :host .right li {
     margin-left: 8px;
