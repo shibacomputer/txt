@@ -31,12 +31,13 @@ function noteState (state, emitter) {
 
   function create (note) {
     emitter.emit('log:debug', 'Creating note')
+    ipcRenderer.send('menu:note:isNew', true)
   }
 
   function open (note) {
     emitter.emit('log:debug', 'Opening a note')
     if (note != state.note.path) {
-      file.open(note, (n) => {
+      file.open(note, (n, err) => {
         var url = note.split('/')
 
         state.note.path = note
@@ -44,7 +45,7 @@ function noteState (state, emitter) {
         state.note.staleBody = n.data
         state.note.body = state.note.staleBody
         console.log('📄 👀 ', state.note)
-
+        ipcRenderer.send('menu:note:isNew', false)
         emitter.emit('render')
       })
     }
@@ -81,8 +82,8 @@ function noteState (state, emitter) {
     emitter.emit('note:save', state.note)
   })
 
-  ipcRenderer.on('menu:note:open', (event, test) => {
-    console.log(test)
+  ipcRenderer.on('menu:note:open', (event, notePath) => {
+    emitter.emit('note:open', notePath)
   })
 
 }

@@ -10,17 +10,19 @@ module.exports = {
   // :: open
   // Asynchronously opens a file. Assumes a valid path, but still checks for
   // the file's existence.
-  open: function(file, path, cb) {
-    fs.stat(target, (err, stats) => {
+  open: function(uri, cb) {
+    var err = null
+    var plaintext = null
+    fs.stat(uri, (err, stats) => {
       if (err) {
-        cb(err)
+        cb(plaintext, err)
       } else {
-          fs.readFile(target, (err, data) => {
+          fs.readFile(uri, (err, data) => {
           if (err) {
-            cb(err)
-          } else  {
+            cb(plaintext, err)
+          } else {
             utils.decrypt(data, (plaintext) => {
-              cb(plaintext)
+              cb(plaintext, err)
             })
           }
         })

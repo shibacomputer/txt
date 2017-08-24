@@ -52,7 +52,7 @@ module.exports = {
         message: openpgp.message.read(data),
         password: 'Test',
         format: 'utf8'
-    };
+    }
     openpgp.decrypt(options).then((plaintext) => {
       cb(plaintext)
     });
@@ -63,12 +63,13 @@ module.exports = {
   // Encrypts data. Returns a binary blob.
   // @params: data (binary):    Packaged data from the UI,
   //          secret (string):  User sercret from entry or keychain.
-  encrypt: function(data, cb) {
+  encrypt: function(data, filename, cb) {
     var options, encrypted
     options = {
         data: data,
         passwords: ['Test'],
-        armor: false
+        armor: false,
+        filename: filename
     };
     openpgp.encrypt(options).then((ciphertext) => {
       cb(ciphertext)

@@ -1,6 +1,5 @@
 const {app, BrowserWindow, Menu, dialog} = require('electron')
 const { ipcMain } = require('electron')
-const path = require('path')
 
 const commonMenu = [
   {
@@ -26,6 +25,7 @@ const commonMenu = [
             ]
           }, function(filePath) {
             if (filePath) {
+              // @TODO: Move decryption out of the renderer.
               win.webContents.send('menu:note:open', path.normalize(filePath[0]))
             }
           })
@@ -38,6 +38,7 @@ const commonMenu = [
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
+
           win.webContents.send('menu:note:save')
         }
       },
@@ -53,7 +54,6 @@ const commonMenu = [
       },
       {
         label: 'Close',
-        accelerator: 'CmdOrCtrl+W',
         click (item, win, event) {
           console.log('Export')
         }

@@ -9,7 +9,7 @@ function editor (state, emit) {
   `
   const editor = pell.init({
     element: el,
-    onChange: contents => {
+    onChange: (contents) => {
       emit('note:update', contents)
     },
     styleWithCSS: true,
@@ -21,6 +21,6 @@ function editor (state, emit) {
     }
   })
 
-  // editor.content.innerHTML = state.note.savedBody
+  editor.content.innerHTML = state.note.body
   return el
 }
