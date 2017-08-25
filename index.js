@@ -52,7 +52,7 @@ let setupWin
 app.on('ready', () => {
 
   // Check for settings defaults
-  if (!settings.has('workingPath')) {
+  if (!settings.has('active')) {
     settings.setAll({
       'active': false,
       'keychain': false
@@ -76,7 +76,8 @@ app.on('ready', () => {
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
     // Check to see whether this we have a Txt folder set up.
-    if (active) {
+    console.log(active)
+    if (!active) {
       setupWin.showUrl(ev.uri + 'setup')
       setupWin.webContents.openDevTools({ mode: 'detach' })
     } else {
