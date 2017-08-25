@@ -33,11 +33,11 @@ module.exports = {
   // :: write
   // Write to disk. We assume a valid path but we still check to ensure we
   // have permission to write.
-  write: function(data, path, cb) {
+  write: function(data, cb) {
     fs.stat(data.path, (err, stats) => {
       utils.encrypt(data.body, data.title, (ciphertext) => {
         encrypted = ciphertext.message.packets.write()
-        fs.writeFile(target, encrypted, (err) => {
+        fs.writeFile(data.path, encrypted, (err) => {
           if (err) {
             cb(err)
           } else {
