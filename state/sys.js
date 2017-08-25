@@ -28,4 +28,6 @@ function sysState (state, emitter) {
     emitter.emit('log:debug', 'toggleAuth: ', !state.sys.auth)
     state.sys.auth = !state.sys.auth
   }
+
+  // IPC
 }

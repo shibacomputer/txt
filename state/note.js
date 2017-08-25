@@ -1,6 +1,10 @@
+const remote = window.require('electron').remote
+const { dialog } = remote.require('electron')
+const { ipcRenderer } = window.require('electron')
+
+const path = require('path')
 const utils = require('../utils/utils')
 const file = require('../utils/files')
-const { ipcRenderer } = window.require('electron')
 
 module.exports = noteState
 
@@ -20,9 +24,9 @@ function noteState (state, emitter) {
   function initNote() {
     state.note = { }
     state.note.path = null
-    state.note.title = null
-    state.note.staleBody = null
-    state.note.body = null
+    state.note.title = 'Untitled'
+    state.note.staleBody = ''
+    state.note.body = ''
     state.note.status = { }
     state.note.status.loading = false
     state.note.status.modified = false
@@ -34,17 +38,20 @@ function noteState (state, emitter) {
     ipcRenderer.send('menu:note:isNew', true)
   }
 
-  function open (note) {
+  function open (target) {
     emitter.emit('log:debug', 'Opening a note')
-    if (note != state.note.path) {
-      file.open(note, (n, err) => {
-        var url = note.split('/')
-
-        state.note.path = note
-        state.note.title = url[url.length-1].replace(/\.[^/.]+$/, "")
-        state.note.staleBody = n.data
-        state.note.body = state.note.staleBody
-        console.log('📄 👀 ', state.note)
+    if (target != state.note.path) {
+      file.open(path.normalize(target), (n, err) => {
+        var url = target.split('/')
+        var note = {
+          path: target,
+          title: url[url.length-1].replace(/\.[^/.]+$/, ""), // @TODO: Replace this with better handling
+          staleBody: n.data,
+          body: n.data,
+          modified: false,
+          loading: false
+        }
+        state.note = note
         ipcRenderer.send('menu:note:isNew', false)
         emitter.emit('render')
       })
@@ -62,28 +69,69 @@ function noteState (state, emitter) {
       state.note.status.modified = true
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
     }
-
     state.note.body = note
   }
 
   function save (note) {
     emitter.emit('log:debug', 'Beginning save process')
-    console.log(typeof note != 'object')
-    if (!note.status.modified) return  // Don't do redundant work
+
+    console.log(note)
+
+    if (!state.note.status.modified) return  // Don't do redundant work
     file.write(note, (err) => {
       state.note.status.modified = false
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
     })
   }
 
+  // Helpers
+  function getNote() {
+    var err = null
+
+    dialog.showOpenDialog({
+      title: 'Open File',
+      buttonLabel: 'Open',
+      properties: ['openFile'],
+      filters: [
+        { name: 'Encrypted Text', extensions: ['gpg'] }
+      ]
+    }, (filePath) => {
+      if (filePath) {
+        // @TODO: Move decryption out of the renderer.
+        emitter.emit('note:open', path.normalize(filePath[0]))
+      }
+    })
+  }
+
+  function getNewPath() {
+    dialog.showSaveDialog({
+      title: 'Save File',
+      buttonLabel: 'Save',
+      nameFieldLabel: state.note.title,
+      filters: [
+        { name: 'Encrypted Text', extensions: ['gpg'] }
+      ]
+    }, (savePath) => {
+      if (savePath) {
+        // @TODO: Move decryption out of the renderer.
+        state.note.path = path.normalize(savePath)
+        emitter.emit('note:save', state.note)
+      }
+    })
+
+  }
+
+  // IPC Routes
+  ipcRenderer.on('menu:note:open', (event) => {
+    getNote()
+  })
 
   // IPC Routes
   ipcRenderer.on('menu:note:save', (event) => {
-    emitter.emit('note:save', state.note)
+    if (state.note.status.modified) {
+      typeof state.note.path === 'string' ? emitter.emit('note:save', state.note) : getNewPath()
+    } else {
+      return
+    }
   })
-
-  ipcRenderer.on('menu:note:open', (event, notePath) => {
-    emitter.emit('note:open', notePath)
-  })
-
 }

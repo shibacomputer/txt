@@ -64,7 +64,7 @@ module.exports = {
   // @params: data (binary):    Packaged data from the UI,
   //          secret (string):  User sercret from entry or keychain.
   encrypt: function(data, filename, cb) {
-    var options, encrypted
+    var options
     options = {
         data: data,
         passwords: ['Test'],

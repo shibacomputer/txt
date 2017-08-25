@@ -1,4 +1,4 @@
-const {app, BrowserWindow, Menu, dialog} = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const { ipcMain } = require('electron')
 
 const commonMenu = [
@@ -16,19 +16,7 @@ const commonMenu = [
         label: 'Open…',
         accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
-          dialog.showOpenDialog({
-            title: 'Open encytped text file',
-            buttonLabel: 'Open',
-            properties: ['openFile'],
-            filters: [
-              { name: 'Encrypted Text', extensions: ['gpg', 'txt.gpg'] }
-            ]
-          }, function(filePath) {
-            if (filePath) {
-              // @TODO: Move decryption out of the renderer.
-              win.webContents.send('menu:note:open', path.normalize(filePath[0]))
-            }
-          })
+          win.webContents.send('menu:note:open')
         }
       },
       {
