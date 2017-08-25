@@ -44,6 +44,16 @@ const style = css`
     font-weight: bold;
     outline: none;
   }
+  :host > section > input:focus,
+  :host > section > input:active {
+    background: var(--b);
+    color: var(--k);
+  }
+  :host > section > input::selection {
+    background: white;
+    color: var(--k);
+  }
+
   :host > section > .tip {
     line-height: 1.5;
     margin-top: 0.5rem;
