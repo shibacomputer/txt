@@ -9,9 +9,10 @@ module.exports = keyState
 
 function keyState (state, emitter) {
   if (!state.key) {
-    state.key = {}
-    state.key.save = true
-    state.key.available = true
+    state.key = {
+      type: 'keychain',
+      available: false
+    }
   }
 
   emitter.on('DOMContentLoaded', function () {
@@ -28,12 +29,10 @@ function keyState (state, emitter) {
   // then sets a preference allowing for a saved state.
   // @params: phrase (string):   The passphrase string supplied by the user.
   function create (phrase) {
-    state.key.save = false
     state.key.available = false
     console.log('🔏 ', appId, ' → ', accountname)
     keytar.addPassword(appId, accountname, phrase)
     phrase = null
-    state.key.save = true
     state.key.available = true
 
     // Tell the global we're good to go.
@@ -49,7 +48,6 @@ function keyState (state, emitter) {
     console.log('🔏 ', appId, ' ♽ ', accountname)
     keytar.replacePassword(appId, accountname, phrase)
     phrase = null
-    state.key.save = true
     state.key.available = true
   }
 
@@ -57,7 +55,6 @@ function keyState (state, emitter) {
   // Destroys the keychain element and tells the user's keychain that the app
   // cannot be auto-logged in again.
   function destroy () {
-    state.key.save = false
     state.key.available = false
     keytar.replacePassword(appId, accountname)
     console.log('🔏 ', appId, ' 💣 ', accountname)

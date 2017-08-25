@@ -38,7 +38,7 @@ module.exports = {
     var err
     console.log('⚙️ → ' + key + ': ' + value)
     settings.set(key, value)
-    cb(err)
+    cb(key, err)
   },
 
   // :: decrypt
