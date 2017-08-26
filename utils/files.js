@@ -17,7 +17,6 @@ module.exports = {
         cb(plaintext, err)
       } else {
         fs.readFile(uri, (err, data) => {
-          console.log(err)
           if (err) {
             cb(plaintext, err)
           } else {

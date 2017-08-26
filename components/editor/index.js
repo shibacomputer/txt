@@ -4,23 +4,31 @@ const pell = require('pell')
 module.exports = editor
 
 function editor (state, emit) {
-  var el = html`
-    <div class="editor"></div>
-  `
-  const editor = pell.init({
-    element: el,
-    onChange: (contents) => {
-      emit('note:update', contents)
-    },
-    styleWithCSS: true,
-    actions: [],
-    classes: {
-      actionbar: 'editor-actions',
-      button: 'editor-button',
-      content: 'editor-content'
-    }
-  })
+  var el, editor
 
-  editor.content.innerHTML = state.note.body
+  init()
+
+  function init() {
+    el = html`
+      <div class="editor"></div>
+    `
+    editor = pell.init({
+      element: el,
+      onChange: (contents) => {
+        update(contents)
+      },
+      styleWithCSS: true,
+      actions: [],
+      classes: {
+        content: 'content'
+      }
+    })
+
+    function update(contents) {
+      emit('note:update', editor.content.innerText)
+    }
+
+    editor.content.innerText = state.note.staleBody
+  }
   return el
 }

@@ -4,7 +4,7 @@
   flex-direction: column;
   flex-grow: 1;
 }
-.editor .editor-content {
+.editor .content {
   box-sizing: border-box;
   outline: none;
   flex-grow: 1;
@@ -16,6 +16,6 @@
   width: 100%;
 }
 
-.editor .editor-content:hover {
+.editor .content:hover {
   background-color: #1D1D23;
 }

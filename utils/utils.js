@@ -55,14 +55,15 @@ module.exports = {
       format: 'utf8'
     }
     if (key.type === 'keychain') {
-      opts.password = keytar.getPassword(appId, accountname)
+      keytar.getPassword(appId, accountname).then( (passphrase) => {
+        opts.password = passphrase
+        openpgp.decrypt(opts).then((plaintext) => {
+          cb(plaintext)
+        })
+      })
     } else {
       //@TODO: Make this work with a key
     }
-
-    openpgp.decrypt(opts).then((plaintext) => {
-      cb(plaintext)
-    });
 
   },
 

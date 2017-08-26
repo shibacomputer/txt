@@ -22,14 +22,16 @@ function noteState (state, emitter) {
   })
 
   function initNote() {
-    state.note = { }
-    state.note.path = null
-    state.note.title = 'Untitled'
-    state.note.staleBody = ''
-    state.note.body = ''
-    state.note.status = { }
-    state.note.status.loading = false
-    state.note.status.modified = false
+    state.note = {
+      path: null,
+      title: 'Untitled',
+      staleBody: '',
+      body: '',
+      status: {
+        loading: false,
+        modified: false
+      }
+    }
     ipcRenderer.send('menu:note:modified', state.note.status.modified)
   }
 
@@ -50,8 +52,10 @@ function noteState (state, emitter) {
           title: url[url.length-1].replace(/\.[^/.]+$/, ""), // @TODO: Replace this with better handling
           staleBody: n.data,
           body: n.data,
-          modified: false,
-          loading: false
+          status: {
+            modified: false,
+            loading: false
+          }
         }
         state.note = note
         ipcRenderer.send('menu:note:isNew', false)
@@ -66,25 +70,26 @@ function noteState (state, emitter) {
     emitter.emit('render')
   }
 
-  function update (note) {
+  function update (body) {
+    state.note.body = body
+    console.log(state.note.staleBody != state.note.body)
     if (state.note.staleBody != state.note.body) {
       state.note.status.modified = true
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
     }
-    state.note.body = note
   }
 
   function save (note) {
     emitter.emit('log:debug', 'Beginning save process')
-
-    console.log(note)
-
     if (!state.note.status.modified) return  // Don't do redundant work
     file.write(note, {
       type: state.key.type
     }, (err) => {
       state.note.status.modified = false
+      state.note.staleBody = state.note.body
+
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
+      emitter.emit('render')
     })
   }
 
@@ -119,6 +124,9 @@ function noteState (state, emitter) {
       if (savePath) {
         // @TODO: Move decryption out of the renderer.
         state.note.path = path.normalize(savePath)
+        var title = state.note.path.split('/')
+        title = title[title.length-1].replace(/\.[^/.]+$/, "") // @TODO: Replace this with better handling
+        state.note.title = title
         emitter.emit('note:save', state.note)
       }
     })
