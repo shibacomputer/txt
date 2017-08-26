@@ -87,6 +87,7 @@ function noteState (state, emitter) {
       state.note.status.modified = false
       state.note.staleBody = state.note.body
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
+      emitter.emit('render')
     })
   }
 
