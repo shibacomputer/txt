@@ -81,15 +81,12 @@ function noteState (state, emitter) {
 
   function save (note) {
     emitter.emit('log:debug', 'Beginning save process')
-    if (!state.note.status.modified) return  // Don't do redundant work
     file.write(note, {
       type: state.key.type
     }, (err) => {
       state.note.status.modified = false
       state.note.staleBody = state.note.body
-
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
-      emitter.emit('render')
     })
   }
 
@@ -138,12 +135,12 @@ function noteState (state, emitter) {
     getNote()
   })
 
+  ipcRenderer.on('menu:note:duplicate', (event) => {
+    getNewPath()
+  })
+
   // IPC Routes
   ipcRenderer.on('menu:note:save', (event) => {
-    if (state.note.status.modified) {
-      typeof state.note.path === 'string' ? emitter.emit('note:save', state.note) : getNewPath()
-    } else {
-      return
-    }
+    typeof state.note.path === 'string' ? emitter.emit('note:save', state.note) : getNewPath()
   })
 }
