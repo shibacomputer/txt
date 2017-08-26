@@ -41,7 +41,9 @@ function noteState (state, emitter) {
   function open (target) {
     emitter.emit('log:debug', 'Opening a note')
     if (target != state.note.path) {
-      file.open(path.normalize(target), (n, err) => {
+      file.open(target, {
+        type: state.key.type
+      }, (n, err) => {
         var url = target.split('/')
         var note = {
           path: target,
@@ -78,7 +80,9 @@ function noteState (state, emitter) {
     console.log(note)
 
     if (!state.note.status.modified) return  // Don't do redundant work
-    file.write(note, (err) => {
+    file.write(note, {
+      type: state.key.type
+    }, (err) => {
       state.note.status.modified = false
       ipcRenderer.send('menu:note:modified', state.note.status.modified)
     })

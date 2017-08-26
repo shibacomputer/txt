@@ -2,11 +2,15 @@
 
 const path = require('path')
 const remote = window.require('electron').remote
+const keytar = remote.require('keytar')
+const { app } = remote.require('electron')
 const settings = remote.require('electron-settings')
 const openpgp = require('openpgp')
 
-// Utility functions
+const accountname = app.getPath('home').split('/').slice(-1)[0]
+const appId = 'Txt'
 
+// Utility functions
 module.exports = {
 
   // :: getSetting
@@ -38,22 +42,25 @@ module.exports = {
     var err
     console.log('⚙️ → ' + key + ': ' + value)
     settings.set(key, value)
-    cb(key, err)
   },
 
   // :: decrypt
   // Takes a PGP encrypted blob and returns it ready for insertion into the UI.
   // @params: data (binary):    The encrypted data from disk,
   //          secret (string):  User sercret from entry or keychain.
-  decrypt: function(data, cb) {
+  decrypt: function(data, key, cb) {
     openpgp.config.aead_protect = true
-    var options, result
-    options = {
-        message: openpgp.message.read(data),
-        password: 'Test',
-        format: 'utf8'
+    var opts = {
+      message: openpgp.message.read(data),
+      format: 'utf8'
     }
-    openpgp.decrypt(options).then((plaintext) => {
+    if (key.type === 'keychain') {
+      opts.password = keytar.getPassword(appId, accountname)
+    } else {
+      //@TODO: Make this work with a key
+    }
+
+    openpgp.decrypt(opts).then((plaintext) => {
       cb(plaintext)
     });
 
@@ -63,16 +70,23 @@ module.exports = {
   // Encrypts data. Returns a binary blob.
   // @params: data (binary):    Packaged data from the UI,
   //          secret (string):  User sercret from entry or keychain.
-  encrypt: function(data, filename, cb) {
-    var options
-    options = {
-        data: data,
-        passwords: ['Test'],
-        armor: false,
-        filename: filename
-    };
-    openpgp.encrypt(options).then((ciphertext) => {
-      cb(ciphertext)
-    });
+  encrypt: function(data, filename, key, cb) {
+    var opts = {
+      data: data,
+      armor: false,
+      filename: filename
+    }
+    if (key.type === 'keychain') {
+      keytar.getPassword(appId, accountname).then( (passphrase) => {
+        console.log(passphrase)
+        opts.passwords = [ passphrase ]
+        openpgp.encrypt(opts).then((ciphertext) => {
+          cb(ciphertext)
+        })
+      })
+
+    } else {
+      //@TODO: make this work with a private key.
+    }
   }
 }

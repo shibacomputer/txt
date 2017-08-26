@@ -10,7 +10,7 @@ module.exports = {
   setup: {
     titleBarStyle: 'hidden-inset',
     width: 448,
-    height: 608,
+    height: 526,
     frame: true,
     center: true,
     resizable: false,

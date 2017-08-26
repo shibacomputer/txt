@@ -31,12 +31,11 @@ function keyState (state, emitter) {
   function create (phrase) {
     state.key.available = false
     console.log('🔏 ', appId, ' → ', accountname)
-    keytar.addPassword(appId, accountname, phrase)
+    keytar.setPassword(appId, accountname, phrase)
     phrase = null
     state.key.available = true
 
     // Tell the global we're good to go.
-    emitter.emit('global:auth')
   }
 
   // :: update
@@ -46,7 +45,7 @@ function keyState (state, emitter) {
     state.key.save = false
     state.key.available = false
     console.log('🔏 ', appId, ' ♽ ', accountname)
-    keytar.replacePassword(appId, accountname, phrase)
+    keytar.setPassword(appId, accountname, phrase)
     phrase = null
     state.key.available = true
   }
@@ -56,8 +55,7 @@ function keyState (state, emitter) {
   // cannot be auto-logged in again.
   function destroy () {
     state.key.available = false
-    keytar.replacePassword(appId, accountname)
+    keytar.deletePassword(appId, accountname)
     console.log('🔏 ', appId, ' 💣 ', accountname)
-    emitter.emit('global:deauth')
   }
 }

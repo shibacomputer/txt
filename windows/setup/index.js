@@ -16,18 +16,19 @@ function setupWindow(state, emit) {
     <body class="b-myc">
       <main class="${style}">
         <header class="w">
+          <div class="logo">
+          </div>
           <h1>Txt</h1>
           <p>Simple, private journalling</p>
         </header>
         <section>
           <label for="passphrase" class="b">Passphrase</label>
           <input type="text" name="passphrase" id="passphrase" class="b b-input"/>
-          <label class="w tip">Txt uses GPG to encrypt your work. Choose a strong phrase to best protect your entires.
-            <span>Make sure you write your passphrase down and save it somewhere safe. If you lost it, your work is gone forever!</span></label>
+          <label class="w tip">Txt uses this passphrase to automatically encrypt and decrypt each file you create. Choose a strong phrase to best protect your files. <span class="b">Save your passphrase somewhere safe. If you lost it, your work is gone forever!</span></label>
         </section>
 
         <footer>
-          <button name="save" onclick=${saveSettings} class="bg-m f button-m">Save</button>
+          <button name="save" onclick=${saveSettings} class="bg-m f button-m">Save & Continue</button>
         </footer>
 
       </main>
