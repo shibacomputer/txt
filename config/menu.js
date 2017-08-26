@@ -6,7 +6,7 @@ const commonMenu = [
     label: 'File',
     submenu: [
       {
-        label: 'New Note',
+        label: 'New',
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
           console.log('New Note')
@@ -26,7 +26,6 @@ const commonMenu = [
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
-
           win.webContents.send('menu:note:save')
         }
       },
