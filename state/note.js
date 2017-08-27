@@ -9,22 +9,24 @@ const file = require('../utils/files')
 module.exports = noteState
 
 function noteState (state, emitter) {
-  init()
+  if (!state.note) init()
 
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading Note Store')
-    emitter.on('note:new', init)
+    emitter.on('note:init', init)
+    emitter.on('note:new', (e) => { begin('new', 'note:init') })
     emitter.on('note:open', open)
     emitter.on('note:update', update)
     emitter.on('note:close', close)
-    ipcRenderer.on('menu:file:new', (e) => { begin('new', 'note:new') })
+    ipcRenderer.on('menu:file:new', (e) => { begin('new', 'note:init') })
     ipcRenderer.on('menu:file:open', (e) => { begin('open', 'note:open') })
     ipcRenderer.on('menu:file:save', (e) => { begin('save', 'note:update') })
     ipcRenderer.on('menu:file:duplicate', (e) => { begin('duplicate', 'note:update') })
     ipcRenderer.on('menu:file:close', (e) => { begin('close', 'note:close') })
   })
 
-  function init(cb) {
+  function init() {
+    console.log('init')
     state.note = {
       path: null,
       title: 'Untitled',
@@ -35,6 +37,7 @@ function noteState (state, emitter) {
         modified: false
       }
     }
+    emitter.emit('render')
     ipcRenderer.send('menu:note:modified', state.note.status.modified)
   }
 

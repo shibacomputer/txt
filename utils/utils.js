@@ -75,7 +75,7 @@ module.exports = {
     var opts = {
       data: data,
       armor: false,
-      filename: filename
+      filename: filename + '.txt'
     }
     if (key.type === 'keychain') {
       keytar.getPassword(appId, accountname).then( (passphrase) => {
