@@ -9,14 +9,14 @@ const commonMenu = [
         label: 'New',
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
-          console.log('New Note')
+          win.webContents.send('menu:file:new')
         }
       },
       {
         label: 'Open…',
         accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
-          win.webContents.send('menu:note:open')
+          win.webContents.send('menu:file:open')
         }
       },
       {
@@ -26,14 +26,14 @@ const commonMenu = [
         label: 'Save',
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
-          win.webContents.send('menu:note:save')
+          win.webContents.send('menu:file:save')
         }
       },
       {
         label: 'Save As…',
         accelerator: 'CmdOrCtrl+Shift+S',
         click (item, win, event) {
-          win.webContents.send('menu:note:duplicate')
+          win.webContents.send('menu:file:duplicate')
         }
       },
       {

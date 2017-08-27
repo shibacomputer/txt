@@ -6,12 +6,14 @@ const icons = require('../../utils/icons')
 const button = require('../../components/button')
 const toolbar = require('../../components/toolbar')
 const view = require('../../components/view')
-const editor = require('../../components/editor')
+const Editor = require('../../components/editor')
 const noteTitle = require('../../components/note-title')
 
 module.exports = mainWindow
 
 function mainWindow(state, emit) {
+  var editor = Editor()
+
   document.title = 'Keyp'
 
   // Set up our components
@@ -23,6 +25,7 @@ function mainWindow(state, emit) {
   `
 
   function buildEditorView() {
+
     // Set up our components
     const elements = {
       toolbar: toolbar({
@@ -33,7 +36,7 @@ function mainWindow(state, emit) {
             classes: 'c',
             icon: 'new',
             click: function() {
-              console.log('new file')
+              emit('note:new')
             }
           })
         ]
@@ -60,7 +63,11 @@ function mainWindow(state, emit) {
          })
        ]
       }),
-      view: editor(state, emit)
+      view: editor.render({
+        body: state.note.body,
+        staleBody: state.note.staleBody,
+        modified: state.note.status.modified
+      }, emit)
     }
 
     return elements

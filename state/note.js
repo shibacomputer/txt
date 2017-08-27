@@ -9,19 +9,22 @@ const file = require('../utils/files')
 module.exports = noteState
 
 function noteState (state, emitter) {
-  initNote()
+  init()
 
   emitter.on('DOMContentLoaded', function () {
     emitter.emit('log:debug', 'Loading Note Store')
-
-    emitter.on('note:create', create)
+    emitter.on('note:new', init)
     emitter.on('note:open', open)
-    emitter.on('note:unload', unload)
     emitter.on('note:update', update)
-    emitter.on('note:save', save)
+    emitter.on('note:close', close)
+    ipcRenderer.on('menu:file:new', (e) => { begin('new', 'note:new') })
+    ipcRenderer.on('menu:file:open', (e) => { begin('open', 'note:open') })
+    ipcRenderer.on('menu:file:save', (e) => { begin('save', 'note:update') })
+    ipcRenderer.on('menu:file:duplicate', (e) => { begin('duplicate', 'note:update') })
+    ipcRenderer.on('menu:file:close', (e) => { begin('close', 'note:close') })
   })
 
-  function initNote() {
+  function init(cb) {
     state.note = {
       path: null,
       title: 'Untitled',
@@ -35,67 +38,174 @@ function noteState (state, emitter) {
     ipcRenderer.send('menu:note:modified', state.note.status.modified)
   }
 
-  function create (note) {
-    emitter.emit('log:debug', 'Creating note')
-    ipcRenderer.send('menu:note:isNew', true)
+  function begin(from, to) {
+    emitter.emit('log:debug', 'Beginning route')
+    if (state.note.status.modified || from === 'duplicate') {
+      // We need to decide if we're going to save
+      decide(from, (response) => {
+        switch (response) {
+          case 0: // Save
+            save((err) => {
+              if (!err && to) {
+                emitter.emit(to)
+              } else {
+                showErr(err)
+              }
+            })
+            break
+          case 1:
+            init()
+            emitter.emit(to)
+            break
+          case 2:
+            break
+        }
+      })
+    } else {
+      if (from === 'save') {
+        save((err) => {
+          if (!err && to) {
+            emitter.emit(to)
+          } else {
+            showErr(err)
+          }
+        })
+      } else {
+        console.log(to)
+        emitter.emit(to)
+      }
+    }
+  }
+
+  function decide(from, cb) {
+    var detail
+    //@TODO: Localisation here lol
+    switch (from) {
+      case 'save':
+        cb(0)
+        return
+        break
+      case 'duplicate':
+        state.note.path = null
+        cb(0)
+        return
+        break
+      case 'new':
+        detail = 'Your changes will be lost if you create a new file without saving.'
+        break
+      case 'close':
+        detail = 'Your changes will be lost if you close without saving.'
+        break
+      case 'open':
+        detail = 'Your changes will be lost if you open another file without saving.'
+        break
+      case 'quit':
+        detail = 'Your changes will be lost if you quit without saving.'
+        break
+      default:
+        detail = 'Your changes will be lost if you choose to discard them.'
+    }
+
+    dialog.showMessageBox(remote.getCurrentWindow(), {
+      type: 'question',
+      buttons: [
+        'Encrypt & Save',
+        'Discard',
+        'Cancel'
+      ],
+      defaultId: 0,
+      title: 'Save changes...',
+      message: state.note.title + ' has unsaved changes. Do you want to save?',
+      detail: detail
+    }, (response) => {
+      cb(response)
+    })
+  }
+
+  function showErr (err) {
+    dialog.showMessageBox({
+      type: 'error',
+      buttons: [
+        'OK',
+        'Report Issue'
+      ],
+      title: 'Error',
+      message: 'Error',
+      detail: err
+    })
+  }
+
+  function save (cb) {
+    var err
+    emitter.emit('log:debug', 'Beginning save process')
+    saveto ((target) => {
+      file.write(state.note, {
+        type: state.key.type
+      }, (err) => {
+        if (!err) {
+          state.note.status.modified = false
+          state.note.staleBody = state.note.body
+          ipcRenderer.send('menu:note:modified', state.note.status.modified)
+          emitter.emit('render')
+        }
+        cb(err)
+      })
+    })
+  }
+
+  function saveto (cb) {
+    if (!state.note.path) {
+      dialog.showSaveDialog(remote.getCurrentWindow(), {
+        title: 'Save File',
+        buttonLabel: 'Save',
+        nameFieldLabel: state.note.title,
+        filters: [
+          { name: 'Encrypted Text', extensions: ['gpg'] }
+        ]
+      }, (savePath) => {
+        if (savePath) {
+          // @TODO: Move decryption out of the renderer.
+          state.note.path = path.normalize(savePath)
+          var title = state.note.path.split('/')
+          title = title[title.length-1].replace(/\.[^/.]+$/, "") // @TODO: Replace this with better handling
+          state.note.title = title
+          cb(savePath)
+        }
+      })
+    } else {
+      cb(state.note.path)
+    }
   }
 
   function open (target) {
     emitter.emit('log:debug', 'Opening a note')
-    if (target != state.note.path) {
-      file.open(target, {
-        type: state.key.type
-      }, (n, err) => {
-        var url = target.split('/')
-        var note = {
-          path: target,
-          title: url[url.length-1].replace(/\.[^/.]+$/, ""), // @TODO: Replace this with better handling
-          staleBody: n.data,
-          body: n.data,
-          status: {
-            modified: false,
-            loading: false
+
+    openfrom((target) => {
+      if (target != state.note.path) {
+        file.open(target, {
+          type: state.key.type
+        }, (n, err) => {
+          var url = target.split('/')
+          var note = {
+            path: target,
+            title: url[url.length-1].replace(/\.[^/.]+$/, ""), // @TODO: Replace this with better handling
+            staleBody: n.data,
+            body: n.data,
+            status: {
+              modified: false,
+              loading: false
+            }
           }
-        }
-        state.note = note
-        ipcRenderer.send('menu:note:isNew', false)
-        emitter.emit('render')
-      })
-    }
-  }
-
-  function unload (note) {
-    emitter.emit('log:debug', 'Unloading a note')
-    initNote()
-    emitter.emit('render')
-  }
-
-  function update (body) {
-    state.note.body = body
-    console.log(state.note.staleBody != state.note.body)
-    if (state.note.staleBody != state.note.body) {
-      state.note.status.modified = true
-      ipcRenderer.send('menu:note:modified', state.note.status.modified)
-    }
-  }
-
-  function save (note) {
-    emitter.emit('log:debug', 'Beginning save process')
-    file.write(note, {
-      type: state.key.type
-    }, (err) => {
-      state.note.status.modified = false
-      state.note.staleBody = state.note.body
-      ipcRenderer.send('menu:note:modified', state.note.status.modified)
-      emitter.emit('render')
+          state.note = note
+          ipcRenderer.send('menu:note:isNew', false)
+          emitter.emit('render')
+        })
+      }
     })
   }
 
-  // Helpers
-  function getNote() {
-    var err = null
-
-    dialog.showOpenDialog({
+  function openfrom (cb) {
+    dialog.showOpenDialog(remote.getCurrentWindow(), {
       title: 'Open File',
       buttonLabel: 'Open',
       properties: ['openFile'],
@@ -103,45 +213,19 @@ function noteState (state, emitter) {
         { name: 'Encrypted Text', extensions: ['gpg'] }
       ]
     }, (filePath) => {
+
       if (filePath) {
-        // @TODO: Move decryption out of the renderer.
-        emitter.emit('note:open', path.normalize(filePath[0]))
+        cb(path.normalize(filePath[0]))
       }
     })
   }
 
-  function getNewPath() {
-    dialog.showSaveDialog({
-      title: 'Save File',
-      buttonLabel: 'Save',
-      nameFieldLabel: state.note.title,
-      filters: [
-        { name: 'Encrypted Text', extensions: ['gpg'] }
-      ]
-    }, (savePath) => {
-      if (savePath) {
-        // @TODO: Move decryption out of the renderer.
-        state.note.path = path.normalize(savePath)
-        var title = state.note.path.split('/')
-        title = title[title.length-1].replace(/\.[^/.]+$/, "") // @TODO: Replace this with better handling
-        state.note.title = title
-        emitter.emit('note:save', state.note)
-      }
-    })
 
+  function update (changes) {
+    if (typeof changes === 'object') {
+      state.note.body = changes.body
+      state.note.staleBody = changes.staleBody
+      state.note.status.modified = changes.modified
+    }
   }
-
-  // IPC Routes
-  ipcRenderer.on('menu:note:open', (event) => {
-    getNote()
-  })
-
-  ipcRenderer.on('menu:note:duplicate', (event) => {
-    getNewPath()
-  })
-
-  // IPC Routes
-  ipcRenderer.on('menu:note:save', (event) => {
-    typeof state.note.path === 'string' ? emitter.emit('note:save', state.note) : getNewPath()
-  })
 }

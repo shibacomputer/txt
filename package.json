@@ -38,6 +38,7 @@
     "keytar": "^4.0.4",
     "mime": "^1.3.4",
     "mousetrap": "^1.6.1",
+    "nanocomponent": "^6.3.0",
     "openpgp": "^2.5.9",
     "pell": "^0.7.0",
     "sheetify": "6.0.0"

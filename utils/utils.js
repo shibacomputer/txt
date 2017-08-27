@@ -79,7 +79,6 @@ module.exports = {
     }
     if (key.type === 'keychain') {
       keytar.getPassword(appId, accountname).then( (passphrase) => {
-        console.log(passphrase)
         opts.passwords = [ passphrase ]
         openpgp.encrypt(opts).then((ciphertext) => {
           cb(ciphertext)
