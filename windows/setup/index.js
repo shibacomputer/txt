@@ -1,3 +1,6 @@
+const remote = window.require('electron').remote
+const { ipcRenderer } = window.require('electron')
+
 const path = require('path')
 const html = require('choo/html')
 const utils = require('../../utils/utils')
@@ -10,6 +13,7 @@ module.exports = setupWindow
  * new app install and related functionality setup.
  */
 function setupWindow(state, emit) {
+  var validPassphrase = false
   emit('log:debug', 'Rendering Setup View')
 
   return html`
@@ -23,23 +27,30 @@ function setupWindow(state, emit) {
         </header>
         <section>
           <label for="passphrase" class="b">Passphrase</label>
-          <input type="text" name="passphrase" id="passphrase" class="b b-input"/>
+          <input type="text" name="passphrase" id="passphrase" class="b b-input" oninput=${validateInput}/>
           <label class="w tip">Txt uses this passphrase to automatically encrypt and decrypt each file you create. Choose a strong phrase to best protect your files. <span class="b">Save your passphrase somewhere safe. If you lost it, your work is gone forever!</span></label>
         </section>
 
         <footer>
-          <button name="save" onclick=${saveSettings} class="bg-m f button-m">Save & Continue</button>
+          <button name="save" disabled=${validateInput()} onclick=${saveSettings} class="bg-m f button-m">Save & Continue</button>
         </footer>
 
       </main>
     </body>
   `
-
+  function validateInput(e) {
+    if (e.target.value.length >= 16) {
+      validPassphrase = true
+    } else {
+      validPassphrase = false
+    }
+  }
   function saveSettings(e) {
     emit('log:debug', 'Attempting an app state save')
     var phrase = document.getElementById('passphrase').value
-    utils.setSetting('active', true)
+    utils.setSetting('active', false)
     utils.setSetting('keychain', state.key.available)
+    ipcRenderer.send('window', '')
     emit('keychain:create', phrase)
   }
 }

@@ -68,17 +68,26 @@ app.on('ready', () => {
 
   // Setup menus
   const commonMenu = Menu.buildFromTemplate(menuConfig.commonMenu)
-  Menu.setApplicationMenu(commonMenu)
 
   // Start the dev server
   var server = budo('app.js', opts)
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
+    Menu.setApplicationMenu(commonMenu)
     // Check to see whether this we have a Txt folder set up.
     if (!active) {
       setupWin.showUrl(ev.uri + 'setup')
       setupWin.webContents.openDevTools({ mode: 'detach' })
+
+      ipcMain.on('window', function(event, arg) {
+        setupWin.close()
+        mainWin.showUrl(ev.uri)
+        mainWin.webContents.openDevTools({ mode: 'detach' })
+        mainWin.once('close', function () {
+          server.close()
+        })
+      })
     } else {
       mainWin.showUrl(ev.uri)
       mainWin.webContents.openDevTools({ mode: 'detach' })

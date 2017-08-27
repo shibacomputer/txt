@@ -7,26 +7,28 @@ module.exports = sysState
 
 function sysState (state, emitter) {
   if (!state.sys) {
-    state.sys = {}
-    state.sys.status = {}
-    state.sys.status.focus = null
-    state.sys.status.active = null
-    state.sys.path = {}
-    state.sys.auth = false
+    state.sys = {
+      ui: {
+        setup: {
+          validPassphrase: false
+        }
+      },
+      status: {
+        active: false
+      }
+    }
   }
 
   emitter.on('DOMContentLoaded', function() {
     emitter.emit('log:debug', 'Sys State')
 
-    // Handling auth
-    emitter.on('sys:auth:update', toggleAuth)
+    // UI
+    emitter.on('sys:ui:setup:validPassphrase', validatePassphrase)
   })
 
-  // :: toggleAuth
-  // Simple on/off auth toggle. Called by state/key.js.
-  function toggleAuth() {
-    emitter.emit('log:debug', 'toggleAuth: ', !state.sys.auth)
-    state.sys.auth = !state.sys.auth
+  function validatePassphrase(e) {
+    emitter.emit('log:debug', 'validatePassphrase: ', e)
+    state.sys.ui.setup.validPassphrase = e
   }
 
   // IPC

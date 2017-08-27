@@ -7,6 +7,7 @@ const commonMenu = [
     submenu: [
       {
         label: 'New',
+        enabled: false,
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
           win.webContents.send('menu:file:new')
@@ -14,6 +15,7 @@ const commonMenu = [
       },
       {
         label: 'Open…',
+        enabled: false,
         accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
           win.webContents.send('menu:file:open')
@@ -24,6 +26,7 @@ const commonMenu = [
       },
       {
         label: 'Save',
+        enabled: false,
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
           win.webContents.send('menu:file:save')
@@ -31,6 +34,7 @@ const commonMenu = [
       },
       {
         label: 'Save As…',
+        enabled: false,
         accelerator: 'CmdOrCtrl+Shift+S',
         click (item, win, event) {
           win.webContents.send('menu:file:duplicate')
@@ -41,6 +45,7 @@ const commonMenu = [
       },
       {
         label: 'Close',
+        enabled: false,
         click (item, win, event) {
           console.log('Export')
         }
@@ -80,13 +85,22 @@ const commonMenu = [
     label: 'View',
     submenu: [
       {
-        role: 'zoomin'
+        label: 'Preview...',
+        enabled: false,
+        click (item, win, event) {
+          console.log('Preview')
+        }
       },
       {
-        role: 'zoomout'
+        type: 'separator'
       },
       {
-        role: 'resetzoom'
+        type: 'checkbox',
+        label: 'Use Dark Theme',
+        checked: true,
+        click (item, win, event) {
+          console.log('Theme')
+        }
       },
       {
         type: 'separator'
@@ -94,6 +108,7 @@ const commonMenu = [
       {
         role: 'togglefullscreen'
       }
+
     ]
   },
   {
@@ -105,7 +120,7 @@ const commonMenu = [
     ]
   },
   {
-    role: 'help',
+    role: 'Help',
     submenu: [
       {
         label: 'Send Feedback…',
@@ -167,7 +182,7 @@ if (process.platform === 'darwin') {
   )
 
   // Window menu
-  commonMenu[3].submenu = [
+  commonMenu[4].submenu = [
     {
       role: 'minimize'
     },
