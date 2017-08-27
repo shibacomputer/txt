@@ -26,7 +26,6 @@ function noteState (state, emitter) {
   })
 
   function init() {
-    console.log('init')
     state.note = {
       path: null,
       title: 'Untitled',
@@ -74,7 +73,6 @@ function noteState (state, emitter) {
           }
         })
       } else {
-        console.log(to)
         emitter.emit(to)
       }
     }
@@ -228,7 +226,10 @@ function noteState (state, emitter) {
     if (typeof changes === 'object') {
       state.note.body = changes.body
       state.note.staleBody = changes.staleBody
-      state.note.status.modified = changes.modified
+      if(state.note.body != state.note.staleBody) {
+        state.note.status.modified = changes.modified
+        //@TODO: Change the color of the title bar from here.
+      }
     }
   }
 }

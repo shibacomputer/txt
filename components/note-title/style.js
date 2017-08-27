@@ -5,10 +5,10 @@ const style = css`
     display: flex;
     flex-direction: row;
   }
-  :host .modified {
-    color: var(--c);
+  :host.modified {
+    color: var(--w);
   }
-  :host .unmodified {
+  :host.unmodified {
     color: var(--w);
   }
   :host:hover {

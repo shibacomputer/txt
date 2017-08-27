@@ -29,7 +29,7 @@ function mainWindow(state, emit) {
     // Set up our components
     const elements = {
       toolbar: toolbar({
-        center: noteTitle(state.note.title),
+        center: noteTitle(state.note.title, state.note.path, state.note.status.modified),
         right: [
           button({
             name: 'new',
