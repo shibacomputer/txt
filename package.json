@@ -28,7 +28,7 @@
     "openpgp": "openpgp/dist/openpgp.worker.min.js"
   },
   "dependencies": {
-    "choo": "^5.1.0",
+    "choo": "^6.0.0",
     "choo-expose": "^1.2.0",
     "choo-log": "^6.0.0",
     "choo-persist": "^3.0.1",

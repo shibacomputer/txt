@@ -30,6 +30,4 @@ function sysState (state, emitter) {
     emitter.emit('log:debug', 'validatePassphrase: ', e)
     state.sys.ui.setup.validPassphrase = e
   }
-
-  // IPC
 }
