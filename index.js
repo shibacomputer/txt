@@ -62,39 +62,51 @@ app.on('ready', () => {
   var active = settings.get('active')
 
   // Get our windows in order, since any of the three can be called at any time.
-  mainWin = window.createWindow(winCfg.main)
-  setupWin = window.createWindow(winCfg.setup)
-  lockWin = window.createWindow(winCfg.lock)
-
-  // Setup menus
-  const commonMenu = Menu.buildFromTemplate(menuConfig.commonMenu)
 
   // Start the dev server
   var server = budo('app.js', opts)
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
-    Menu.setApplicationMenu(commonMenu)
+    var menu
     // Check to see whether this we have a Txt folder set up.
     if (!active) {
+      setupWin = window.createWindow(winCfg.setup)
+      menu = Menu.buildFromTemplate(menuConfig.setupMenu)
+      Menu.setApplicationMenu(menu)
       setupWin.showUrl(ev.uri + 'setup')
       setupWin.webContents.openDevTools({ mode: 'detach' })
-
-      ipcMain.on('window', function(event, arg) {
-        setupWin.close()
-        mainWin.showUrl(ev.uri)
-        mainWin.webContents.openDevTools({ mode: 'detach' })
-        mainWin.once('close', function () {
-          server.close()
-        })
-      })
     } else {
+      mainWin = window.createWindow(winCfg.main)
+      menu = Menu.buildFromTemplate(menuConfig.commonMenu)
+      Menu.setApplicationMenu(menu)
       mainWin.showUrl(ev.uri)
       mainWin.webContents.openDevTools({ mode: 'detach' })
       mainWin.once('close', function () {
         server.close()
       })
     }
+
+    ipcMain.on('window', function(event, arg) {
+      switch (arg) {
+        case 'setup':
+          menu = Menu.buildFromTemplate(menuConfig.setupMenu)
+          Menu.setApplicationMenu(menu)
+          setupWin = window.createWindow(winCfg.setup)
+          setupWin.showUrl(ev.uri + 'setup')
+          mainWin.close()
+          break
+        case 'main':
+          menu = Menu.buildFromTemplate(menuConfig.commonMenu)
+          Menu.setApplicationMenu(menu)
+          mainWin = window.createWindow(winCfg.main)
+          mainWin.showUrl(ev.uri)
+          setupWin.close()
+          break
+        default:
+          return
+      }
+    })
   })
 
   .on('update', function(file, contents) {

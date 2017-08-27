@@ -66,9 +66,9 @@ function setupWindow(state, emit) {
     }
   }
   function completeSetup(phrase) {
-    utils.setSetting('active', false)
-    utils.setSetting('keychain', state.key.available)
-    ipcRenderer.send('window', '')
+    utils.setSetting('active', true)
+    utils.setSetting('keychain', true)
+    ipcRenderer.send('window', 'main')
     emit('keychain:create', phrase)
   }
 }

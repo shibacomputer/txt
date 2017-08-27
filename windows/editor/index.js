@@ -1,3 +1,7 @@
+const remote = window.require('electron').remote
+const { dialog } = remote.require('electron')
+const { ipcRenderer } = window.require('electron')
+
 const html = require('choo/html')
 const style = require('./style')
 const strings = require('./strings')
@@ -8,6 +12,7 @@ const toolbar = require('../../components/toolbar')
 const view = require('../../components/view')
 const Editor = require('../../components/editor')
 const noteTitle = require('../../components/note-title')
+
 
 module.exports = mainWindow
 
@@ -48,7 +53,25 @@ function mainWindow(state, emit) {
             classes: 'c',
             icon: 'settings',
             click: function() {
-              console.log('settings')
+              dialog.showMessageBox(remote.getCurrentWindow(), {
+                type: 'warning',
+                buttons: [
+                  'Continue',
+                  'Cancel'
+                ],
+                defaultId: 0,
+                title: 'Settings in Alpha',
+                message: 'Warning',
+                detail: 'Changing your passphrase right now will prevent Txt from automatically opening files you\'ve already created. You\'ll still be able to open them with GPG or change your passphrase back. A better approach to this is coming soon.'
+              }, (response) => {
+                switch (response) {
+                  case 0:
+                    ipcRenderer.send('window', 'setup')
+                    break
+                  default:
+                    return
+                }
+              })
             }
          })
        ],

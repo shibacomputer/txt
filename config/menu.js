@@ -7,7 +7,6 @@ const commonMenu = [
     submenu: [
       {
         label: 'New',
-        enabled: false,
         accelerator: 'CmdOrCtrl+N',
         click (item, win, event) {
           win.webContents.send('menu:file:new')
@@ -15,7 +14,6 @@ const commonMenu = [
       },
       {
         label: 'Open…',
-        enabled: false,
         accelerator: 'CmdOrCtrl+O',
         click (item, win, event) {
           win.webContents.send('menu:file:open')
@@ -26,7 +24,6 @@ const commonMenu = [
       },
       {
         label: 'Save',
-        enabled: false,
         accelerator: 'CmdOrCtrl+S',
         click (item, win, event) {
           win.webContents.send('menu:file:save')
@@ -34,7 +31,6 @@ const commonMenu = [
       },
       {
         label: 'Save As…',
-        enabled: false,
         accelerator: 'CmdOrCtrl+Shift+S',
         click (item, win, event) {
           win.webContents.send('menu:file:duplicate')
@@ -45,7 +41,6 @@ const commonMenu = [
       },
       {
         label: 'Close',
-        enabled: false,
         click (item, win, event) {
           console.log('Export')
         }
@@ -86,7 +81,6 @@ const commonMenu = [
     submenu: [
       {
         label: 'Preview...',
-        enabled: false,
         click (item, win, event) {
           console.log('Preview')
         }
@@ -120,7 +114,19 @@ const commonMenu = [
     ]
   },
   {
-    role: 'Help',
+    role: 'help',
+    submenu: [
+      {
+        label: 'Send Feedback…',
+        click () { require('electron').shell.openExternal('https://txtapp.io/feedback') }
+      }
+    ]
+  }
+]
+
+setupMenu = [
+  {
+    role: 'help',
     submenu: [
       {
         label: 'Send Feedback…',
@@ -163,6 +169,39 @@ if (process.platform === 'darwin') {
       }
     ]
   })
+  setupMenu.unshift({
+    label: app.getName(),
+    submenu: [
+      {
+        role: 'about'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'services', submenu: []
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'hide'
+      },
+      {
+        role: 'hideothers'
+      },
+      {
+        role: 'unhide'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'quit'
+      }
+    ]
+  })
+
   // Edit menu
   commonMenu[2].submenu.push(
     {
@@ -198,6 +237,8 @@ if (process.platform === 'darwin') {
   ]
 }
 
+
 module.exports = {
-  commonMenu: commonMenu
+  commonMenu: commonMenu,
+  setupMenu: setupMenu
 }
