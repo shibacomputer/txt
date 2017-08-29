@@ -32,15 +32,16 @@ It's pretty simple – I don't like the majority of text editors that exist toda
 I either don't trust them enough to sync between devices, they lack features
 I really want, or they're trustworthy and feature-rich but difficult to use.
 
-Txt is designed to be really useful on a day to day basis. This MVP focuses on
-text entry, but 1.0 will include image embeds and management. We'll see where
-this goes from there.
+Txt is an opinionated statement on the relationship between personal work, data
+management and interaction. In my considerations building this, I'm trying to
+make sure it's really useful on a day to day basis without any sort of platform
+lock in. This MVP focuses on text entry, but 1.0 will include image embeds and
+management. We'll see where this goes from there.
 
 Choosing PGP and the filesystem as the app's foundation is deliberate. Rather
 than build a database, it relies on the filesystem. Anything you make with Txt
 can be read and reviewed somewhere else. There is no import/export tool, because
 you don't need one. Everything used is off the shelf.
-
 
 ## Threat model
 I'll write more on this later, but basically Txt is designed to allow you to
@@ -78,5 +79,8 @@ So far:
 ⬜️ Add file management  
 ⬜️ Add support for keys instead of passwords  
 ⬜️ Better support for file permission edge cases  
+
+## One day
+⬜️ Go native!
 
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
