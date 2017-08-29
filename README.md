@@ -66,7 +66,7 @@ So far:
 ⬜️ Markdown support  
 ⬜️ Linux support  
 ⬜️ Light UI  
-⬜️ Export to unencrypted text file
+⬜️ Export to unencrypted text file  
 ⬜️ Export to [Are.na](https://are.na)  
 ⬜️ Export to [Medium](https://medium.com)  
 ⬜️ Export to PDF  
@@ -86,4 +86,7 @@ So far:
 ### One day
 ⬜️ Go native!
 
+## Contacts
+Txt has a [mailing list](https://tinyletter.com/txt-app). Join it for very
+infrequent emails.
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
