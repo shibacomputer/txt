@@ -59,17 +59,20 @@ bad opsec rather than device security.
 So far:  
 ✅ Simple PGP-managed filesystem-based notekeeping  
 ✅ Text editor  
+✅ Passphrase encryption  
 ✅ Keychain support  
 ✅ Dark UI  
+⬜️ Private key support  
 ⬜️ Markdown support  
-⬜️ Markdown support  
+⬜️ Linux support  
 ⬜️ Light UI  
+⬜️ Export to unencrypted text file
 ⬜️ Export to [Are.na](https://are.na)  
 ⬜️ Export to [Medium](https://medium.com)  
 ⬜️ Export to PDF  
 ⬜️ Automatic image management  
+⬜️ 2FA / Yubikey support  
 ⬜️ Secure syncing (with multiple options!)  
-⬜️ Linux support  
 ⬜️ Windows support (sorry!)  
 
 ### Big todos
