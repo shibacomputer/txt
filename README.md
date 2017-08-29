@@ -55,6 +55,10 @@ The idea is that you should be able to leave an unencrypted USB key somewhere
 full of text documents and not have them nabbed. Ultimately, the MVP deals with
 bad opsec rather than device security.
 
+Finally, Txt does not protect anything that isn't stored by your filesystem.
+Your metadata - including filename – is available to anyone who has access to
+the disk.
+
 ## Features
 So far:  
 ✅ Simple PGP-managed filesystem-based notekeeping  
