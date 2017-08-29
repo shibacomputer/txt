@@ -6,7 +6,7 @@ Txt is a cute little private journalling app that keeps your work safe with
 
 https://txtapp.io
 
-![Txt Screenshot](screenshot.png)
+![Txt Screenshot](mvp-screenshot.png)
 
 ## Getting Started
 
