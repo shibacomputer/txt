@@ -72,7 +72,7 @@ So far:
 ⬜️ Linux support  
 ⬜️ Windows support (sorry!)  
 
-## Big todos
+### Big todos
 ⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜️ Move PGP from renderer to main process (lmao)  
 ⬜️ Way smarter window management  
@@ -80,7 +80,7 @@ So far:
 ⬜️ Add support for keys instead of passwords  
 ⬜️ Better support for file permission edge cases  
 
-## One day
+### One day
 ⬜️ Go native!
 
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
