@@ -22,7 +22,7 @@ npm start
 
 Right now, on this branch, you can build and run Txt and use it. But:
 
-🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
+🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫
 🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED** 🚫
 
 I can't stress this enough. This needs a lot of work.
@@ -56,36 +56,36 @@ full of text documents and not have them nabbed. Ultimately, the MVP deals with
 bad opsec rather than device security.
 
 Finally, Txt does not protect anything that isn't stored by your filesystem.
-Your metadata - including filename – is available to anyone who has access to
+Your metadata - including the filenames of your work – is available to anyone who has access to
 the disk.
 
 ## Features
-So far:  
-✅ Simple PGP-managed filesystem-based notekeeping  
-✅ Text editor  
-✅ Passphrase encryption  
-✅ Keychain support  
-✅ Dark UI  
-⬜️ Private key support  
-⬜️ Markdown support  
-⬜️ Linux support  
-⬜️ Light UI  
-⬜️ Export to unencrypted text file  
-⬜️ Export to [Are.na](https://are.na)  
-⬜️ Export to [Medium](https://medium.com)  
-⬜️ Export to PDF  
-⬜️ Automatic image management  
-⬜️ 2FA / Yubikey support  
-⬜️ Secure syncing (with multiple options!)  
-⬜️ Windows support (sorry!)  
+So far:
+✅ Simple PGP-managed filesystem-based notekeeping
+✅ Text editor
+✅ Passphrase encryption
+✅ Keychain support
+✅ Dark UI
+⬜️ Private key support
+⬜️ Markdown support
+⬜️ Linux support
+⬜️ Light UI
+⬜️ Export to unencrypted text file
+⬜️ Export to [Are.na](https://are.na)
+⬜️ Export to [Medium](https://medium.com)
+⬜️ Export to PDF
+⬜️ Automatic image management
+⬜️ 2FA / Yubikey support
+⬜️ Secure syncing (with multiple options!)
+⬜️ Windows support (sorry!)
 
 ### Big todos
-⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)  
-⬜️ Move PGP from renderer to main process (lmao)  
-⬜️ Way smarter window management  
-⬜️ Add file management  
-⬜️ Add support for keys instead of passwords  
-⬜️ Better support for file permission edge cases  
+⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)
+⬜️ Move PGP from renderer to main process (lmao)
+⬜️ Way smarter window management
+⬜️ Add file management
+⬜️ Add support for keys instead of passwords
+⬜️ Better support for file permission edge cases
 
 ### One day
 ⬜️ Go native!
