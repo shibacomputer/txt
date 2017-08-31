@@ -93,14 +93,16 @@ app.on('ready', () => {
           menu = Menu.buildFromTemplate(menuConfig.setupMenu)
           Menu.setApplicationMenu(menu)
           setupWin = window.createWindow(winCfg.setup)
-          setupWin.showUrl(ev.uri + 'setup')
+          setupWin.loadURL(ev.uri + 'setup')
+          setupWin.once('ready-to-show', setupWin.show)
           mainWin.close()
           break
         case 'main':
           menu = Menu.buildFromTemplate(menuConfig.commonMenu)
           Menu.setApplicationMenu(menu)
           mainWin = window.createWindow(winCfg.main)
-          mainWin.showUrl(ev.uri)
+          mainWin.loadURL(ev.uri)
+          mainWin.once('ready-to-show', mainWin.show)
           setupWin.close()
           break
         default:
