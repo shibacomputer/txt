@@ -36,7 +36,6 @@ const opts = {
   pushstate: true,
   browserify: {
     transform: [ 'sheetify/transform' ],
-    exclude: ['openpgp'],
     ignore: ['buffer'],
     insertGlobalVars: {
       process: function() { return; },
@@ -135,6 +134,6 @@ app.on('ready', () => {
   })
 
   .on('update', function(file, contents) {
-    mainWin.reload()
+
   })
 })
