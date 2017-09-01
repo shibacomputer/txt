@@ -61,36 +61,36 @@ the disk.
 
 ## Features
 So far:
-✅ Simple PGP-managed filesystem-based notekeeping
-✅ Text editor
-✅ Passphrase encryption
-✅ Keychain support
-✅ Dark UI
-⬜️ Private key support
-⬜️ Markdown support
-⬜️ Linux support
-⬜️ Light UI
-⬜️ Export to unencrypted text file
-⬜️ Export to [Are.na](https://are.na)
-⬜️ Export to [Medium](https://medium.com)
-⬜️ Export to PDF
-⬜️ Automatic image management
-⬜️ 2FA / Yubikey support
-⬜️ Secure syncing (with multiple options!)
-⬜️ Windows support (sorry!)
+✅ Simple PGP-managed filesystem-based notekeeping  
+✅ Text editor  
+✅ Passphrase encryption  
+✅ Keychain support  
+✅ Dark UI  
+⬜️ Private key support  
+⬜️ Markdown support  
+⬜️ Linux support  
+⬜️ Light UI  
+⬜️ Export to unencrypted text file  
+⬜️ Export to [Are.na](https://are.na)  
+⬜️ Export to [Medium](https://medium.com)  
+⬜️ Export to PDF  
+⬜️ Automatic image management  
+⬜️ 2FA / Yubikey support  
+⬜️ Secure syncing (with multiple options!)  
+⬜️ Windows support (sorry!)  
 
 ### Big todos
-⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)
-⬜️ Move PGP from renderer to main process (lmao)
-⬜️ Way smarter window management
-⬜️ Add file management
-⬜️ Add support for keys instead of passwords
-⬜️ Better support for file permission edge cases
+⬜️ Migrate from Electron to [Muon](https://github.com/brave/muon)  
+⬜️ Move PGP from renderer to main process (lmao)  
+⬜️ Way smarter window management  
+⬜️ Add file management  
+⬜️ Add support for keys instead of passwords  
+⬜️ Better support for file permission edge cases  
 
 ### One day
 ⬜️ Go native!
 
 ## Contacts
 Txt has a [mailing list](https://tinyletter.com/txt-app). Join it for very
-infrequent emails.
+infrequent emails.  
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
