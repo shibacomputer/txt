@@ -60,7 +60,7 @@ Your metadata - including the filenames of your work – is available to anyone 
 the disk.
 
 ## Features
-So far:
+So far:  
 ✅ Simple PGP-managed filesystem-based notekeeping  
 ✅ Text editor  
 ✅ Passphrase encryption  
