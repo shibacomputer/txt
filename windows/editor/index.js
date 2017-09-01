@@ -1,5 +1,5 @@
 const remote = window.require('electron').remote
-const { dialog } = remote.require('electron')
+const { dialog, shell } = remote.require('electron')
 const { ipcRenderer } = window.require('electron')
 
 const html = require('choo/html')
@@ -81,7 +81,25 @@ function mainWindow(state, emit) {
            classes: 'c',
            icon: 'issue',
            click: function() {
-             console.log('report issue')
+             dialog.showMessageBox(remote.getCurrentWindow(), {
+               type: 'question',
+               buttons: [
+                 'Send Feedback',
+                 'Cancel'
+               ],
+               defaultId: 0,
+               title: 'Send Feedback?',
+               message: 'Send Feedback',
+               detail: 'Txt is still in early development and your help makes all the difference. Do you want to send feedback?'
+             }, (response) => {
+               switch (response) {
+                 case 0:
+                   shell.openExternal('https://github.com/shibacomputer/txt/issues')
+                   break
+                 default:
+                   return
+               }
+             })
            }
          })
        ]

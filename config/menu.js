@@ -118,7 +118,7 @@ const commonMenu = [
     submenu: [
       {
         label: 'Send Feedback…',
-        click () { require('electron').shell.openExternal('https://txtapp.io/feedback') }
+        click () { require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues') }
       }
     ]
   }
@@ -153,7 +153,7 @@ setupMenu = [
         role: 'selectall'
       }
     ]
-  },  
+  },
   {
     role: 'help',
     submenu: [

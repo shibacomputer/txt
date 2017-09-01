@@ -71,22 +71,33 @@ app.on('ready', () => {
     var menu
     // Check to see whether this we have a Txt folder set up.
     if (!active) {
-      setupWin = window.createWindow(winCfg.setup)
       menu = Menu.buildFromTemplate(menuConfig.setupMenu)
       Menu.setApplicationMenu(menu)
-      setupWin.showUrl(ev.uri + 'setup')
+      setupWin = window.createWindow(winCfg.setup)
+      setupWin.loadURL(ev.uri + 'setup')
+      setupWin.once('ready-to-show', setupWin.show)
+      setupWin.on('closed', () => {
+        setupWin = null
+      })
       setupWin.webContents.openDevTools({ mode: 'detach' })
     } else {
-      mainWin = window.createWindow(winCfg.main)
       menu = Menu.buildFromTemplate(menuConfig.commonMenu)
       Menu.setApplicationMenu(menu)
-      mainWin.showUrl(ev.uri)
-      mainWin.webContents.openDevTools({ mode: 'detach' })
-      mainWin.once('close', function () {
-        server.close()
+      mainWin = window.createWindow(winCfg.main)
+      mainWin.loadURL(ev.uri)
+      mainWin.once('ready-to-show', mainWin.show)
+      mainWin.on('closed', () => {
+        mainWin = null
       })
+
+      // @TODO: Make this work.
+      mainWin.on('before-quit', (e) => {
+        mainWin.webContents.send('menu:file:close')
+      })
+      mainWin.webContents.openDevTools({ mode: 'detach' })
     }
 
+    // @TODO: Clean this terrible code up.
     ipcMain.on('window', function(event, arg) {
       switch (arg) {
         case 'setup':
@@ -95,14 +106,26 @@ app.on('ready', () => {
           setupWin = window.createWindow(winCfg.setup)
           setupWin.loadURL(ev.uri + 'setup')
           setupWin.once('ready-to-show', setupWin.show)
+          setupWin.on('closed', () => {
+            setupWin = null
+          })
+
           mainWin.close()
           break
+
         case 'main':
           menu = Menu.buildFromTemplate(menuConfig.commonMenu)
           Menu.setApplicationMenu(menu)
           mainWin = window.createWindow(winCfg.main)
           mainWin.loadURL(ev.uri)
           mainWin.once('ready-to-show', mainWin.show)
+          mainWin.on('closed', () => {
+            mainWin = null
+          })
+
+          mainWin.on('before-quit', () => {
+            mainWin.webContents.send('menu:file:close')
+          })
           setupWin.close()
           break
         default:
