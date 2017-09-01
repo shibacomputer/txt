@@ -22,7 +22,7 @@ npm start
 
 Right now, on this branch, you can build and run Txt and use it. But:
 
-🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫
+🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
 🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED** 🚫
 
 I can't stress this enough. This needs a lot of work.
