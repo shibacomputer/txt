@@ -4,8 +4,10 @@
   "description": "Simple, secure journalling",
   "main": "index.js",
   "scripts": {
+    "build": "bankai build && build",
+    "dev": "bankai start app.js",
     "setup": "npm install && npm run rebuild && npm run spriteify",
-    "start": "NODE_ENV=development && electron .",
+    "start": "NODE_ENV=development && concurrently \"dev\" \"electron index.js\"",
     "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --prefix txt- removeViewBox",
     "rebuild": "electron-rebuild -f -w keytar"
   },
@@ -32,7 +34,6 @@
     "choo-expose": "^1.2.0",
     "choo-log": "^6.0.0",
     "choo-persist": "^3.0.1",
-    "electron": "^1.7.6",
     "electron-settings": "^3.1.1",
     "electron-window": "^0.8.1",
     "keytar": "^4.0.4",
@@ -44,11 +45,12 @@
     "sheetify": "6.0.0"
   },
   "devDependencies": {
+    "bankai": "^9.0.0-1",
     "browserify": "^13.3.0",
     "budo": "^10.0.4",
     "choo-devtools": "^1.3.1",
     "devtron": "^1.4.0",
-    "electron": "^1.4.6",
+    "electron": "^1.7.6",
     "electron-packager": "^8.5.0",
     "electron-rebuild": "^1.5.7",
     "envobj": "^1.0.4",

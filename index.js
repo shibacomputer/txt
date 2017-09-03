@@ -13,8 +13,10 @@ const path = require('path')
 const window = require('electron-window')
 
 // Browserify service for development
-const budo = require('budo')
 const Env = require('envobj')
+
+// Window manager
+const manager = require('./windows/manager')
 
 // Get setup items.
 const winCfg = require('./config/defaults')
@@ -26,28 +28,6 @@ const settings = require('electron-settings')
 global.settings = settings
 
 // Setup windows
-const opts = {
-  debug: process.env.NODE_ENVIRONMENT !== 'production',
-  verbose: true,
-  port: 8001,
-  host: 'localhost',
-  live: true,
-  stream: process.stdout,
-  pushstate: true,
-  browserify: {
-    transform: [ 'sheetify/transform' ],
-    ignore: ['buffer'],
-    insertGlobalVars: {
-      process: function() { return; },
-    }
-  },
-  browserifyArgs: ['--ignore-missing', '--no-builtins', '--no-commondir', '--node']
-}
-
-let mainWin
-let lockWin
-let setupWin
-
 app.on('ready', () => {
 
   // Check for settings defaults
@@ -59,11 +39,6 @@ app.on('ready', () => {
   }
 
   var active = settings.get('active')
-
-  // Get our windows in order, since any of the three can be called at any time.
-
-  // Start the dev server
-  var server = budo('app.js', opts)
 
   // @TODO: Set prod vs dev settings - including dev tools.
   .on('connect', function (ev) {
