@@ -4,7 +4,7 @@ const path = require('path')
 const config = require('../../config/defaults')
 const menu = require('../../config/menu')
 
-const URL = 'file://' + path.resolve('./index.html')
+const URL = 'file://' + path.resolve('./setup')
 
 var editorWindow = module.exports = {
   init,
