@@ -11,9 +11,6 @@
 const { app, shell, Menu, ipcMain } = require('electron')
 const path = require('path')
 
-// Browserify service for development
-const Env = require('envobj')
-
 // Settings
 const settings = require('electron-settings')
 
@@ -33,10 +30,11 @@ app.on('ready', () => {
     })
   }
   var active = settings.get('active')
+  console.log(settings.getAll)
   if(active) {
     editor.init()
   } else {
-    editor.init()
+    setup.init()
   }
 })
     /*

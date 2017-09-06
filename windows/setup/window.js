@@ -4,7 +4,7 @@ const path = require('path')
 const config = require('../../config/defaults')
 const menu = require('../../config/menu')
 
-const URL = 'file://' + path.resolve('./setup')
+const URL = 'http://localhost:8080/setup'
 
 var editorWindow = module.exports = {
   init,
@@ -12,6 +12,7 @@ var editorWindow = module.exports = {
   hide,
   win: null
 }
+
 var win = null
 
 function init() {

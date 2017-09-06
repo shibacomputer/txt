@@ -5,7 +5,7 @@ const remote = window.require('electron').remote
 const keytar = remote.require('keytar')
 const { app } = remote.require('electron')
 const settings = remote.require('electron-settings')
-const openpgp = window.require('openpgp')
+const openpgp = remote.require('openpgp')
 
 const accountname = app.getPath('home').split('/').slice(-1)[0]
 const appId = 'Txt'

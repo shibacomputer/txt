@@ -4,7 +4,7 @@ const path = require('path')
 const config = require('../../config/defaults')
 const menu = require('../../config/menu')
 
-const URL = 'file://' + path.resolve('./index.html')
+const URL = 'http://localhost:8080/'
 
 var editorWindow = module.exports = {
   init,
