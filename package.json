@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "bankai build && build",
-    "dev": "bankai start app.js",
+    "dev": "bankai start app.js -e -c [ -t sheetify/transform ]",
     "setup": "npm install && npm run rebuild && npm run spriteify",
-    "start": "NODE_ENV=development && concurrently \"dev\" \"electron index.js\"",
+    "start": "NODE_ENV=development electron index.js",
     "spriteify": "svgo -f assets/gfx && spritesh --input assets/gfx --output icons.svg --prefix txt- removeViewBox",
     "rebuild": "electron-rebuild -f -w keytar"
   },

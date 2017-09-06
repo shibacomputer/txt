@@ -1,7 +1,7 @@
 const { app, BrowserWindow, Menu } = require('electron')
 const { ipcMain } = require('electron')
 
-const commonMenu = [
+const editor = [
   {
     label: 'File',
     submenu: [
@@ -124,7 +124,7 @@ const commonMenu = [
   }
 ]
 
-setupMenu = [
+setup = [
   {
     label: 'Edit',
     submenu: [
@@ -166,7 +166,7 @@ setupMenu = [
 ]
 
 if (process.platform === 'darwin') {
-  commonMenu.unshift({
+  editor.unshift({
     label: app.getName(),
     submenu: [
       {
@@ -198,7 +198,7 @@ if (process.platform === 'darwin') {
       }
     ]
   })
-  setupMenu.unshift({
+  setup.unshift({
     label: app.getName(),
     submenu: [
       {
@@ -232,7 +232,7 @@ if (process.platform === 'darwin') {
   })
 
   // Edit menu
-  commonMenu[2].submenu.push(
+  editor[2].submenu.push(
     {
       type: 'separator'
     },
@@ -250,7 +250,7 @@ if (process.platform === 'darwin') {
   )
 
   // Window menu
-  commonMenu[4].submenu = [
+  editor[4].submenu = [
     {
       role: 'minimize'
     },
@@ -268,6 +268,6 @@ if (process.platform === 'darwin') {
 
 
 module.exports = {
-  commonMenu: commonMenu,
-  setupMenu: setupMenu
+  editor: editor,
+  setup: setup
 }

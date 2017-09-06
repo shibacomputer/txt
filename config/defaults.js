@@ -1,25 +1,28 @@
 module.exports = {
-  main: {
+  editor: {
+    backgroundColor: '#1B1B20',
+    frame: true,
+    height: 700,
+    minHeight: 320,
+    minWidth: 600,
+    scrollBounce: true,
     titleBarStyle: 'hidden-inset',
     width: 1000,
-    height: 700,
-    minWidth: 600,
-    minHeight: 320,
-    frame: true
   },
   setup: {
+    backgroundColor: '#1B1B20',
+    center: true,
+    frame: true,
+    fullscreenable: false,
+    height: 526,
+    maximizable: false,
+    minimizable: true,
+    resizable: false,
     titleBarStyle: 'hidden-inset',
     width: 448,
-    height: 526,
-    frame: true,
-    center: true,
-    resizable: false,
-    fullscreenable: false,
-    minimizable: true,
-    maximizable: false
-
   },
   lock: {
+    backgroundColor: '#1B1B20',
     titleBarStyle: 'hidden',
     width: 512,
     height: 128,

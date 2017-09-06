@@ -14,10 +14,12 @@ const app = choo()
 
 // App setup.
 app.use(persist())
-app.use(log())
 app.use(expose())
-app.use(tools())
 
+if (process.env.NODE_ENV !== 'production') {
+  app.use(log())
+  app.use(tools())
+}
 // State
 app.use(require('./state/sys')) // This is handling the UI.
 app.use(require('./state/key')) // This handles the keychain and passphrase.

@@ -1,5 +1,5 @@
 // Setup SVGs
-const fs = require('fs')
+const fs = window.require('fs')
 
 module.exports = icons
 
