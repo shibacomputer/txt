@@ -1,4 +1,4 @@
-var { BrowserWindow, Menu, ipcMain } = require('electron')
+const { BrowserWindow, Menu, ipcMain } = require('electron')
 const window = require('electron-window')
 const path = require('path')
 const config = require('../../config/defaults')
@@ -7,24 +7,65 @@ const menu = require('../../config/menu')
 const URL = 'file://' + path.resolve('./index.html')
 
 var editorWindow = module.exports = {
-  init
+  init,
+  show,
+  hide,
+  win: null
 }
+var win = null
 
-function init () {
-  const setupWindow = window.createWindow(config.setup)
-  menu = Menu.buildFromTemplate(menu.setup)
-  Menu.setApplicationMenu(menu)
+function init() {
+  win = window.createWindow(config.setup)
 
-  setupWindow.loadURL(URL)
+  var appMenu = Menu.buildFromTemplate(menu.setup)
+  Menu.setApplicationMenu(appMenu)
 
   // Events
-  setupWindow.once('ready-to-show', setupWindow.show)
-
-  setupWindow.on('ready-to-close', (e) => {
-    // Check the setup state
+  win.on('ready-to-close', (e) => {
+    // Check the editor state here
   })
 
-  setupWindow.on('closed', (e) => {
-    setupWindow = null
+  win.on('blur', (e) => {
+    // Refresh
   })
+
+  win.on('focus', (e) => {
+    // Refresh
+  })
+
+  win.on('hide', (e) => {
+    hide()
+  })
+
+  win.on('enter-full-screen', () => {
+    // Update layout
+  })
+
+  win.on('leave-full-screen', () => {
+    // Update layout
+  })
+
+  win.on('closed', (e) => {
+    win = null
+  })
+
+  show()
+}
+
+function show() {
+
+  if (!win) init()
+
+  win.loadURL(URL)
+  win.webContents.on('did-finish-load', () => {
+    if (process.env.NODE_ENV === 'development') {
+      win.webContents.openDevTools({ mode: 'detach' })
+    }
+  })
+
+  win.once('ready-to-show', win.show)
+}
+
+function hide() {
+
 }

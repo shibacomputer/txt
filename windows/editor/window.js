@@ -48,6 +48,7 @@ function init() {
   win.on('closed', (e) => {
     win = null
   })
+
   show()
 }
 
@@ -57,12 +58,15 @@ function show() {
 
   win.loadURL(URL)
   win.webContents.on('did-finish-load', () => {
+
     if (process.env.NODE_ENV === 'development') {
       win.webContents.openDevTools({ mode: 'detach' })
     }
   })
 
-  win.once('ready-to-show', win.show)
+  win.once('ready-to-show', () => {
+    win.show
+  })
 }
 
 function hide() {
