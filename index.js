@@ -14,8 +14,7 @@ const path = require('path')
 // Settings
 const settings = require('electron-settings')
 
-const editor = require('./windows/editor/window')
-const setup = require('./windows/setup/window')
+const manager = require('./windows/manager')
 
 global.settings = settings
 
@@ -30,11 +29,11 @@ app.on('ready', () => {
     })
   }
   var active = settings.get('active')
-  console.log(settings.getAll)
-  if(active) {
-    editor.init()
+  manager.init()
+  if (active) {
+    manager.show('editor')
   } else {
-    setup.init()
+    manager.show('setup')
   }
 })
     /*

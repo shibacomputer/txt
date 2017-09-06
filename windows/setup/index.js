@@ -68,7 +68,8 @@ function setupWindow(state, emit) {
   function completeSetup(phrase) {
     utils.setSetting('active', true)
     utils.setSetting('keychain', true)
-    ipcRenderer.send('window', 'main')
+    ipcRenderer.send('make-window', 'editor')
+    ipcRenderer.send('kill-window', 'setup')
     emit('keychain:create', phrase)
   }
 }

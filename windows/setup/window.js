@@ -10,6 +10,7 @@ var editorWindow = module.exports = {
   init,
   show,
   hide,
+  kill,
   win: null
 }
 
@@ -64,9 +65,16 @@ function show() {
     }
   })
 
-  win.once('ready-to-show', win.show)
+  win.once('ready-to-show', () => {
+    win.show
+  })
 }
 
 function hide() {
 
+}
+
+function kill() {
+  if (!win) return
+  else win.close()
 }

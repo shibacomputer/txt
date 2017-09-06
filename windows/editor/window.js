@@ -10,6 +10,7 @@ var editorWindow = module.exports = {
   init,
   show,
   hide,
+  kill,
   win: null
 }
 var win = null
@@ -71,4 +72,9 @@ function show() {
 
 function hide() {
 
+}
+
+function kill() {
+  if (!win) return
+  else win.close()
 }
