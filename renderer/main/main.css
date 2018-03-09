@@ -1,0 +1,18 @@
+.composer {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.composer .content {
+  box-sizing: border-box;
+  cursor: text;
+  outline: none;
+  flex-grow: 1;
+  font-size: 13px;
+  line-height: 1.8;
+  max-width: 48rem;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  transition: background-color linear 100ms;
+  width: 100%;
+}

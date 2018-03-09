@@ -1,0 +1,88 @@
+/**
+  * Defs
+  * Declare all CSS variables and common classes here.
+  */
+
+  @font-face {  font-family: 'Mono';
+                font-weight: normal;
+                font-style: normal;
+                src:  url('../_assets/fonts/plex-r.otf') format('opentype') }
+
+
+  @font-face {  font-family: 'HKG';
+                font-weight: normal;
+                font-style: normal;
+                src:  url('../_assets/fonts/hkg-r.otf') format('opentype') }
+
+  @font-face {  font-family: 'HKG';
+                font-weight: bold;
+                font-style: normal;
+                src:  url('../_assets/fonts/hkg-m.otf') format('opentype') }
+
+:root {
+  /* Grid unit */
+  --u: 16px;
+
+  /* Colours */
+  --c:      #27FF98;
+  --m:      #F427FF;
+  --y:      #FCFF00;
+  --k:      #1B1B20;
+  --w:      #e8ecf1;
+  --g:      #1B1C20;
+  --b:      #00D7FF;
+  --f:      #FFFFFF;
+  --r:      #ff0000;
+  --s:      #C3C3C3;
+
+  /* Gradients */
+  --myc:   linear-gradient(45deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
+  --bck:   linear-gradient(-180deg, #00D7FF 0%, #27FF98 51%, #000000 100%);
+}
+
+.c { color: var(--c) }
+.m { color: var(--m) }
+.y { color: var(--y) }
+.k { color: var(--k) }
+.w { color: var(--w) }
+.g { color: var(--g) }
+.b { color: var(--b) }
+.f { color: var(--f) }
+.r { color: var(--r) }
+
+.bg-c { background-color: var(--c) }
+.bg-m { background-color: var(--m) }
+.bg-y { background-color: var(--y) }
+.bg-k { background-color: var(--k) }
+.bg-w { background-color: var(--w) }
+.bg-g { background-color: var(--g) }
+.bg-b { background-color: var(--b) }
+.bg-f { background-color: var(--f) }
+.bg-r { background-color: var(--r) }
+
+.b-myc, .b-bck {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+}
+.b-myc::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--myc);
+  content: '';
+  z-index: -1;
+}
+
+.b-bck::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--bck);
+  content: '';
+  z-index: -1;
+}
