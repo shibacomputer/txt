@@ -23,10 +23,11 @@ Then, once everything is set up:
 ```
 ## Disclaimer
 
-🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS YET** 🚫  
+🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
 🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED AND UNAUDITED** 🚫
 
-I can't stress this enough. This needs a lot of work, and it needs others eyes on it.
+I can't stress this enough. This needs a lot of work, and it needs others eyes
+on it.
 
 ## Why?
 It's pretty simple – I don't like the majority of text editors that exist today.
@@ -48,14 +49,16 @@ you don't need one. Everything used is off the shelf.
 I'll write more on this later, but basically Txt is designed to allow you to
 store data in untrusted locations, such as a cloud service or on a USB stick.
 
-The app assumes your currently running host system isn't compromised. In the MVP,
-your passphrase is managed by your OS's keychain. The MVP will also not stop you
-from creating a terrible passphrase and using that. This will change. The idea for now
-is that you should be able to safely leave your work stored on untrusted infrastructure.
+The app assumes your currently running host system isn't compromised. In the
+MVP, your passphrase is managed by your OS's keychain. The MVP won't stop you
+from creating a terrible passphrase and using that. This will change. For now,
+the goal is that, provided you take some basic steps to protect yourself (eg,
+taking care of your metadata and choosing a strong passphrase), it should be
+possible to store your work on untrusted infrastructure.
 
 Finally, Txt does not protect anything that isn't stored by your filesystem.
-Your metadata - including the filenames of your work – is available to anyone who has access to
-the disk.
+Your metadata - including the filenames of your work – is available to anyone
+who has access to the disk.
 
 ## Features
 ### Planned for beta
