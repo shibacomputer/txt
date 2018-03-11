@@ -3,6 +3,7 @@ module.exports = store
 const { ipcRenderer } = require('electron')
 const io = require('../../_utils/io')
 const crypto = require('../../_utils/crypto')
+const { parse } = require('path')
 
 const appId = 'Txt'
 
@@ -260,14 +261,29 @@ function store (state, emitter) {
    * Trash a resource using the sidebar to create the desired uri.
    * */
   function trash() {
-
-    // @TODO Get confirmation
     var focus = state.data.ui.sidebar.focusUri
-    if (focus) io.trash(focus, (err, status) => {
-      if (err) ipcRenderer.send('dialog:new:error')
-      else emitter.emit('state:library:list')
+    if (focus) ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Trash', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Trash ' + parse(focus).name + '?',
+      detail: 'The item will be moved to your computer\'s trash.'
     })
 
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 1:
+         // cancel
+         break
+        default:
+          io.trash(focus, (err, status) => {
+            if (err) ipcRenderer.send('dialog:new:error')
+            else emitter.emit('state:library:list')
+          })
+         break
+       }
+     })
   }
   /**
    * Sets the active resource, based on a unique identifier.
