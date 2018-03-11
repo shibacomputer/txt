@@ -7,14 +7,16 @@ const main = [ {
       label: 'New',
       accelerator: 'CmdOrCtrl+N',
       click (item, win, event) {
-        win.webContents.send('menu:file:new:file')
+        if (!win) return
+        else win.webContents.send('menu:file:new:file')
       }
     },
     {
       label: 'New Folder',
       accelerator: 'CmdOrCtrl+Shift+N',
       click (item, win, event) {
-        win.webContents.send('menu:file:new:dir')
+        if (!win) return
+        else win.webContents.send('menu:file:new:dir')
       }
     },
 
@@ -22,7 +24,8 @@ const main = [ {
       label: 'Open…',
       accelerator: 'CmdOrCtrl+O',
       click (item, win, event) {
-        if (win) win.webContents.send('menu:file:open')
+        if (!win) return
+        else win.webContents.send('menu:file:open')
       }
     },
     {
@@ -32,14 +35,16 @@ const main = [ {
       label: 'Save',
       accelerator: 'CmdOrCtrl+S',
       click (item, win, event) {
-        if (win) win.webContents.send('menu:file:save')
+        if (!win) return
+        else win.webContents.send('menu:file:save')
       }
     },
     {
       label: 'Save As…',
       accelerator: 'CmdOrCtrl+Shift+S',
       click (item, win, event) {
-        if (win) win.webContents.send('menu:file:duplicate')
+        if (!win) return
+        else win.webContents.send('menu:file:duplicate')
       }
     },
     {
@@ -49,7 +54,8 @@ const main = [ {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',
       click (item, win, event) {
-        if (win) win.webContents.send('menu:file:close')
+        if (!win) return
+        else win.webContents.send('menu:file:close')
       }
     },
     {
@@ -57,7 +63,11 @@ const main = [ {
     },
     {
       label: 'Move to Trash',
-      accelerator: 'CmdOrCtrl+Backspace'
+      accelerator: 'CmdOrCtrl+Backspace',
+      click (item, win, event) {
+        if (!win) return
+        else win.webContents.send('menu:file:trash')
+      }
     },
     {
       type: 'separator'

@@ -20,11 +20,13 @@ function store (state, emitter) {
       emitter.on('state:composer:update', update)
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
+      emitter.on('state:library:trash', trash)
       emitter.on('state:library:set:active', setActive)
       emitter.on('state:library:open:directory', ls)
       emitter.on('state:library:open:file', open)
       emitter.on('state:library:read:file', read)
       emitter.on('state:library:write:file', commit)
+      emitter.on('state:library:write:directory', mkdir)
     })
 
     ipcRenderer.send('get:allPref')
@@ -219,6 +221,11 @@ function store (state, emitter) {
     }
   }
 
+  /**
+   * Tell the composer that the save is complete and ensures that the editor
+   * returns to a saved and unmodified state.
+   * @param contents An object that contains the current and stale text.
+   * */
   function save(contents) {
     state.data.text.stale = contents.stale
     state.data.modified = false
@@ -227,6 +234,41 @@ function store (state, emitter) {
     emitter.emit(state.events.RENDER)
   }
 
+  /**
+   * Make a directory, using the sidebar to create the desired uri.
+   * */
+  function mkdir() {
+    console.log('Attempting to make ', uri)
+    var focus = state.data.ui.sidebar.focusUri
+    var uri = focus? focus + '/New folder' : state.data.prefs.app.path + '/New folder'
+    io.exists(uri, (exists) => {
+      // @TODO: Make sure this doesn't return true when there are
+      // permission issues.
+      if (exists) ipcRenderer.send('dialog:new:error')
+      else {
+        io.mkdir(uri, (err, status) => {
+          if (err) ipcRenderer.send('dialog:new:error')
+          else {
+            emitter.emit('state:library:list')
+          }
+        })
+      }
+    })
+  }
+
+  /**
+   * Trash a resource using the sidebar to create the desired uri.
+   * */
+  function trash() {
+
+    // @TODO Get confirmation
+    var focus = state.data.ui.sidebar.focusUri
+    if (focus) io.trash(focus, (err, status) => {
+      if (err) ipcRenderer.send('dialog:new:error')
+      else emitter.emit('state:library:list')
+    })
+
+  }
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -237,6 +279,8 @@ function store (state, emitter) {
 
   // Main Events
   ipcRenderer.on('menu:file:save', (event, response) => {
+    var snapshot = state.data.text
+    emitter.emit('state:library:write:file')
   })
 
   ipcRenderer.on('menu:file:new:file', (event, response) => {
@@ -244,6 +288,10 @@ function store (state, emitter) {
   })
 
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
-    io('dir', null)
+    emitter.emit('state:library:write:directory')
+  })
+
+  ipcRenderer.on('menu:file:trash', (event, response) => {
+    emitter.emit('state:library:trash')
   })
 }

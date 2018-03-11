@@ -102,11 +102,10 @@ module.exports = {
   /**
    * Makes a directory.
    * @param uri The absolute path for the directory you wish to make.
-   * @param name [optional] The name for the new folder. Defaults to 'New Folder'.
    * @param callback Returns a status of true or false, plus an error.
    * */
-  mkdir: function(uri, name, callback) {
-    console.log('io:mkdir: ', path.join(uri, name))
+  mkdir: function(uri, callback) {
+    console.log('io:mkdir: ', uri)
     fs.stat(path.normalize(uri), (err, stats) => {
       if (!err) {
         console.log('io:mkdir: err: ', stats)
