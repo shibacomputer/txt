@@ -10,6 +10,9 @@ function Editor () {
   if (!(this instanceof Editor)) return new Editor()
   this.body = ''
   this.stale = ''
+  this.path = null
+  this.title = 'Untitled'
+  this.id = ''
   this.modified = false
   this.emit = null
   Nanocomponent.call(this)
@@ -19,6 +22,9 @@ Editor.prototype = Object.create(Nanocomponent.prototype)
 Editor.prototype.createElement = function (state, emit) {
   this.body = state.data.text.body || ''
   this.stale = state.data.text.stale || this.body
+  this.id = state.data.text.id || ''
+  this.path = state.data.text.path || null
+  this.title = state.data.text.title || 'Untitled'
   this.modified = state.data.modified || false
   this.emit = emit
   var el = html`
@@ -30,6 +36,9 @@ Editor.prototype.createElement = function (state, emit) {
       var contents = {
         body: editor.content.innerText? editor.content.innerText : state.data.text.body,
         stale: this.stale,
+        id: this.id,
+        path: this.path,
+        title: this.title,
         modified: (editor.content.innerText != this.stale)
       }
       this.body = contents.body

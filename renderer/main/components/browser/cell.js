@@ -38,10 +38,15 @@ function cell(f, opts, emit) {
   }
 
   function select(e) {
-    emit('state:library:select', f)
+    opts.focus? null : emit('state:library:select', f)
+
   }
 
   function open(e) {
-    emit('state:library:open:' + f.type, f)
+    if (f.type === 'file' && !opts.active) {
+      emit('state:library:open:' + f.type, f)
+    } else if (f.type === 'directory') {
+      emit('state:library:open:' + f.type, f)
+    }
   }
 }

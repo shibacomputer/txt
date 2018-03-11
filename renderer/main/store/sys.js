@@ -20,6 +20,7 @@ function store (state, emitter) {
       emitter.on('state:composer:update', update)
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
+      emitter.on('state:library:set:active', setActive)
       emitter.on('state:library:open:directory', ls)
       emitter.on('state:library:open:file', open)
       emitter.on('state:library:read:file', read)
@@ -30,6 +31,7 @@ function store (state, emitter) {
     ipcRenderer.once('done:getPref', (event, key, value) => {
       state.data = {
         modified: false,
+        writing: false,
         fullscreen: false,
         prefs: value,
         text: {
@@ -96,7 +98,10 @@ function store (state, emitter) {
    * @param f The target file you wish to open.
    * */
   function open(f) {
+    // Prevent opening files repeatedly
+    if (state.data.ui.sidebar.activeId === f.id || state.data.writing) return
     if (state.data.modified) {
+      state.data.writing = true
       ipcRenderer.send('dialog:new', {
         type: 'question',
         buttons: ['Save', 'Cancel', 'Discard changes'],
@@ -115,14 +120,18 @@ function store (state, emitter) {
          break
         case 2:
          // Discard changes
+         state.data.writing = false
          emitter.emit('state:library:read:file', f)
          break
         default:
-         const snapshot = state.data.text
-         emitter.emit('state:library:write:file', snapshot)
-         emitter.emit('state:library:read:file', f)
+         if (!state.data.wrting) {
+           var snapshot = state.data.text
+           snapshot.next = f
+           console.log('WRITING, ', snapshot)
+           emitter.emit('state:library:write:file', snapshot)
+         } else return
          break
-      }
+       }
     })
   }
 
@@ -131,6 +140,7 @@ function store (state, emitter) {
    * @param f The target file object you wish to open.
    * */
   function read(f) {
+    console.log('Reading, ', f)
     io.exists(f.uri, (exists) => {
       if (exists) {
         io.open(f.uri, (err, data) => {
@@ -143,10 +153,14 @@ function store (state, emitter) {
                   else {
                     console.log('decrypted, ', plaintext)
                     var contents = {
+                      id: state.data.ui.sidebar.focusId,
                       body: plaintext.data,
-                      stale: plaintext.data
+                      stale: plaintext.data,
+                      title: f.name.replace('.gpg', ''),
+                      path: f.uri
                     }
                     emitter.emit('state:composer:update', contents)
+                    emitter.emit('state:library:set:active', contents.id)
                   }
                 })
               })
@@ -162,12 +176,26 @@ function store (state, emitter) {
    * @param snapshot An object that contains the current editor snapshot.
    * */
   function commit(snapshot) {
-    console.log('Commtting: ', snapshot)
+    if (!snapshot.body) return
     if (state.data.prefs.encryption.useKeychain) {
       crypto.readKeychain(appId, 'user', (err, secret) => {
-        crypto.encrypt({phrase: secret}, {encoding: 'utf8', filename: snapshot.title, data: snapshot.contents}, (err, ciphertext) => {
-          console.log(ciphertext)
-        })
+        console.log('About to encrypt: ', snapshot)
+        if (err) ipcRenderer.send('dialog:new:error')
+        else {
+          crypto.encrypt({phrase: secret}, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
+            if (err) ipcRenderer.send('dialog:new:error')
+            else {
+              io.write(snapshot.path, ciphertext, (err, status) => {
+                state.data.writing = false
+                if (err) ipcRenderer.send('dialog:new:error')
+                else {
+                  save(snapshot)
+                  if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
+                }
+              })
+            }
+          })
+        }
       })
     }
   }
@@ -179,8 +207,7 @@ function store (state, emitter) {
    * */
   function update(contents) {
     console.log('updating with, ', contents)
-    state.data.text.body = contents.body
-    state.data.text.stale = contents.stale
+    state.data.text = contents
     if (state.data.text.body !== state.data.text.stale) {
       state.data.modified = true
       ipcRenderer.send('menu:enable:save', true)
@@ -195,7 +222,17 @@ function store (state, emitter) {
   function save(contents) {
     state.data.text.stale = contents.stale
     state.data.modified = false
+    state.data.writing = false
     ipcRenderer.send('menu:enable:save', false)
+    emitter.emit(state.events.RENDER)
+  }
+
+  /**
+   * Sets the active resource, based on a unique identifier.
+   * @param id A unique identifier generated via the filesystem.
+   * */
+  function setActive(id) {
+    state.data.ui.sidebar.activeId = id
   }
 
   // Main Events
