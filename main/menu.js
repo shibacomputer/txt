@@ -51,6 +51,16 @@ const main = [ {
       type: 'separator'
     },
     {
+      label: 'Revert Changes',
+      click (item, win, event) {
+        if (!win) return
+        else win.webContents.send('menu:file:revert')
+      }
+    },
+    {
+      type: 'separator'
+    },
+    {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',
       click (item, win, event) {

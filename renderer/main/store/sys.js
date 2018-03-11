@@ -19,6 +19,7 @@ function store (state, emitter) {
     emitter.on('DOMContentLoaded', function () {
       emitter.on('state:init', init)
       emitter.on('state:composer:update', update)
+      emitter.on('state:composer:revert', revert)
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
       emitter.on('state:library:trash', trash)
@@ -228,7 +229,8 @@ function store (state, emitter) {
    * @param contents An object that contains the current and stale text.
    * */
   function save(contents) {
-    state.data.text.stale = contents.stale
+    state.data.text.body = contents.body
+    state.data.text.stale = contents.body
     state.data.modified = false
     state.data.writing = false
     ipcRenderer.send('menu:enable:save', false)
@@ -285,6 +287,33 @@ function store (state, emitter) {
        }
      })
   }
+
+  /**
+   * Discard unsaved changes, using the editor state to
+   * */
+  function revert() {
+    ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Revert changes', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Revert your changes?',
+      detail: 'Changes prior to your last save will be lost. This action cannot be undone.'
+    })
+
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 1:
+         // cancel
+         break
+        default:
+          var contents = state.data.text
+          contents.body = contents.stale
+          save(contents)
+         break
+       }
+     })
+  }
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -294,19 +323,27 @@ function store (state, emitter) {
   }
 
   // Main Events
-  ipcRenderer.on('menu:file:save', (event, response) => {
-    var snapshot = state.data.text
-    emitter.emit('state:library:write:file')
-  })
-
   ipcRenderer.on('menu:file:new:file', (event, response) => {
-    io('file', null)
+    var snapshot = {
+
+    }
+    emitter.emit('state:library:write:file')
   })
 
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
     emitter.emit('state:library:write:directory')
   })
 
+  ipcRenderer.on('menu:file:save', (event, response) => {
+    var snapshot = state.data.text
+    console.log(snapshot)
+    emitter.emit('state:library:write:file', snapshot)
+  })
+  ipcRenderer.on('menu:file:revert', (event, response) => {
+    var snapshot = state.data.text
+    console.log(snapshot)
+    emitter.emit('state:composer:revert')
+  })
   ipcRenderer.on('menu:file:trash', (event, response) => {
     emitter.emit('state:library:trash')
   })
