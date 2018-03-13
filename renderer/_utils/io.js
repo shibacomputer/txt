@@ -81,20 +81,13 @@ module.exports = {
    * */
   write: function(uri, data, callback) {
     console.log('io:write: to: ', uri, ' data: ', data)
-    fs.stat(path.normalize(uri), (err, stats) => {
+    fs.writeFile(path.normalize(uri), data, (err) => {
       if (err) {
         console.log('io:write err: ' + err)
         callback(err, false)
       } else {
-        fs.writeFile(path.normalize(uri), data, (err) => {
-          if (err) {
-            console.log('io:write err: ' + err)
-            callback(err, false)
-          } else {
-            console.log('io:write done!')
-            callback(null, true)
-          }
-        })
+        console.log('io:write done!')
+        callback(null, true)
       }
     })
   },

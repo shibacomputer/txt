@@ -180,7 +180,6 @@ function store (state, emitter) {
    * @param snapshot An object that contains the current editor snapshot.
    * */
   function commit(snapshot) {
-    if (!snapshot.body) return
     if (state.data.prefs.encryption.useKeychain) {
       crypto.readKeychain(appId, 'user', (err, secret) => {
         console.log('About to encrypt: ', snapshot)
@@ -191,11 +190,8 @@ function store (state, emitter) {
             else {
               io.write(snapshot.path, ciphertext, (err, status) => {
                 state.data.writing = false
-                if (err) ipcRenderer.send('dialog:new:error')
-                else {
-                  save(snapshot)
-                  if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
-                }
+                save(snapshot)
+                if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
               })
             }
           })
@@ -281,7 +277,11 @@ function store (state, emitter) {
         default:
           io.trash(focus, (err, status) => {
             if (err) ipcRenderer.send('dialog:new:error')
-            else emitter.emit('state:library:list')
+            else {
+              state.data.ui.sidebar.focusId = ''
+              state.data.ui.sidebar.focusUri = ''
+              emitter.emit('state:library:list')
+            }
           })
          break
        }
@@ -324,10 +324,16 @@ function store (state, emitter) {
 
   // Main Events
   ipcRenderer.on('menu:file:new:file', (event, response) => {
+    var focus = state.data.ui.sidebar.focusUri
+    // @TODO: Abstract this into an init function
     var snapshot = {
-
+      body: '',
+      id: null,
+      path: focus? focus + '/Untitled.gpg' : state.data.prefs.app.path + '/Untitled.gpg',
+      stale: '',
+      title: 'Untitled'
     }
-    emitter.emit('state:library:write:file')
+    emitter.emit('state:library:write:file', snapshot)
   })
 
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
