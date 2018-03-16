@@ -140,21 +140,26 @@ module.exports = {
    * @param callback Returns an error, and success boolean.
    * */
   mv: function(uri, targetUri, callback) {
+    console.log("io:mv: start. uri: ", uri, " targetUri: ", targetUri)
     fs.stat(path.normalize(uri), (err, stats) => {
-      if (!err) {
+      console.log('io:mv: ', uri, ': ', err, stats)
+      if (err) {
         callback(stats, false)
       } else {
         fs.stat(path.normalize(targetUri), (err, stats) => {
-          if (!err) {
-            callback(stats, false)
-          } else {
+          console.log('io:mv: ', targetUri, ': ', err, stats)
+          if (!stats) {
             fs.rename(path.normalize(uri), path.normalize(targetUri), (err) => {
               if (err) {
+                console.log('io:mv: err: ', err)
                 callback(err, false)
               } else {
+                console.log('io:mv: done')
                 callback(null, true)
               }
             })
+          } else {
+            callback(stats, false)
           }
         })
       }

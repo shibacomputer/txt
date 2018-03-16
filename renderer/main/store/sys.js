@@ -22,8 +22,11 @@ function store (state, emitter) {
       emitter.on('state:composer:revert', revert)
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
+      emitter.on('state:library:rename:start', rename)
+      emitter.on('state:library:rename:end', finishRename)
       emitter.on('state:library:trash', trash)
       emitter.on('state:library:set:active', setActive)
+      emitter.on('state:library:set:rename', setRename)
       emitter.on('state:library:open:directory', ls)
       emitter.on('state:library:open:file', open)
       emitter.on('state:library:read:file', read)
@@ -79,7 +82,39 @@ function store (state, emitter) {
   function select(cell) {
     state.data.ui.sidebar.focusId = cell.id
     state.data.ui.sidebar.focusUri = cell.uri
+    state.data.ui.sidebar.renamingId = ''
     emitter.emit(state.events.RENDER)
+  }
+
+  /**
+   * Update the UI with the to-be-renamed cell.
+   * @param cell The cell metadata for the cell you want to rename.
+   * */
+  function rename(cell) {
+    if (!state.data.ui.sidebar.renamingId) {
+      state.data.ui.sidebar.renamingId = cell.id
+      emitter.emit(state.events.RENDER)
+    }
+  }
+
+  /**
+   * Write the new name to disk.
+   * @param uri The target resource.
+   * @param targetUri The new name, supplied by the UI.
+   * */
+  function finishRename(f) {
+    var newUri = parse(f.uri).dir + '/' + f.newUri
+    if (f.uri != newUri) {
+      console.log('Checking existing resource...')
+      io.exists(f.uri, (err, status) => {
+        console.log('starting move')
+        io.mv(f.uri, newUri, (err, status) => {
+          state.data.ui.sidebar.renamingId = ''
+          emitter.emit('state:library:list')
+        })
+      })
+    }
+    state.data.ui.sidebar.renamingId = ''
   }
 
   /**
@@ -92,6 +127,7 @@ function store (state, emitter) {
         var exists = state.data.ui.sidebar.openDirs.indexOf(d.id)
         if (exists === -1) state.data.ui.sidebar.openDirs.push(d.id)
         else state.data.ui.sidebar.openDirs.splice(exists, 1)
+        state.data.ui.sidebar.renamingId = ''
         emitter.emit(state.events.RENDER)
       }
     })
@@ -144,6 +180,7 @@ function store (state, emitter) {
    * @param f The target file object you wish to open.
    * */
   function read(f) {
+    state.data.ui.sidebar.renamingId = ''
     console.log('Reading, ', f)
     io.exists(f.uri, (exists) => {
       if (exists) {
@@ -191,7 +228,8 @@ function store (state, emitter) {
               io.write(snapshot.path, ciphertext, (err, status) => {
                 state.data.writing = false
                 save(snapshot)
-                if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
+                if (snapshot.new) emitter.emit('state:library:list')
+                else if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
               })
             }
           })
@@ -314,12 +352,21 @@ function store (state, emitter) {
        }
      })
   }
+
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
    * */
   function setActive(id) {
     state.data.ui.sidebar.activeId = id
+  }
+
+  /**
+   * Sets the renaming resource, based on a unique identifier.
+   * @param id A unique identifier generated via the filesystem.
+   * */
+  function setRename(id) {
+    state.data.ui.sidebar.renamingId = id
   }
 
   // Main Events
@@ -331,7 +378,8 @@ function store (state, emitter) {
       id: null,
       path: focus? focus + '/Untitled.gpg' : state.data.prefs.app.path + '/Untitled.gpg',
       stale: '',
-      title: 'Untitled'
+      title: 'Untitled',
+      isNew: true
     }
     emitter.emit('state:library:write:file', snapshot)
   })

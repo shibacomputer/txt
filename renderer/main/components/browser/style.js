@@ -58,10 +58,27 @@ const style = css`
     color: currentColor;
     display: flex;
     flex-direction: row;
+    margin-top: 1px;
     padding-right: 1rem;
     position: relative;
     white-space: nowrap;
     z-index: 10;
+  }
+
+  .input {
+    background: none;
+    border: none;
+    color: currentColor;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+    height: 13px;
+    outline: none;
+    width: 100%;
+  }
+
+  .input::selection {
+    color: var(--k);
+    background: var(--m);
   }
 
   .cell:before {
@@ -86,6 +103,10 @@ const style = css`
 
   .modified {
     color: var(--y);
+  }
+
+  .rename {
+    color: var(--m);
   }
 
   .focus:before {

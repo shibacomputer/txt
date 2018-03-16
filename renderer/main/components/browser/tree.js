@@ -25,7 +25,7 @@ function tree(state, emit) {
             opts.active = state.data.ui.sidebar.activeId === f.id ? true : false
             opts.list = state.data.ui.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
             opts.focus = state.data.ui.sidebar.focusId === f.id ? true : false
-            opts.rename = state.data.ui.sidebar.renameId === f.id ? true : false
+            opts.rename = state.data.ui.sidebar.renamingId === f.id ? true : false
             opts.modified = (state.data.ui.sidebar.activeId === f.id && state.data.modified) ? true : false
             if (
               (f.mime === 'text/gpg' || f.type === 'directory') &&

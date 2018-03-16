@@ -15,8 +15,10 @@ function cell(f, opts, emit) {
         <svg class=${style.icon}>
           <use xlink:href="#txt-${ opts.list ? 'dir-open' : 'dir'}">
         </svg>
-        <div class=${style.metadata}>
-          ${f.name}
+        <div class=${style.metadata} onclick=${rename}>
+          ${opts.rename?
+            html`<input type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
+            `${f.name}`}
         </div>
       </button>
     `
@@ -30,11 +32,23 @@ function cell(f, opts, emit) {
         <svg class=${style.icon}>
           <use xlink:href="#txt-file">
         </svg>
-        <div class=${style.metadata}>
-          ${name}
+        <div class=${style.metadata} onclick=${rename}>
+          ${opts.rename?
+            html`<input type="text" value=${name} class=${style.input} onblur=${finishRename} />` :
+            `${name}`}
         </div>
       </button>
     `
+  }
+
+  function rename(e) {
+    console.log(e)
+    opts.focus? emit('state:library:rename:start', f) : null
+  }
+
+  function finishRename(e) {
+    f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
+    emit('state:library:rename:end', f)
   }
 
   function select(e) {
