@@ -228,7 +228,7 @@ function store (state, emitter) {
               io.write(snapshot.path, ciphertext, (err, status) => {
                 state.data.writing = false
                 save(snapshot)
-                if (snapshot.new) emitter.emit('state:library:list')
+                if (snapshot.isNew) emitter.emit('state:library:list')
                 else if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
               })
             }

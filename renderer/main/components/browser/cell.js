@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata} onclick=${rename}>
           ${opts.rename?
-            html`<input type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
+            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,7 +34,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata} onclick=${rename}>
           ${opts.rename?
-            html`<input type="text" value=${name} class=${style.input} onblur=${finishRename} />` :
+            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} />` :
             `${name}`}
         </div>
       </button>
@@ -42,7 +42,6 @@ function cell(f, opts, emit) {
   }
 
   function rename(e) {
-    console.log(e)
     opts.focus? emit('state:library:rename:start', f) : null
   }
 

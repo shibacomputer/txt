@@ -84,12 +84,10 @@ const style = css`
   .cell:before {
     content: '';
     height: 24px;
-    left: 1px;
+    left: -100%;
     margin-top: -4px;
-    max-width: 320px;
-    min-width: 240px;
-    position: fixed;
-    width: 25vw;
+    position: absolute;
+    width: 100vw;
     z-index: 1;
   }
 
