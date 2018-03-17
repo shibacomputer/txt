@@ -18,7 +18,7 @@ function editorHeader(state, emit) {
             classes: 'c',
             icon: 'new',
             click: function() {
-              emit('note:new')
+              emit('state:composer:new')
             }
           })
         ]

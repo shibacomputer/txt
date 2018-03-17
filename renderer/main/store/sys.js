@@ -18,6 +18,7 @@ function store (state, emitter) {
   function init() {
     emitter.on('DOMContentLoaded', function () {
       emitter.on('state:init', init)
+      emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
       emitter.on('state:composer:revert', revert)
       emitter.on('state:library:list', list)
@@ -240,6 +241,24 @@ function store (state, emitter) {
   }
 
   /**
+   * Create a new resource.
+   * */
+
+  function compose() {
+    var focus = state.data.ui.sidebar.focusUri
+    // @TODO: Abstract this into an init function
+    var snapshot = {
+      body: '',
+      id: null,
+      path: focus? focus + '/Untitled.gpg' : state.data.prefs.app.path + '/Untitled.gpg',
+      stale: '',
+      title: 'Untitled',
+      isNew: true
+    }
+    emitter.emit('state:library:write:file', snapshot)
+  }
+
+  /**
    * Update the editor. This is called both when interacting with the editor,
    * and also loading new files.
    * @param contents An object that contains the current and stale text.
@@ -372,17 +391,7 @@ function store (state, emitter) {
 
   // Main Events
   ipcRenderer.on('menu:file:new:file', (event, response) => {
-    var focus = state.data.ui.sidebar.focusUri
-    // @TODO: Abstract this into an init function
-    var snapshot = {
-      body: '',
-      id: null,
-      path: focus? focus + '/Untitled.gpg' : state.data.prefs.app.path + '/Untitled.gpg',
-      stale: '',
-      title: 'Untitled',
-      isNew: true
-    }
-    emitter.emit('state:library:write:file', snapshot)
+    emitter.emit('state:composer:new')
   })
 
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
