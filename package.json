@@ -1,6 +1,6 @@
 {
-  "name": "Text",
-  "version": "1.0.0",
+  "name": "Txt",
+  "version": "0.0.0-b1",
   "description": "A simple, private text editor",
   "main": "main/index.js",
   "scripts": {
@@ -20,7 +20,7 @@
     "type": "git",
     "url": "github.com/shibacomputer/txt"
   },
-  "author": "Cade <cade@shiba.computer>",
+  "author": "Shiba Computer <txt@shiba.computer>",
   "bugs": {
     "url": "https://github.com/shibacomputer/txt/issues"
   },
@@ -78,12 +78,12 @@
     "dmg": {
       "contents": [
         {
-          "x": 220,
+          "x": 128,
           "y": 200,
           "type": "file"
         },
         {
-          "x": 448,
+          "x": 400,
           "y": 200,
           "type": "link",
           "path": "/Applications"
