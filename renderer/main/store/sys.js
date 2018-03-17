@@ -66,6 +66,7 @@ function store (state, emitter) {
 
   /**
    * Get the library path and list it.
+   * TODO: Compare the old tree to the new tree to prevent re-rendering.
    * */
   function list() {
     io.ls(state.data.prefs.app.path, (err, tree) => {
@@ -400,5 +401,8 @@ function store (state, emitter) {
   })
   ipcRenderer.on('menu:file:trash', (event, response) => {
     emitter.emit('state:library:trash')
+  })
+  ipcRenderer.on('sys:focus', (event, response) => {
+    if (state.data.prefs.app.path) emitter.emit('state:library:list')
   })
 }
