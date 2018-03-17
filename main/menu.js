@@ -252,7 +252,7 @@ function buildMenu(menu) {
         label: 'Show Dev Tools',
         accelerator: 'CmdOrCtrl+OptionOrAlt+I',
         click: (item, win, event) => {
-          if (win) focusedWindow.webContents.toggleDevTools()
+          if (win) win.webContents.toggleDevTools()
         }
       }]
     })

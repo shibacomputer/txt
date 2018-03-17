@@ -7,7 +7,7 @@ const app = choo()
 app.use(require('choo-expose')())
 app.use(require('choo-persist')())
 
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'dev') {
   app.use(require('choo-devtools')())
 }
 

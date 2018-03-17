@@ -11,7 +11,7 @@ function browser(state, emit) {
   return html`
     <aside class=${ style.browser }>
       ${ header(state, emit) }
-      ${ tree(state, emit) }
+      ${ state.data.lib? tree(state, emit) : null }
       ${ footer(state, emit) }
     </aside>
 

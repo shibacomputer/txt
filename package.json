@@ -4,8 +4,15 @@
   "description": "A simple, private text editor",
   "main": "main/index.js",
   "scripts": {
-    "rebuild": "electron-rebuild -f -w keytar",
-    "setup": "npm install && npm run rebuild",
+    "build": "build -wml",
+    "build:mac": "build --mac",
+    "build:win": "build --win",
+    "build:linux": "build --linux",
+    "build:release": "build -wml -p always",
+    "clean": "rm -rf dist",
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild -f -w keytar rabin-bindings",
+    "setup": "npm install && npm run postinstall && npm run rebuild",
     "start": "NODE_ENV=dev electron main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -46,9 +53,24 @@
     "svgo": "^1.0.3"
   },
   "build": {
-    "appId": "computer.shiba.Txt",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "shibacomputer",
+        "repo": "txt"
+      }
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "appId": "computer.shiba",
+    "productName": "Txt",
     "mac": {
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "target": [
       "dmg"
@@ -57,7 +79,8 @@
       "contents": [
         {
           "x": 220,
-          "y": 200
+          "y": 200,
+          "type": "file"
         },
         {
           "x": 448,
@@ -65,6 +88,11 @@
           "type": "link",
           "path": "/Applications"
         }
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb"
       ]
     }
   }

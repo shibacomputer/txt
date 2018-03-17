@@ -8,7 +8,7 @@ const { parse } = require('path')
 const appId = 'Txt'
 
 function store (state, emitter) {
-  init()
+  if (!state.data) init()
 
   /**
    * Initialises the system state for the main window. This function gets its
@@ -16,6 +16,30 @@ function store (state, emitter) {
    * This will only run when there is no state persistence.
    * */
   function init() {
+    state.data = {
+      modified: false,
+      writing: false,
+      fullscreen: false,
+      prefs: null,
+      text: {
+        id: '',
+        body: '',
+        stale: '',
+        path: null,
+        title: 'Untitled',
+      },
+      lib: { },
+      ui: {
+        sidebar: {
+          editingId: '',
+          renamingId: '',
+          activeId: '',
+          focusId: '',
+          focusUri: '',
+          openDirs: []
+        }
+      }
+    }
     emitter.on('DOMContentLoaded', function () {
       emitter.on('state:init', init)
       emitter.on('state:composer:new', compose)
@@ -37,30 +61,7 @@ function store (state, emitter) {
 
     ipcRenderer.send('get:allPref')
     ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.data = {
-        modified: false,
-        writing: false,
-        fullscreen: false,
-        prefs: value,
-        text: {
-          id: '',
-          body: '',
-          stale: '',
-          path: null,
-          title: 'Untitled',
-        },
-        lib: { },
-        ui: {
-          sidebar: {
-            editingId: '',
-            renamingId: '',
-            activeId: '',
-            focusId: '',
-            focusUri: '',
-            openDirs: []
-          }
-        }
-      }
+      state.data.prefs = value
       list()
     })
   }

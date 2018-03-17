@@ -39,25 +39,12 @@ module.exports = {
     })
 
     winManager.templates.set('prefs', {
-      closable: true,
-      frame: false,
-      titleBarStyle: 'hidden',
-      resizable: false,
-      modal: true
+      'frame': false,
+      'titleBarStyle': 'hidden',
+      'resizable': false,
+      'modal': true
     })
 
-    winManager.templates.set('mini', {
-      backgroundColor: '#1B1B20',
-      titleBarStyle: 'hidden',
-      width: 512,
-      height: 128,
-      frame: false,
-      center: true,
-      movable: false,
-      fullscreenable: false,
-      minimizable: false,
-      maximizable: false
-    })
 
     winManager.templates.set('setup', {
       'backgroundColor': '#1B1B20',
@@ -72,16 +59,6 @@ module.exports = {
       'titleBarStyle': 'hiddenInset',
       'width': 448,
     })
-
-    winManager.templates.set('tray', {
-      closable: true,
-      frame: false,
-      titleBarStyle: 'hiddenInset',
-      resizable: false,
-      minimizable: false,
-      maximizable: false
-    })
-
     // Set up live defaults
     defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
     console.log(defs.app.path)
