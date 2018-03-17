@@ -1,12 +1,14 @@
 const { app, Menu } = require('electron')
 
+const updater = require('./updater')
+
 const main = [ {
   label: 'File',
   submenu: [
     {
       label: 'New',
       accelerator: 'CmdOrCtrl+N',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:new:file')
       }
@@ -14,7 +16,7 @@ const main = [ {
     {
       label: 'New Folder',
       accelerator: 'CmdOrCtrl+Shift+N',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:new:dir')
       }
@@ -23,7 +25,7 @@ const main = [ {
     {
       label: 'Open…',
       accelerator: 'CmdOrCtrl+O',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:open')
       }
@@ -34,7 +36,7 @@ const main = [ {
     {
       label: 'Save',
       accelerator: 'CmdOrCtrl+S',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:save')
       }
@@ -42,7 +44,7 @@ const main = [ {
     {
       label: 'Save As…',
       accelerator: 'CmdOrCtrl+Shift+S',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:duplicate')
       }
@@ -52,7 +54,7 @@ const main = [ {
     },
     {
       label: 'Revert Changes',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:revert')
       }
@@ -63,7 +65,7 @@ const main = [ {
     {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:close')
       }
@@ -74,7 +76,7 @@ const main = [ {
     {
       label: 'Move to Trash',
       accelerator: 'CmdOrCtrl+Backspace',
-      click (item, win, event) {
+      click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:trash')
       }
@@ -87,7 +89,7 @@ const main = [ {
       submenu: [
         {
           label: 'to Are.na…',
-          click (item, win, event) {
+          click: (item, win, event) => {
 
           }
         },
@@ -96,13 +98,13 @@ const main = [ {
         },
         {
           label: 'to Plain Text…',
-          click (item, win, event) {
+          click: (item, win, event) => {
             if (win) win.webContents.send('menu:file:duplicate')
           }
         },
         {
           label: 'to Encrypted File…',
-          click (item, win, event) {
+          click: (item, win, event) => {
             if (win) win.webContents.send('menu:file:duplicate')
           }
         },
@@ -112,7 +114,7 @@ const main = [ {
         {
           label: 'to PDF…',
           accelerator: 'CmdOrCtrl+Shift+P',
-          click (item, win, event) {
+          click: (item, win, event) => {
 
           }
         }
@@ -121,7 +123,7 @@ const main = [ {
     {
       label: 'Print…',
       accelerator: 'CmdOrCtrl+P',
-      click (item, win, event) {
+      click: (item, win, event) => {
 
       }
     }
@@ -164,13 +166,13 @@ const main = [ {
       label: 'Show Library',
       accelerator: 'CmdOrCtrl+Shift+L',
       checked: true,
-      click (item, win, event) {
+      click: (item, win, event) => {
         console.log('Theme')
       }
     },
     {
       label: 'Preview...',
-      click (item, win, event) {
+      click: (item, win, event) => {
         console.log('Preview')
       }
     },
@@ -192,7 +194,7 @@ const main = [ {
   role: 'help',
   submenu: [{
     label: 'Report an Issue…',
-    click () { require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues') }
+    click: () => { require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues') }
     }
   ]
 }]
@@ -202,7 +204,7 @@ const setup = [{
   submenu: [
     {
       label: 'Report an Issue…',
-      click () {
+      click: () => {
         require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues')
       }
   }]
@@ -215,8 +217,12 @@ function buildMenu(menu) {
       submenu: [
         {role: 'about'},
         {
+          label: 'Check for Update…',
+          click: updater.checkForUpdates
+        },
+        {
           label: 'Donate…',
-          click () {
+          click: () => {
             require('electron').shell.openExternal('https://txtapp.io/donate')
           }
         },
@@ -224,7 +230,7 @@ function buildMenu(menu) {
         {
           label: 'Preferences…',
           accelerator: 'Cmd+,',
-          click (item, win, event) {
+          click: (item, win, event) => {
             console.log('prefs');
           }
         },
@@ -245,8 +251,8 @@ function buildMenu(menu) {
       submenu: [{
         label: 'Show Dev Tools',
         accelerator: 'CmdOrCtrl+OptionOrAlt+I',
-        click (item, focusedWindow) {
-          if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+        click: (item, win, event) => {
+          if (win) focusedWindow.webContents.toggleDevTools()
         }
       }]
     })
