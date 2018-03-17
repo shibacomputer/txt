@@ -1,12 +1,4 @@
-/**
- * updater.js
- *
- * Please use manual update only when it is really required, otherwise please use recommended non-intrusive auto update.
- *
- * Import steps:
- * 1. create `updater.js` for the code snippet
- * 2. require `updater.js` for menu implementation, and set `checkForUpdates` callback from `updater` for the click property of `Check Updates...` MenuItem.
- */
+
 const { dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
 
