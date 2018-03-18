@@ -223,7 +223,7 @@ function buildMenu(menu) {
         {
           label: 'Donate…',
           click: () => {
-            require('electron').shell.openExternal('https://txtapp.io/donate')
+            require('electron').shell.openExternal('https://txtapp.io/')
           }
         },
         {type: 'separator'},

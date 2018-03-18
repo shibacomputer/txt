@@ -16,7 +16,9 @@ function editorFooter(state, emit) {
              name: 'report',
              classes: 'c',
              icon: 'issue',
-             click: function() { console.log('henlo')}
+             click: function() {
+              require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues')
+             }
            })
          ]
         })

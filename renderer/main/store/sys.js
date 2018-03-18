@@ -28,7 +28,14 @@ function store (state, emitter) {
     emitter.on('state:library:write:directory', mkdir)
   })
 
-  if (!state.data) init()
+  ipcRenderer.send('get:allPref')
+  ipcRenderer.once('done:getPref', (event, key, value) => {
+    state.data.prefs = value
+    list()
+  })
+
+
+  init()
 
   /**
    * Initialises the system state for the main window. This function gets its
@@ -46,7 +53,7 @@ function store (state, emitter) {
         body: '',
         stale: '',
         path: null,
-        title: 'Untitled',
+        title: null,
       },
       lib: { },
       ui: {
@@ -60,11 +67,6 @@ function store (state, emitter) {
         }
       }
     }
-    ipcRenderer.send('get:allPref')
-    ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.data.prefs = value
-      list()
-    })
   }
 
   /**
@@ -299,7 +301,7 @@ function store (state, emitter) {
    * */
   function mkdir() {
     console.log('Attempting to make ', uri)
-    var focus = state.data.ui.sidebar.focusUri
+    var focus = parse(state.data.ui.sidebar.focusUri).dir
     var uri = focus? focus + '/New folder' : state.data.prefs.app.path + '/New folder'
     io.exists(uri, (exists) => {
       // @TODO: Make sure this doesn't return true when there are
@@ -336,12 +338,24 @@ function store (state, emitter) {
          // cancel
          break
         default:
+          console.log('FOCUS', focus)
           io.trash(focus, (err, status) => {
             if (err) ipcRenderer.send('dialog:new:error')
             else {
-              if (state.data.ui.sidebar.focusId)
+              if (parse(state.data.ui.sidebar.focusUri).ext === '.gpg') {
+                var snapshot = {
+                  id: '',
+                  body: '',
+                  stale: '',
+                  path: null,
+                  title: '',
+                }
+                state.data.ui.sidebar.activeId = ''
+                state.data.ui.sidebar.renamingId = ''
+                emitter.emit('state:composer:update', snapshot)
+              }
               state.data.ui.sidebar.focusId = ''
-              state.data.ui.sidebar.focusUri = ''
+              state.data.ui.sidebar.focusUri = focus? focus : state.data.prefs.app.path
               emitter.emit('state:library:list')
             }
           })
@@ -391,13 +405,6 @@ function store (state, emitter) {
    * */
   function setRename(id) {
     state.data.ui.sidebar.renamingId = id
-  }
-
-  /**
-   * Reset the composer when something moves or gets deleted.
-   * */
-  function resetComposer() {
-    state.dat
   }
 
   // Main Events
