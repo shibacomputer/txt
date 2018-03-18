@@ -55,9 +55,9 @@
   "build": {
     "publish": [
       {
-        "provider": "github",
-        "owner": "shibacomputer",
-        "repo": "txt"
+        "provider": "generic",
+        "url": "http://txtapp.io/releases/${os}",
+        "channel": "latest"
       }
     ],
     "directories": {
