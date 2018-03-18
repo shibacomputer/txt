@@ -18,7 +18,7 @@ function editorHeader(state, emit) {
             classes: 'c',
             icon: 'new-folder',
             click: function() {
-              emit('note:new')
+              emit('state:library:write:directory')
             }
           })
         ]

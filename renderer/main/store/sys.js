@@ -8,6 +8,26 @@ const { parse } = require('path')
 const appId = 'Txt'
 
 function store (state, emitter) {
+
+  emitter.on('DOMContentLoaded', function () {
+    emitter.on('state:init', init)
+    emitter.on('state:composer:new', compose)
+    emitter.on('state:composer:update', update)
+    emitter.on('state:composer:revert', revert)
+    emitter.on('state:library:list', list)
+    emitter.on('state:library:select', select)
+    emitter.on('state:library:rename:start', rename)
+    emitter.on('state:library:rename:end', finishRename)
+    emitter.on('state:library:trash', trash)
+    emitter.on('state:library:set:active', setActive)
+    emitter.on('state:library:set:rename', setRename)
+    emitter.on('state:library:open:directory', ls)
+    emitter.on('state:library:open:file', open)
+    emitter.on('state:library:read:file', read)
+    emitter.on('state:library:write:file', commit)
+    emitter.on('state:library:write:directory', mkdir)
+  })
+
   if (!state.data) init()
 
   /**
@@ -40,25 +60,6 @@ function store (state, emitter) {
         }
       }
     }
-    emitter.on('DOMContentLoaded', function () {
-      emitter.on('state:init', init)
-      emitter.on('state:composer:new', compose)
-      emitter.on('state:composer:update', update)
-      emitter.on('state:composer:revert', revert)
-      emitter.on('state:library:list', list)
-      emitter.on('state:library:select', select)
-      emitter.on('state:library:rename:start', rename)
-      emitter.on('state:library:rename:end', finishRename)
-      emitter.on('state:library:trash', trash)
-      emitter.on('state:library:set:active', setActive)
-      emitter.on('state:library:set:rename', setRename)
-      emitter.on('state:library:open:directory', ls)
-      emitter.on('state:library:open:file', open)
-      emitter.on('state:library:read:file', read)
-      emitter.on('state:library:write:file', commit)
-      emitter.on('state:library:write:directory', mkdir)
-    })
-
     ipcRenderer.send('get:allPref')
     ipcRenderer.once('done:getPref', (event, key, value) => {
       state.data.prefs = value
@@ -231,6 +232,7 @@ function store (state, emitter) {
               io.write(snapshot.path, ciphertext, (err, status) => {
                 state.data.writing = false
                 save(snapshot)
+
                 if (snapshot.isNew) emitter.emit('state:library:list')
                 else if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
               })
@@ -246,7 +248,7 @@ function store (state, emitter) {
    * */
 
   function compose() {
-    var focus = state.data.ui.sidebar.focusUri
+    var focus = parse(state.data.ui.sidebar.focusUri).dir
     // @TODO: Abstract this into an init function
     var snapshot = {
       body: '',
@@ -321,7 +323,7 @@ function store (state, emitter) {
     var focus = state.data.ui.sidebar.focusUri
     if (focus) ipcRenderer.send('dialog:new', {
       type: 'question',
-      buttons: ['Trash', 'Cancel'],
+      buttons: ['Move to Trash', 'Cancel'],
       defaultId: 0,
       cancelId: 1,
       message: 'Trash ' + parse(focus).name + '?',
@@ -337,6 +339,7 @@ function store (state, emitter) {
           io.trash(focus, (err, status) => {
             if (err) ipcRenderer.send('dialog:new:error')
             else {
+              if (state.data.ui.sidebar.focusId)
               state.data.ui.sidebar.focusId = ''
               state.data.ui.sidebar.focusUri = ''
               emitter.emit('state:library:list')
@@ -388,6 +391,13 @@ function store (state, emitter) {
    * */
   function setRename(id) {
     state.data.ui.sidebar.renamingId = id
+  }
+
+  /**
+   * Reset the composer when something moves or gets deleted.
+   * */
+  function resetComposer() {
+    state.dat
   }
 
   // Main Events
