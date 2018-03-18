@@ -67,6 +67,7 @@ who has access to the disk.
 ✅ Passphrase GPG encryption  
 ✅ Keychain support  
 ✅ Dark UI theme  
+⬜ Auto-updating  
 ⬜ GPG Private key encryption  
 ⬜ Linux support  
 ⬜ Light UI theme  
@@ -81,12 +82,11 @@ who has access to the disk.
 
 ### Big todos
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
-⬜ Move PGP from renderer to main process  
-⬜ Data management    
+⬜ Data management  
 ⬜ Way smarter window management  
 ⬜ Better support for file permission edge cases  
-⬜ DAT support  
-⬜ Collaboration / track changes  
+⬜ DAT support???  
+⬜ Collaboration / track changes??  
 ⬜ 2FA / Yubikey support  
 ⬜ Secure syncing  
 
