@@ -76,6 +76,7 @@ who has access to the disk.
 ### Planned for v1.0
 ⬜ Windows support  
 ⬜ Markdown support  
+⬜ Localisation (tbc)  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
 ⬜ Automatic image management  
