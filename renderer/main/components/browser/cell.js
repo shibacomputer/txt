@@ -51,7 +51,7 @@ function cell(f, opts, emit) {
   }
 
   function select(e) {
-    f.type === 'directory'? open(e) : null
+    // f.type === 'directory'? open(e) : null
     opts.focus? null : emit('state:library:select', f)
   }
 
