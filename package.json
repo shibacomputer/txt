@@ -6,7 +6,9 @@
   "scripts": {
     "build": "build -wml",
     "build:mac": "build --mac",
+    "build:mac:beta": "NODE_ENV=dev build --mac",
     "build:win": "build --win",
+    "build:win:beta": "NODE_ENV=dev build --win",
     "build:linux": "build --linux",
     "build:release": "build -wml -p always",
     "clean": "rm -rf dist",
