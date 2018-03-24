@@ -34,7 +34,6 @@ function store (state, emitter) {
     list()
   })
 
-
   init()
 
   /**
@@ -104,23 +103,70 @@ function store (state, emitter) {
   }
 
   /**
-   * Write the new name to disk.
-   * @param uri The target resource.
-   * @param targetUri The new name, supplied by the UI.
+   * Prepare the new renamed item.
+   * @param f The target resource, including its new uri.
    * */
   function finishRename(f) {
     var newUri = parse(f.uri).dir + '/' + f.newUri
     if (f.uri != newUri) {
       console.log('Checking existing resource...')
-      io.exists(f.uri, (err, status) => {
-        console.log('starting move')
-        io.mv(f.uri, newUri, (err, status) => {
-          state.data.ui.sidebar.renamingId = ''
-          emitter.emit('state:library:list')
-        })
+      io.exists(f.uri, (exists) => {
+        if (!exists) ipcRenderer.send('dialog:new:error')
+        else {
+          io.exists(newUri, (exists) => {
+            if (!exists) {
+              rn(f, newUri, (err, status) => {
+                state.data.ui.sidebar.renamingId = ''
+                emitter.emit('state:library:list')
+              })
+            } else {
+              ipcRenderer.send('dialog:new', {
+                type: 'error',
+                buttons: ['OK', 'Cancel'],
+                defaultId: 0,
+                cancelId: 1,
+                message: f.newUri + ' already exists is this location.',
+                detail: 'Please choose a new name for this item.'
+              })
+              ipcRenderer.once('dialog:response', (event, res) => {
+                switch (res) {
+                  case 1:
+                    rn(f, newUri, (err, status) => {
+                      state.data.ui.sidebar.renamingId = ''
+                      emitter.emit('state:library:list')
+                    })
+                    break
+                  default:
+                    // cancel
+                    state.data.ui.sidebar.renamingId = ''
+                    emitter.emit('state:library:list')
+                    break
+                }
+              })
+            }
+          })
+        }
       })
+    } else {
+      state.data.ui.sidebar.renamingId = ''
     }
-    state.data.ui.sidebar.renamingId = ''
+  }
+
+  /**
+   * Write the new name to disk.
+   * @param f The target resource.
+   * @param newUri The new uri
+   * @param callback Returns an error and status.
+   * */
+  function rn(f, newUri, callback) {
+    io.mv(f.uri, newUri, (err, status) => {
+      if (err) ipcRenderer.send('dialog:new:error')
+      else {
+        callback(null, true)
+      }
+
+    })
+
   }
 
   /**
