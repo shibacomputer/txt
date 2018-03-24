@@ -16,6 +16,7 @@ const style = css`
   }
 
   .base {
+    -webkit-app-region: no-drag;
     align-items: stretch;
     background-color: rgba(0,0,0,0.1);
     color: var(--w);

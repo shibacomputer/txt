@@ -17,6 +17,7 @@ const style = css`
   }
 
   .treeBase {
+    -webkit-app-region: no-drag;
     flex-grow: 1;
     overflow-y: scroll;
   }
@@ -73,7 +74,6 @@ const style = css`
     font-size: 13px;
     height: 13px;
     outline: none;
-    width: 100%;
   }
 
   .input::selection {

@@ -21,13 +21,15 @@ const main = [ {
         else win.webContents.send('menu:file:new:dir')
       }
     },
-
     {
-      label: 'Open…',
-      accelerator: 'CmdOrCtrl+O',
+      type: 'separator'
+    },
+    {
+      label: 'Lock Txt',
+      accelerator: 'Shift+CmdOrCtrl+L',
       click: (item, win, event) => {
         if (!win) return
-        else win.webContents.send('menu:file:open')
+        else win.webContents.send('menu:file:lock')
       }
     },
     {
@@ -39,14 +41,6 @@ const main = [ {
       click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:save')
-      }
-    },
-    {
-      label: 'Save As…',
-      accelerator: 'CmdOrCtrl+Shift+S',
-      click: (item, win, event) => {
-        if (!win) return
-        else win.webContents.send('menu:file:duplicate')
       }
     },
     {
@@ -88,15 +82,6 @@ const main = [ {
       label: 'Export',
       submenu: [
         {
-          label: 'to Are.na…',
-          click: (item, win, event) => {
-
-          }
-        },
-        {
-          type: 'separator'
-        },
-        {
           label: 'to Plain Text…',
           click: (item, win, event) => {
             if (win) win.webContents.send('menu:file:duplicate')
@@ -114,6 +99,15 @@ const main = [ {
         {
           label: 'to PDF…',
           accelerator: 'CmdOrCtrl+Shift+P',
+          click: (item, win, event) => {
+
+          }
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'to Are.na…',
           click: (item, win, event) => {
 
           }

@@ -1,4 +1,5 @@
 const html = require('choo/html')
+const mousetrap = require('mousetrap')
 const path = require('path')
 const style = require('./style')
 
@@ -15,7 +16,7 @@ function cell(f, opts, emit) {
         <svg class=${style.icon}>
           <use xlink:href="#txt-${ opts.list ? 'dir-open' : 'dir'}">
         </svg>
-        <div class=${style.metadata} onclick=${rename}>
+        <div class=${style.metadata} ondblclick=${rename}>
           ${opts.rename?
             html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
             `${f.name}`}
@@ -32,9 +33,9 @@ function cell(f, opts, emit) {
         <svg class=${style.icon}>
           <use xlink:href="#txt-file">
         </svg>
-        <div class=${style.metadata} onclick=${rename}>
+        <div class=${style.metadata} ondblclick=${rename}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} />` :
+            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize}/>` :
             `${name}`}
         </div>
       </button>
@@ -56,10 +57,19 @@ function cell(f, opts, emit) {
   }
 
   function open(e) {
+    if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
     } else if (f.type === 'directory') {
       emit('state:library:open:' + f.type, f)
     }
   }
+
+  function resize(e) {
+    e.srcElement.style.width = ((this.value.length + 1) * 8) + 'px';
+  }
+
+  // Utility classes
+
+
 }
