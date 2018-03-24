@@ -42,6 +42,7 @@
     "electron-window-manager": "git+https://github.com/shibacomputer/electron-window-manager.git",
     "keytar": "^4.0.5",
     "mime": "^1.6.0",
+    "mousetrap": "^1.6.1",
     "nanocomponent": "^6.4.2",
     "openpgp": "^2.6.2",
     "pell": "^0.7.0",
