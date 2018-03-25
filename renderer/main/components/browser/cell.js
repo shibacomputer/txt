@@ -41,12 +41,8 @@ function cell(f, opts, emit) {
     `
   }
 
-  function test() {
-    console.log('HAHAHAHAH')
-  }
-
   function rename(e) {
-    if (!opts.focus) return
+    if (!opts.focus || opts.rename) return
     else {
       emit('state:library:rename:start', f)
     }
@@ -58,11 +54,11 @@ function cell(f, opts, emit) {
   }
 
   function select(e) {
+    if (opts.rename) return
     emit('state:library:select', f)
   }
 
   function open(e) {
-    emit('state:library:rename:cancel')
     if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
