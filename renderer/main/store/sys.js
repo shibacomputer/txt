@@ -117,11 +117,11 @@ function store (state, emitter) {
     state.data.ui.sidebar.maybeRename = true
     renameTimeout = window.setTimeout(() => {
       state.data.ui.sidebar.maybeRename = false
-      console.log('oh')
     }, 1500)
   }
 
   function cancelRename() {
+    state.data.ui.sidebar.maybeRename = false
     window.clearTimeout(renameTimeout)
   }
 
@@ -130,6 +130,7 @@ function store (state, emitter) {
    * @param f The target resource, including its new uri.
    * */
   function finishRename(f) {
+    emitter.emit('state:library:rename:cancel')
     var newUri = parse(f.uri).dir + '/' + f.newUri
     if (f.uri != newUri) {
       console.log('Checking existing resource...')

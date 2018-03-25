@@ -41,6 +41,10 @@ function cell(f, opts, emit) {
     `
   }
 
+  function test() {
+    console.log('HAHAHAHAH')
+  }
+
   function rename(e) {
     if (!opts.focus) return
     else {
