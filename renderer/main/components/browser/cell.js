@@ -11,12 +11,12 @@ function cell(f, opts, emit) {
   else return html`${fileCell()}`
   function dirCell() {
     return html`
-      <button onclick=${select} ondblclick=${open}
+      <button onclick=${select} ondblclick=${open} oncontextmenu=${context}
                 class="${style.cell} ${opts.focus? style.focus : '' } ${opts.active? style.active : '' } ${opts.rename? style.rename : '' }">
         <svg class=${style.icon}>
           <use xlink:href="#txt-${ opts.list ? 'dir-open' : 'dir'}">
         </svg>
-        <div class=${style.metadata} ondblclick=${rename}>
+        <div class=${style.metadata}>
           ${opts.rename?
             html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
             `${f.name}`}
@@ -28,12 +28,12 @@ function cell(f, opts, emit) {
   function fileCell() {
     var name = f.name.replace('.gpg', '')
     return html`
-      <button onclick=${select} ondblclick=${open}
+      <button onclick=${select} ondblclick=${open} oncontextmenu=${context}
                 class="${style.cell} ${opts.focus? style.focus : '' } ${opts.active? style.active : '' } ${opts.rename? style.rename : '' } ${opts.modified? style.modified : ''}">
         <svg class=${style.icon}>
           <use xlink:href="#txt-file">
         </svg>
-        <div class=${style.metadata} ondblclick=${rename}>
+        <div class=${style.metadata}>
           ${opts.rename?
             html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize}/>` :
             `${name}`}
@@ -43,7 +43,10 @@ function cell(f, opts, emit) {
   }
 
   function rename(e) {
-    opts.focus? emit('state:library:rename:start', f) : null
+    if (!opts.focus) return
+    else {
+      emit('state:library:rename:start', f)
+    }
   }
 
   function finishRename(e) {
@@ -52,8 +55,7 @@ function cell(f, opts, emit) {
   }
 
   function select(e) {
-    // f.type === 'directory'? open(e) : null
-    opts.focus? null : emit('state:library:select', f)
+    emit('state:library:select', f)
   }
 
   function open(e) {
@@ -65,11 +67,14 @@ function cell(f, opts, emit) {
     }
   }
 
+  function context(e) {
+    emit('state:library:context:display', 'sidebar')
+  }
+
   function resize(e) {
     e.srcElement.style.width = ((this.value.length + 1) * 8) + 'px';
   }
 
   // Utility classes
-
 
 }

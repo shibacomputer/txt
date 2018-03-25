@@ -8,6 +8,7 @@ const { parse } = require('path')
 const appId = 'Txt'
 
 function store (state, emitter) {
+  var renameTimeout
 
   emitter.on('DOMContentLoaded', function () {
     emitter.on('state:init', init)
@@ -26,6 +27,7 @@ function store (state, emitter) {
     emitter.on('state:library:read:file', read)
     emitter.on('state:library:write:file', commit)
     emitter.on('state:library:write:directory', mkdir)
+    emitter.on('state:library:context:display', displayContext)
   })
 
   ipcRenderer.send('get:allPref')
@@ -62,6 +64,7 @@ function store (state, emitter) {
           activeId: '',
           focusId: '',
           focusUri: '',
+          maybeRename: false,
           openDirs: []
         }
       }
@@ -85,10 +88,19 @@ function store (state, emitter) {
    * @param cell The cell metadata for the new selected item.
    * */
   function select(cell) {
-    state.data.ui.sidebar.focusId = cell.id
-    state.data.ui.sidebar.focusUri = cell.uri
-    state.data.ui.sidebar.renamingId = ''
-    emitter.emit(state.events.RENDER)
+    if (state.data.ui.sidebar.maybeRename && cell.id === state.data.ui.sidebar.focusId) {
+      emitter.emit('state:library:rename:start', cell)
+    } else {
+      state.data.ui.sidebar.focusId = cell.id
+      state.data.ui.sidebar.focusUri = cell.uri
+      state.data.ui.sidebar.renamingId = ''
+      state.data.ui.sidebar.maybeRename = true
+      renameTimeout = window.setTimeout(() => {
+        state.data.ui.sidebar.maybeRename = false
+        console.log('oh')
+      }, 2000)
+      emitter.emit(state.events.RENDER)
+    }
   }
 
   /**
@@ -98,6 +110,7 @@ function store (state, emitter) {
   function rename(cell) {
     if (!state.data.ui.sidebar.renamingId) {
       state.data.ui.sidebar.renamingId = cell.id
+      window.clearTimeout(renameTimeout)
       emitter.emit(state.events.RENDER)
     }
   }
@@ -126,7 +139,7 @@ function store (state, emitter) {
                 defaultId: 0,
                 cancelId: 1,
                 message: f.newUri + ' already exists is this location.',
-                detail: 'Please choose a new name for this item.'
+                detail: 'Txt will never overwrite your existing files. Please choose a new name.'
               })
               ipcRenderer.once('dialog:response', (event, res) => {
                 switch (res) {
@@ -164,9 +177,7 @@ function store (state, emitter) {
       else {
         callback(null, true)
       }
-
     })
-
   }
 
   /**
@@ -192,6 +203,7 @@ function store (state, emitter) {
   function open(f) {
     // Prevent opening files repeatedly
     if (state.data.ui.sidebar.activeId === f.id || state.data.writing) return
+
     if (state.data.modified) {
       state.data.writing = true
       ipcRenderer.send('dialog:new', {
@@ -437,6 +449,11 @@ function store (state, emitter) {
      })
   }
 
+  function displayContext(type) {
+    // Context events
+    ipcRenderer.send('contenxt:new:' + type)
+  }
+
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -461,11 +478,13 @@ function store (state, emitter) {
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
     emitter.emit('state:library:write:directory')
   })
-
   ipcRenderer.on('menu:file:save', (event, response) => {
     var snapshot = state.data.text
     console.log(snapshot)
     emitter.emit('state:library:write:file', snapshot)
+  })
+  ipcRenderer.on('menu:file:close', (event, response) => {
+
   })
   ipcRenderer.on('menu:file:revert', (event, response) => {
     var snapshot = state.data.text
