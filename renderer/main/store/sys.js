@@ -17,7 +17,9 @@ function store (state, emitter) {
     emitter.on('state:composer:revert', revert)
     emitter.on('state:library:list', list)
     emitter.on('state:library:select', select)
+    emitter.on('state:library:rename:prepare', prepareRename)
     emitter.on('state:library:rename:start', rename)
+    emitter.on('state:library:rename:cancel', cancelRename)
     emitter.on('state:library:rename:end', finishRename)
     emitter.on('state:library:trash', trash)
     emitter.on('state:library:set:active', setActive)
@@ -94,11 +96,7 @@ function store (state, emitter) {
       state.data.ui.sidebar.focusId = cell.id
       state.data.ui.sidebar.focusUri = cell.uri
       state.data.ui.sidebar.renamingId = ''
-      state.data.ui.sidebar.maybeRename = true
-      renameTimeout = window.setTimeout(() => {
-        state.data.ui.sidebar.maybeRename = false
-        console.log('oh')
-      }, 2000)
+      emitter.emit('state:library:rename:prepare')
       emitter.emit(state.events.RENDER)
     }
   }
@@ -110,9 +108,21 @@ function store (state, emitter) {
   function rename(cell) {
     if (!state.data.ui.sidebar.renamingId) {
       state.data.ui.sidebar.renamingId = cell.id
-      window.clearTimeout(renameTimeout)
+      emitter.emit('state:library:rename:cancel')
       emitter.emit(state.events.RENDER)
     }
+  }
+
+  function prepareRename() {
+    state.data.ui.sidebar.maybeRename = true
+    renameTimeout = window.setTimeout(() => {
+      state.data.ui.sidebar.maybeRename = false
+      console.log('oh')
+    }, 1500)
+  }
+
+  function cancelRename() {
+    window.clearTimeout(renameTimeout)
   }
 
   /**

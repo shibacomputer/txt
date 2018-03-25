@@ -59,6 +59,7 @@ function cell(f, opts, emit) {
   }
 
   function open(e) {
+    emit('state:library:rename:cancel')
     if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
