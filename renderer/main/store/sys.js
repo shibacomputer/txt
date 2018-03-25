@@ -172,6 +172,7 @@ function store (state, emitter) {
       })
     } else {
       state.data.ui.sidebar.renamingId = ''
+      emitter.emit(state.events.RENDER)
     }
   }
 

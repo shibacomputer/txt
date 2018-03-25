@@ -1,5 +1,4 @@
 const html = require('choo/html')
-const mousetrap = require('mousetrap')
 const path = require('path')
 const style = require('./style')
 
