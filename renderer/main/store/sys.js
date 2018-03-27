@@ -15,6 +15,7 @@ function store (state, emitter) {
     emitter.on('state:composer:new', compose)
     emitter.on('state:composer:update', update)
     emitter.on('state:composer:revert', revert)
+    emitter.on('state:composer:toolbar:report', report)
     emitter.on('state:library:list', list)
     emitter.on('state:library:select', select)
     emitter.on('state:library:rename:prepare', prepareRename)
@@ -482,6 +483,31 @@ function store (state, emitter) {
     state.data.ui.sidebar.renamingId = id
   }
 
+  function report() {
+    ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Report via Github', 'Email Support', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Open a browser?',
+      detail: 'Txt is in active development and your contribution helps'
+    })
+
+    ipcRenderer.once('dialog:response', (event, res) => {
+      console.log(res)
+      switch (res) {
+        case 1:
+         require('electron').shell.openExternal('mailto:txt.support@shiba.computer?subject=[Support v1.0b] ')
+         break
+        case 2:
+         break
+        default:
+         require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues/new')
+         break
+       }
+   })
+  }
+
   // Main Events
   ipcRenderer.on('menu:file:new:file', (event, response) => {
     emitter.emit('state:composer:new')
@@ -505,6 +531,9 @@ function store (state, emitter) {
   })
   ipcRenderer.on('menu:file:trash', (event, response) => {
     emitter.emit('state:library:trash')
+  })
+  ipcRenderer.on('menu:help:support', (event, response) => {
+    emitter.emit('state:composer:toolbar:report')
   })
   ipcRenderer.on('sys:focus', (event, response) => {
     if (state.data.prefs.app.path) emitter.emit('state:library:list')

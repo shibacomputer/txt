@@ -17,7 +17,7 @@ function editorFooter(state, emit) {
              classes: 'c',
              icon: 'issue',
              click: function() {
-              require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues')
+              emit('state:composer:toolbar:report')
              }
            })
          ]

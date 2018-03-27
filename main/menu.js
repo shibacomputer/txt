@@ -188,20 +188,18 @@ const main = [ {
   role: 'help',
   submenu: [{
     label: 'Report an Issue…',
-    click: () => { require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues') }
+    click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
     }
   ]
 }]
 
 const setup = [{
   role: 'help',
-  submenu: [
-    {
-      label: 'Report an Issue…',
-      click: () => {
-        require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues')
-      }
-  }]
+  submenu: [{
+    label: 'Report an Issue…',
+    click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
+    }
+  ]
 }]
 
 function buildMenu(menu) {
