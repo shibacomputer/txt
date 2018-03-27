@@ -47,11 +47,12 @@ const style = css`
     font-family: 'HKG', sans-serif;
     font-size: 13px;
     height: 24px;
+    min-width: 100%;
     outline: var(--w);
     padding: 0;
     position: relative;
     text-align: left;
-    width: 100%;
+    width: -webkit-fit-content;
     z-index: 5;
   }
 
@@ -88,7 +89,7 @@ const style = css`
     left: -100%;
     margin-top: -4px;
     position: absolute;
-    width: 100vw;
+    right: 0;
     z-index: 1;
   }
 
