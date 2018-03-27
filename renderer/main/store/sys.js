@@ -115,10 +115,12 @@ function store (state, emitter) {
   }
 
   function prepareRename() {
-    state.data.ui.sidebar.maybeRename = true
     renameTimeout = window.setTimeout(() => {
-      state.data.ui.sidebar.maybeRename = false
-    }, 1500)
+      state.data.ui.sidebar.maybeRename = true
+      renameTimeout = window.setTimeout(() => {
+        state.data.ui.sidebar.maybeRename = false
+      }, 1500)
+    }, 500)
   }
 
   function cancelRename() {
@@ -409,11 +411,11 @@ function store (state, emitter) {
          // cancel
          break
         default:
-          console.log('FOCUS', focus)
           io.trash(focus, (err, status) => {
             if (err) ipcRenderer.send('dialog:new:error')
             else {
-              if (parse(state.data.ui.sidebar.focusUri).ext === '.gpg') {
+
+              if (state.data.text.path === focus) {
                 var snapshot = {
                   id: '',
                   body: '',
