@@ -36,13 +36,13 @@ Editor.prototype.createElement = function (state, emit) {
       var contents = {
         body: editor.content.innerText? editor.content.innerText : state.data.text.body,
         stale: this.stale,
-        id: this.id,
+        id: this.id? this.id : state.data.ui.sidebar.activeId,
         path: this.path,
         title: this.title,
         modified: (editor.content.innerText != this.stale)
       }
       this.body = contents.body
-      console.log(this.body)
+      console.log(this)
       this.emit('state:composer:update', contents)
     },
     styleWithCSS: true,

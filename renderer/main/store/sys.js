@@ -82,6 +82,7 @@ function store (state, emitter) {
     io.ls(state.data.prefs.app.path, (err, tree) => {
       if (err) ipcRenderer.send('dialog:new:error')
       else state.data.lib = tree
+      if (renameTimeout) emitter.emit('state:library:rename:cancel')
       emitter.emit(state.events.RENDER)
     })
   }
@@ -97,6 +98,7 @@ function store (state, emitter) {
       state.data.ui.sidebar.focusId = cell.id
       state.data.ui.sidebar.focusUri = cell.uri
       state.data.ui.sidebar.renamingId = ''
+      state.data.ui.sidebar.maybeRename = false
       emitter.emit('state:library:rename:prepare')
       emitter.emit(state.events.RENDER)
     }
@@ -120,7 +122,7 @@ function store (state, emitter) {
       renameTimeout = window.setTimeout(() => {
         state.data.ui.sidebar.maybeRename = false
       }, 1500)
-    }, 500)
+    }, 100)
   }
 
   function cancelRename() {
@@ -218,7 +220,7 @@ function store (state, emitter) {
   function open(f) {
     // Prevent opening files repeatedly
     if (state.data.ui.sidebar.activeId === f.id || state.data.writing) return
-
+    state.data.ui.sidebar.activeId = ''
     if (state.data.modified) {
       state.data.writing = true
       ipcRenderer.send('dialog:new', {
@@ -273,7 +275,7 @@ function store (state, emitter) {
                   else {
                     console.log('decrypted, ', plaintext)
                     var contents = {
-                      id: state.data.ui.sidebar.focusId,
+                      id: state.data.ui.sidebar.activeId? state.data.ui.sidebar.activeId : state.data.ui.sidebar.focusId,
                       body: plaintext.data,
                       stale: plaintext.data,
                       title: f.name.replace('.gpg', ''),
@@ -414,7 +416,6 @@ function store (state, emitter) {
           io.trash(focus, (err, status) => {
             if (err) ipcRenderer.send('dialog:new:error')
             else {
-
               if (state.data.text.path === focus) {
                 var snapshot = {
                   id: '',
@@ -491,8 +492,8 @@ function store (state, emitter) {
       buttons: ['Report via Github', 'Email Support', 'Cancel'],
       defaultId: 0,
       cancelId: 1,
-      message: 'Open a browser?',
-      detail: 'Txt is in active development and your contribution helps'
+      message: 'Found an issue? Need support?',
+      detail: 'Txt is in active development. If you\'ve found a bug, please open a ticket or get in touch via email.'
     })
 
     ipcRenderer.once('dialog:response', (event, res) => {
@@ -524,7 +525,15 @@ function store (state, emitter) {
     emitter.emit('state:library:write:file', snapshot)
   })
   ipcRenderer.on('menu:file:close', (event, response) => {
-
+    var snapshot = {
+      id: '',
+      body: '',
+      stale: '',
+      path: null,
+      title: '',
+    }
+    state.
+    emitter.emit('state:composer:update')
   })
   ipcRenderer.on('menu:file:revert', (event, response) => {
     var snapshot = state.data.text
