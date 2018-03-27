@@ -74,6 +74,7 @@ const style = css`
     font-size: 13px;
     height: 13px;
     outline: none;
+    min-width: 5rem;
   }
 
   .input::selection {
