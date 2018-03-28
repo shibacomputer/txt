@@ -38,6 +38,7 @@ const main = [ {
     {
       label: 'Save',
       accelerator: 'CmdOrCtrl+S',
+      enabled: opts.file.save? opts.file.save : false,
       click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:save')
@@ -48,6 +49,7 @@ const main = [ {
     },
     {
       label: 'Revert Changes',
+      enabled: opts.file.revertChanges? opts.file.revertChanges : false,
       click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:revert')
@@ -59,6 +61,7 @@ const main = [ {
     {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',
+      enabled: opts.file.close? opts.file.close : false,
       click: (item, win, event) => {
         if (!win) return
         else win.webContents.send('menu:file:close')
@@ -69,6 +72,7 @@ const main = [ {
     },
     {
       label: 'Move to Trash',
+      enabled: opts.file.trash opts.file.trash : false,
       accelerator: 'CmdOrCtrl+Backspace',
       click: (item, win, event) => {
         if (!win) return
@@ -83,6 +87,7 @@ const main = [ {
       submenu: [
         {
           label: 'to Plain Text…',
+          enabled: opts.file.export? opts.file.export : false,
           click: (item, win, event) => {
             if (win) win.webContents.send('menu:file:duplicate')
           }
@@ -117,6 +122,7 @@ const main = [ {
     {
       label: 'Print…',
       accelerator: 'CmdOrCtrl+P',
+      enabled: opts.file.print? opts.file.print : false,
       click: (item, win, event) => {
 
       }
@@ -166,6 +172,7 @@ const main = [ {
     },
     {
       label: 'Preview...',
+      enabled: opts.view.preview? opts.view.preview : false,
       click: (item, win, event) => {
         console.log('Preview')
       }
@@ -254,6 +261,6 @@ function buildMenu(menu) {
 }
 
 module.exports = {
-  main: buildMenu(main),
-  setup: buildMenu(setup)
+  main: buildMenu(main, opts),
+  setup: buildMenu(setup, opts)
 }
