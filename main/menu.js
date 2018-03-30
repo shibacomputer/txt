@@ -229,7 +229,7 @@ module.exports = {
           {
             label: 'Donate…',
             click: () => {
-              require('electron').shell.openExternal('https://txtapp.io/')
+              require('electron').shell.openExternal('https://txtapp.io/donate')
             }
           },
           {type: 'separator'},
@@ -241,6 +241,7 @@ module.exports = {
               console.log('prefs');
             }
           },
+          {type: 'separator'},
           {role: 'services', submenu: []},
           {type: 'separator'},
           {role: 'hide'},

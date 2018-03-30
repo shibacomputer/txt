@@ -1,9 +1,10 @@
 module.exports = store
 
 const { ipcRenderer } = require('electron')
+const { parse } = require('path')
+
 const io = require('../../_utils/io')
 const crypto = require('../../_utils/crypto')
-const { parse } = require('path')
 
 const appId = 'Txt'
 
@@ -12,11 +13,14 @@ function store (state, emitter) {
 
   emitter.on('DOMContentLoaded', function () {
     emitter.on('state:init', init)
+
     emitter.on('state:menu:update', updateMenu)
+
     emitter.on('state:composer:new', compose)
     emitter.on('state:composer:update', update)
     emitter.on('state:composer:revert', revert)
     emitter.on('state:composer:toolbar:report', report)
+
     emitter.on('state:library:toggle', toggleLibrary)
     emitter.on('state:library:list', list)
     emitter.on('state:library:select', select)
@@ -33,6 +37,7 @@ function store (state, emitter) {
     emitter.on('state:library:write:file', commit)
     emitter.on('state:library:write:directory', mkdir)
     emitter.on('state:library:context:display', displayContext)
+
   })
 
   ipcRenderer.send('get:allPref')
@@ -71,7 +76,11 @@ function store (state, emitter) {
           focusId: '',
           focusUri: '',
           maybeRename: false,
-          openDirs: []
+          openDirs: [],
+          status: {
+            label: '',
+            percentage: null
+          }
         },
         menu: {
           save: false,
