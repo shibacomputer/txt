@@ -414,9 +414,11 @@ function store (state, emitter) {
    * Make a directory, using the sidebar to create the desired uri.
    * */
   function mkdir() {
-    console.log('Attempting to make ', uri)
-    var focus = parse(state.data.ui.sidebar.focusUri).dir
+    var focus = state.data.ui.sidebar.focusUri
+    focus = parse(focus).ext? parse(focus).dir : focus
+    console.log(focus)
     var uri = focus? focus + '/New folder' : state.data.prefs.app.path + '/New folder'
+    console.log('Attempting to make ', uri)
     io.exists(uri, (exists) => {
       // @TODO: Make sure this doesn't return true when there are
       // permission issues.
