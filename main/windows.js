@@ -4,6 +4,7 @@ const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
 const defs = require('./defaults')
 const menu = require('./menu')
+const contextMenu = require('./context-menu')
 
 const keytar = require('keytar')
 const appId = 'Txt'
@@ -132,6 +133,14 @@ module.exports = {
       if (win) {
         var newMenu = Menu.buildFromTemplate(menu.buildMenu(type.toString(), opts))
         Menu.setApplicationMenu(newMenu)
+      }
+    })
+
+    ipcMain.on('menu:context:new', (event, type) => {
+      let win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        var test = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
+        test.popup(win)
       }
     })
 

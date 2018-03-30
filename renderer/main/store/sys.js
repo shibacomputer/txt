@@ -515,7 +515,7 @@ function store (state, emitter) {
 
   function displayContext(type) {
     // Context events
-    ipcRenderer.send('contenxt:new:' + type)
+    ipcRenderer.send('menu:context:new', type)
   }
 
   function updateMenu() {

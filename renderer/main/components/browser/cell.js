@@ -68,7 +68,7 @@ function cell(f, opts, emit) {
   }
 
   function context(e) {
-    emit('state:library:context:display', 'sidebar')
+    emit('state:library:context:display', 'browser-cell')
   }
 
   function resize(e) {
