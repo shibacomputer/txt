@@ -28,7 +28,7 @@ function cell(f, opts, emit) {
     var name = f.name.replace('.gpg', '')
     return html`
       <button onclick=${select} ondblclick=${open} oncontextmenu=${context}
-                class="${style.cell} ${opts.focus? style.focus : '' } ${opts.active? style.active : '' } ${opts.rename? style.rename : '' } ${opts.modified? style.modified : ''}">
+                class="${style.cell} ${opts.focus? style.focus : ''} ${opts.active? style.active : ''} ${opts.rename? style.rename : ''} ${opts.modified? style.modified : ''}">
         <svg class=${style.icon}>
           <use xlink:href="#txt-file">
         </svg>

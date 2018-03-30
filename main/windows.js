@@ -29,7 +29,7 @@ module.exports = {
       'backgroundColor': '#1B1B20',
       'frame': true,
       'height': 700,
-      'menu': menu.main,
+      'menu': menu.buildMenu('main', null),
       'minHeight': 320,
       'minWidth': 600,
       'resizable': true,
@@ -53,7 +53,7 @@ module.exports = {
       'fullscreenable': false,
       'height': 526,
       'maximizable': false,
-      'menu': menu.setup,
+      'menu': menu.buildMenu('setup', null),
       'minimizable': true,
       'resizable': false,
       'titleBarStyle': 'hiddenInset',
@@ -127,12 +127,22 @@ module.exports = {
       })
     })
 
+    ipcMain.on('menu:new', (event, type, opts) => {
+      let win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        var newMenu = Menu.buildFromTemplate(menu.buildMenu(type.toString(), opts))
+        Menu.setApplicationMenu(newMenu)
+      }
+    })
+
     ipcMain.on('dialog:new', (event, arg) => {
       let win = BrowserWindow.getFocusedWindow()
-      dialog.showMessageBox(win, arg, (response) => {
-        if (response) event.sender.send('dialog:response', response)
-        else event.sender.send('dialog:response', null)
-      })
+      if (win) {
+        dialog.showMessageBox(win, arg, (response) => {
+          if (response) event.sender.send('dialog:response', response)
+          else event.sender.send('dialog:response', null)
+        })
+      }
     })
 
     ipcMain.on('do:openWindow', (event, newWin, nextEvent) => {

@@ -12,10 +12,12 @@ function store (state, emitter) {
 
   emitter.on('DOMContentLoaded', function () {
     emitter.on('state:init', init)
+    emitter.on('state:menu:update', updateMenu)
     emitter.on('state:composer:new', compose)
     emitter.on('state:composer:update', update)
     emitter.on('state:composer:revert', revert)
     emitter.on('state:composer:toolbar:report', report)
+    emitter.on('state:library:toggle', toggleLibrary)
     emitter.on('state:library:list', list)
     emitter.on('state:library:select', select)
     emitter.on('state:library:rename:prepare', prepareRename)
@@ -62,6 +64,7 @@ function store (state, emitter) {
       lib: { },
       ui: {
         sidebar: {
+          visible: true,
           editingId: '',
           renamingId: '',
           activeId: '',
@@ -69,6 +72,16 @@ function store (state, emitter) {
           focusUri: '',
           maybeRename: false,
           openDirs: []
+        },
+        menu: {
+          save: false,
+          revert: false,
+          close: false,
+          trash: false,
+          export: false,
+          print: false,
+          preview: false,
+          library: true
         }
       }
     }
@@ -99,6 +112,9 @@ function store (state, emitter) {
       state.data.ui.sidebar.focusUri = cell.uri
       state.data.ui.sidebar.renamingId = ''
       state.data.ui.sidebar.maybeRename = false
+
+      state.data.ui.menu.trash = true
+      emitter.emit('state:menu:update')
       emitter.emit('state:library:rename:prepare')
       emitter.emit(state.events.RENDER)
     }
@@ -282,6 +298,12 @@ function store (state, emitter) {
                       path: f.uri
                     }
                     emitter.emit('state:composer:update', contents)
+                    state.data.ui.menu.close = true
+                    state.data.ui.menu.export = true
+                    state.data.ui.menu.print = true
+                    state.data.ui.menu.preview = true
+                    state.data.ui.menu.close = true
+                    emitter.emit('state:menu:update')
                     emitter.emit('state:library:set:active', contents.id)
                   }
                 })
@@ -348,11 +370,15 @@ function store (state, emitter) {
     state.data.text = contents
     if (state.data.text.body !== state.data.text.stale) {
       state.data.modified = true
-      ipcRenderer.send('menu:enable:save', true)
+      state.data.ui.menu.save = true
+      state.data.ui.menu.revert = true
+      emitter.emit('state:menu:update')
     }
     else {
       state.data.modified = false
-      ipcRenderer.send('menu:enable:save', false)
+      state.data.ui.menu.save = false
+      state.data.ui.menu.revert = false
+      emitter.emit('state:menu:update')
       emitter.emit(state.events.RENDER)
     }
   }
@@ -367,7 +393,9 @@ function store (state, emitter) {
     state.data.text.stale = contents.body
     state.data.modified = false
     state.data.writing = false
-    ipcRenderer.send('menu:enable:save', false)
+    state.data.ui.menu.save = false
+    state.data.ui.menu.revert = false
+    emitter.emit('state:menu:update')
     emitter.emit(state.events.RENDER)
   }
 
@@ -426,6 +454,8 @@ function store (state, emitter) {
                 }
                 state.data.ui.sidebar.activeId = ''
                 state.data.ui.sidebar.renamingId = ''
+                state.data.ui.menu.trash = false
+                emitter.emit('state:menu:update')
                 emitter.emit('state:composer:update', snapshot)
               }
               state.data.ui.sidebar.focusId = ''
@@ -459,6 +489,8 @@ function store (state, emitter) {
         default:
           var contents = state.data.text
           contents.body = contents.stale
+          state.data.ui.menu.revert = false
+          emitter.emit('state:menu:update')
           save(contents)
          break
        }
@@ -470,6 +502,9 @@ function store (state, emitter) {
     ipcRenderer.send('contenxt:new:' + type)
   }
 
+  function updateMenu() {
+    ipcRenderer.send('menu:new', 'main', state.data.ui.menu)
+  }
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -478,6 +513,12 @@ function store (state, emitter) {
     state.data.ui.sidebar.activeId = id
   }
 
+  function toggleLibrary() {
+    state.data.ui.sidebar.visible = !state.data.ui.sidebar.visible
+    state.data.ui.menu.library = !state.data.ui.menu.library
+    emitter.emit('state:menu:update')
+    emitter.emit(state.events.RENDER)
+  }
   /**
    * Sets the renaming resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -511,11 +552,10 @@ function store (state, emitter) {
    })
   }
 
-  // Main Events
+  // Interacting with Main.
   ipcRenderer.on('menu:file:new:file', (event, response) => {
     emitter.emit('state:composer:new')
   })
-
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
     emitter.emit('state:library:write:directory')
   })
@@ -542,6 +582,9 @@ function store (state, emitter) {
   })
   ipcRenderer.on('menu:file:trash', (event, response) => {
     emitter.emit('state:library:trash')
+  })
+  ipcRenderer.on('menu:view:library', (event, response) => {
+    emitter.emit('state:library:toggle')
   })
   ipcRenderer.on('menu:help:support', (event, response) => {
     emitter.emit('state:composer:toolbar:report')

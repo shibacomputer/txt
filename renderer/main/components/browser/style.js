@@ -93,6 +93,10 @@ const style = css`
     z-index: 1;
   }
 
+  .disabled {
+    display: none;
+  }
+
   .focus {
     color: var(--w);
   }
