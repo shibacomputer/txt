@@ -138,7 +138,7 @@ function store (state, emitter) {
       renameTimeout = window.setTimeout(() => {
         state.data.ui.sidebar.maybeRename = false
       }, 1500)
-    }, 100)
+    }, 500)
   }
 
   function cancelRename() {
@@ -220,10 +220,11 @@ function store (state, emitter) {
   function ls(d) {
     io.exists(d.uri, (exists) => {
       if (exists) {
+        emitter.emit('state:library:rename:cancel')
+        state.data.ui.sidebar.renamingId = ''
         var exists = state.data.ui.sidebar.openDirs.indexOf(d.id)
         if (exists === -1) state.data.ui.sidebar.openDirs.push(d.id)
         else state.data.ui.sidebar.openDirs.splice(exists, 1)
-        state.data.ui.sidebar.renamingId = ''
         emitter.emit(state.events.RENDER)
       }
     })
@@ -236,6 +237,7 @@ function store (state, emitter) {
   function open(f) {
     // Prevent opening files repeatedly
     if (state.data.ui.sidebar.activeId === f.id || state.data.writing) return
+    emitter.emit('state:library:rename:cancel')
     state.data.ui.sidebar.activeId = ''
     if (state.data.modified) {
       state.data.writing = true
@@ -454,12 +456,15 @@ function store (state, emitter) {
                 }
                 state.data.ui.sidebar.activeId = ''
                 state.data.ui.sidebar.renamingId = ''
-                state.data.ui.menu.trash = false
-                emitter.emit('state:menu:update')
+
                 emitter.emit('state:composer:update', snapshot)
               }
+
+              state.data.ui.sidebar.openDirs.splice(focus, 1)
               state.data.ui.sidebar.focusId = ''
               state.data.ui.sidebar.focusUri = focus? focus : state.data.prefs.app.path
+              state.data.ui.menu.trash = false
+              emitter.emit('state:menu:update')
               emitter.emit('state:library:list')
             }
           })
