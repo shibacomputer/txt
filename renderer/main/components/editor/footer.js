@@ -16,7 +16,9 @@ function editorFooter(state, emit) {
              name: 'report',
              classes: 'c',
              icon: 'issue',
-             click: function() { console.log('henlo')}
+             click: function() {
+              emit('state:composer:toolbar:report')
+             }
            })
          ]
         })

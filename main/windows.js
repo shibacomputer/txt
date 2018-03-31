@@ -4,6 +4,7 @@ const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
 const defs = require('./defaults')
 const menu = require('./menu')
+const contextMenu = require('./context-menu')
 
 const keytar = require('keytar')
 const appId = 'Txt'
@@ -29,7 +30,7 @@ module.exports = {
       'backgroundColor': '#1B1B20',
       'frame': true,
       'height': 700,
-      'menu': menu.main,
+      'menu': menu.buildMenu('main', null),
       'minHeight': 320,
       'minWidth': 600,
       'resizable': true,
@@ -39,25 +40,12 @@ module.exports = {
     })
 
     winManager.templates.set('prefs', {
-      closable: true,
-      frame: false,
-      titleBarStyle: 'hidden',
-      resizable: false,
-      modal: true
+      'frame': false,
+      'titleBarStyle': 'hidden',
+      'resizable': false,
+      'modal': true
     })
 
-    winManager.templates.set('mini', {
-      backgroundColor: '#1B1B20',
-      titleBarStyle: 'hidden',
-      width: 512,
-      height: 128,
-      frame: false,
-      center: true,
-      movable: false,
-      fullscreenable: false,
-      minimizable: false,
-      maximizable: false
-    })
 
     winManager.templates.set('setup', {
       'backgroundColor': '#1B1B20',
@@ -66,22 +54,12 @@ module.exports = {
       'fullscreenable': false,
       'height': 526,
       'maximizable': false,
-      'menu': menu.setup,
+      'menu': menu.buildMenu('setup', null),
       'minimizable': true,
       'resizable': false,
       'titleBarStyle': 'hiddenInset',
       'width': 448,
     })
-
-    winManager.templates.set('tray', {
-      closable: true,
-      frame: false,
-      titleBarStyle: 'hiddenInset',
-      resizable: false,
-      minimizable: false,
-      maximizable: false
-    })
-
     // Set up live defaults
     defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
     console.log(defs.app.path)
@@ -150,12 +128,30 @@ module.exports = {
       })
     })
 
+    ipcMain.on('menu:new', (event, type, opts) => {
+      let win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        var newMenu = Menu.buildFromTemplate(menu.buildMenu(type.toString(), opts))
+        Menu.setApplicationMenu(newMenu)
+      }
+    })
+
+    ipcMain.on('menu:context:new', (event, type) => {
+      let win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        var test = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
+        test.popup(win)
+      }
+    })
+
     ipcMain.on('dialog:new', (event, arg) => {
       let win = BrowserWindow.getFocusedWindow()
-      dialog.showMessageBox(win, arg, (response) => {
-        if (response) event.sender.send('dialog:response', response)
-        else event.sender.send('dialog:response', null)
-      })
+      if (win) {
+        dialog.showMessageBox(win, arg, (response) => {
+          if (response) event.sender.send('dialog:response', response)
+          else event.sender.send('dialog:response', null)
+        })
+      }
     })
 
     ipcMain.on('do:openWindow', (event, newWin, nextEvent) => {

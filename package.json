@@ -1,11 +1,22 @@
 {
-  "name": "Text",
-  "version": "1.0.0",
+  "name": "Txt",
+  "version": "0.0.0-b1",
   "description": "A simple, private text editor",
   "main": "main/index.js",
   "scripts": {
-    "rebuild": "electron-rebuild -f -w keytar",
-    "setup": "npm install && npm run rebuild",
+    "build": "build -wml",
+    "build:beta": "NODE_ENV=dev build -wml",
+    "build:linux": "build --linux",
+    "build:linux:beta": "NODE_ENV=dev build --linux",
+    "build:mac": "build --mac",
+    "build:mac:beta": "NODE_ENV=dev build --mac",
+    "build:win": "build --win",
+    "build:win:beta": "NODE_ENV=dev build --win",
+    "build:release": "build -wml -p always",
+    "clean": "rm -rf dist",
+    "postinstall": "electron-builder install-app-deps",
+    "rebuild": "electron-rebuild -f -w keytar rabin-bindings",
+    "setup": "npm install && npm run postinstall && npm run rebuild",
     "start": "NODE_ENV=dev electron main",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +24,7 @@
     "type": "git",
     "url": "github.com/shibacomputer/txt"
   },
-  "author": "Cade <cade@shiba.computer>",
+  "author": "Shiba Computer <txt@shiba.computer>",
   "bugs": {
     "url": "https://github.com/shibacomputer/txt/issues"
   },
@@ -26,10 +37,13 @@
     "csjs-inject": "^1.0.1",
     "dir-to-json": "git+https://github.com/shibacomputer/dir-to-json.git",
     "electron-collection": "^1.2.0",
+    "electron-context-menu": "^0.9.1",
     "electron-store": "^1.3.0",
+    "electron-updater": "^2.21.0",
     "electron-window-manager": "git+https://github.com/shibacomputer/electron-window-manager.git",
     "keytar": "^4.0.5",
     "mime": "^1.6.0",
+    "mousetrap": "^1.6.1",
     "nanocomponent": "^6.4.2",
     "openpgp": "^2.6.2",
     "pell": "^0.7.0",
@@ -45,9 +59,24 @@
     "svgo": "^1.0.3"
   },
   "build": {
-    "appId": "computer.shiba.Txt",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://txtapp.io/releases/${os}",
+        "channel": "latest"
+      }
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "appId": "computer.shiba",
+    "productName": "Txt",
     "mac": {
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "target": [
       "dmg"
@@ -55,15 +84,21 @@
     "dmg": {
       "contents": [
         {
-          "x": 220,
-          "y": 200
+          "x": 128,
+          "y": 200,
+          "type": "file"
         },
         {
-          "x": 448,
+          "x": 400,
           "y": 200,
           "type": "link",
           "path": "/Applications"
         }
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb"
       ]
     }
   }

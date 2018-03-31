@@ -5,7 +5,6 @@ const keytar = remote.require('keytar')
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.aead_protect = true
 openpgp.config.use_native = true
-openpgp.config.compression = openpgp.enums.compression.bzip2
 
 module.exports = {
 
@@ -15,20 +14,21 @@ module.exports = {
    * @param data The data to encrypt.
    * @param callback Returns errors or an encrypted blob.
    * */
+   // @TODO: Passphrase secret gpg key.
   encrypt: function(key, data, callback) {
     var opts = {
       data: data.contents,
-      format: data.encoding,
-      password: key.phrase? key.phrase : null,
+      passwords: [ key.phrase? key.phrase : null ],
       filename: data.filename,
-      armor: true
+      armor: false
     }
     console.log('crypto:encrypt: opts: ', opts, ' key: ', key)
     openpgp.encrypt(opts).then((result) => {
       opts = null
       console.log('crypto:encrypt: done. result: ', result)
-      callback(null, result)
+      callback(null, result.message.packets.write())
     }).catch( (err) => {
+      opts = null
       console.log('crypto:encrypt: err:', err)
       callback(err, null)
     })
@@ -44,11 +44,11 @@ module.exports = {
     var opts = {
       message: openpgp.message.read(data.contents),
       format: data.encoding,
-      password: key.phrase? key.phrase : null
+      password: [ key.phrase? key.phrase : null ]
     }
     console.log('crypto:decrypt: opts: ', opts, 'key: ', key)
     openpgp.decrypt(opts).then((result) => {
-      console.log('crypto:decryupt: result: ', result)
+      console.log('crypto:decrypt: result: ', result)
       opts = null
       callback(null, result)
     }).catch( (err) => {
@@ -79,12 +79,22 @@ module.exports = {
   },
 
   /**
+   * Creates and returns a new private key.
+   * @param opts Private key options object. This will set up your key's preferences.
+   * @param secret Passphrase for securing the private key.
+   * @param callback Returns a key and an error object
+   * */
+  createKey: function(opts, secret, callback) {
+
+  },
+  /**
    * Reads a secret from the keychain.
    * @param service The app id as stored in the keychain.
    * @param account The account username.
    * @param callback Returns an error and the secret.
    * */
   readKeychain: function(service, account, callback) {
+    console.log('crypto:')
     keytar.getPassword(service, account).then( (secret) => {
       callback(null, secret)
     }).catch( (err) => {

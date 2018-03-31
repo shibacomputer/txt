@@ -12,11 +12,12 @@ const style = css`
     justify-content: space-between;
     max-width: 320px;
     min-width: 240px;
-    overflow-y: scroll;
+    overflow-y: hidden;
     width: 25vw;
   }
 
   .treeBase {
+    -webkit-app-region: no-drag;
     flex-grow: 1;
     overflow-y: scroll;
   }
@@ -46,11 +47,12 @@ const style = css`
     font-family: 'HKG', sans-serif;
     font-size: 13px;
     height: 24px;
+    min-width: 100%;
     outline: var(--w);
     padding: 0;
     position: relative;
     text-align: left;
-    width: 100%;
+    width: -webkit-fit-content;
     z-index: 5;
   }
 
@@ -58,22 +60,41 @@ const style = css`
     color: currentColor;
     display: flex;
     flex-direction: row;
+    margin-top: 1px;
     padding-right: 1rem;
     position: relative;
     white-space: nowrap;
     z-index: 10;
   }
 
+  .input {
+    background: none;
+    border: none;
+    color: currentColor;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+    height: 13px;
+    outline: none;
+    min-width: 5rem;
+  }
+
+  .input::selection {
+    color: var(--k);
+    background: var(--m);
+  }
+
   .cell:before {
     content: '';
     height: 24px;
-    left: 1px;
+    left: -100%;
     margin-top: -4px;
-    max-width: 320px;
-    min-width: 240px;
-    position: fixed;
-    width: 25vw;
+    position: absolute;
+    right: 0;
     z-index: 1;
+  }
+
+  .disabled {
+    display: none;
   }
 
   .focus {
@@ -86,6 +107,10 @@ const style = css`
 
   .modified {
     color: var(--y);
+  }
+
+  .rename {
+    color: var(--m);
   }
 
   .focus:before {

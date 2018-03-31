@@ -12,10 +12,11 @@ const style = css`
     font-size: 13px;
     height: calc(100vh - 2px);
     justify-content: space-between;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
 
   .base {
+    -webkit-app-region: no-drag;
     align-items: stretch;
     background-color: rgba(0,0,0,0.1);
     color: var(--w);

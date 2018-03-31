@@ -39,6 +39,12 @@ app.on('window-all-closed', function() {
   }
 })
 
+app.on('browser-window-focus', (event, win) => {
+  if (win) {
+    win.webContents.send('sys:focus')
+  }
+})
+
 app.on('activate', function() {
   // Pop open a new window.
 })

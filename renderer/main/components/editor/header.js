@@ -11,14 +11,14 @@ function editorHeader(state, emit) {
     <header class=${ style.header }>
       ${
         toolbar({
-        center: state.data.text.title || 'Untitled',
+        center: state.data.text.title,
         right: [
           button({
             name: 'new',
             classes: 'c',
             icon: 'new',
             click: function() {
-              emit('note:new')
+              emit('state:composer:new')
             }
           })
         ]

@@ -24,10 +24,10 @@ module.exports = {
    * @param callback Passes an error and json object back.
    * */
   ls: function(uri, callback) {
-    console.log('utils:ls: Listing ' + uri)
+    console.log('io:ls: Listing ' + uri)
     if (uri) {
       dirToJson(path.normalize(uri), (err, tree) => {
-        console.log('utils:ls: done \n', tree)
+        console.log('io:ls: done \n', tree)
         callback(err, tree)
       })
     }
@@ -40,14 +40,14 @@ module.exports = {
    * @param callback Passes an error + buffer of the file.
    * */
   open: function(uri, callback) {
-    console.log('utils:open: Opening ', uri)
+    console.log('io:open: Opening ', uri)
     fs.stat(path.normalize(uri), (err, stats) => {
       if (err) {
-        console.log('utils:open: Error checking ', uri,' err: ', err )
+        console.log('io:open: Error checking ', uri,' err: ', err )
         callback(err, null)
       } else {
         fs.readFile(path.normalize(uri), (err, data) => {
-          console.log('utils:open: Done. Data: ', data, ', err: ', err)
+          console.log('io:open: Done. Data: ', data, ', err: ', err)
           if (err) {
             callback(err, null)
           } else {
@@ -64,9 +64,9 @@ module.exports = {
    * @param callback returns true or false.
    * */
   exists: function(uri, callback) {
-    console.log('utils:exists: checking ', uri)
+    console.log('io:exists: checking ', uri)
     fs.stat(path.normalize(uri), (err, stats) => {
-      console.log('utils:exists: done. stats: ', stats, ', err: ', err)
+      console.log('io:exists: done. stats: ', stats, ', err: ', err)
       if (err) callback(false)
       else callback(true)
     })
@@ -79,23 +79,15 @@ module.exports = {
    * @param data [optional] The data to write.
    * @param callback Returns a status of true or false, plus an error.
    * */
-  write: function(uri, name, data, callback) {
-    var targetUri = name? path.join(uri, name) : path.join(uri, 'Untitled')
-    console.log('utils:write: to: ', path.join(uri, name), ' data: ', data)
-    fs.stat(path.normalize(targetUri), (err, stats) => {
+  write: function(uri, data, callback) {
+    console.log('io:write: to: ', uri, ' data: ', data)
+    fs.writeFile(path.normalize(uri), data, (err) => {
       if (err) {
-        console.log('utils:write err: ' + err)
+        console.log('io:write err: ' + err)
         callback(err, false)
       } else {
-        fs.writeFile(pathpath.normalize(targetUri), data, (err) => {
-          if (err) {
-            console.log('utils:write err: ' + err)
-            callback(err, false)
-          } else {
-            console.log('utils:write done!')
-            callback(null, true)
-          }
-        })
+        console.log('io:write done!')
+        callback(null, true)
       }
     })
   },
@@ -103,18 +95,21 @@ module.exports = {
   /**
    * Makes a directory.
    * @param uri The absolute path for the directory you wish to make.
-   * @param name [optional] The name for the new folder. Defaults to 'New Folder'.
    * @param callback Returns a status of true or false, plus an error.
    * */
-  mkdir: function(uri, name, callback) {
+  mkdir: function(uri, callback) {
+    console.log('io:mkdir: ', uri)
     fs.stat(path.normalize(uri), (err, stats) => {
       if (!err) {
+        console.log('io:mkdir: err: ', stats)
         callback(stats, false)
       } else {
         fs.mkdir(path.normalize(uri), (err) => {
           if (err) {
+            console.log('io:mkdir: err: ', err)
             callback(err, false)
           } else {
+            console.log('io:mkdir: done.')
             callback(null, true)
           }
         })
@@ -128,9 +123,12 @@ module.exports = {
    * @param callback Returns an error, and success boolean.
    * */
   trash: function(uri, callback) {
+    console.log('io:trash: uri: ', uri)
     trash([path.normalize(uri)]).then(() => {
+      console.log('io:trash: item trashed')
       callback(null, true)
     }).catch((err) => {
+      console.log('io:trash: err: ', err)
       callback(err, false)
     })
   },
@@ -142,21 +140,26 @@ module.exports = {
    * @param callback Returns an error, and success boolean.
    * */
   mv: function(uri, targetUri, callback) {
+    console.log("io:mv: start. uri: ", uri, " targetUri: ", targetUri)
     fs.stat(path.normalize(uri), (err, stats) => {
-      if (!err) {
+      console.log('io:mv: ', uri, ': ', err, stats)
+      if (err) {
         callback(stats, false)
       } else {
         fs.stat(path.normalize(targetUri), (err, stats) => {
-          if (!err) {
-            callback(stats, false)
-          } else {
+          console.log('io:mv: ', targetUri, ': ', err, stats)
+          if (!stats) {
             fs.rename(path.normalize(uri), path.normalize(targetUri), (err) => {
               if (err) {
+                console.log('io:mv: err: ', err)
                 callback(err, false)
               } else {
+                console.log('io:mv: done')
                 callback(null, true)
               }
             })
+          } else {
+            callback(stats, false)
           }
         })
       }
