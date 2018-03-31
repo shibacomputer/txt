@@ -12,7 +12,7 @@ const style = css`
     font-size: 13px;
     height: calc(100vh - 2px);
     justify-content: space-between;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
 
   .base {

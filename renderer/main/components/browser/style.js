@@ -12,7 +12,7 @@ const style = css`
     justify-content: space-between;
     max-width: 320px;
     min-width: 240px;
-    overflow-y: scroll;
+    overflow-y: hidden;
     width: 25vw;
   }
 

@@ -11,7 +11,7 @@ const style = css`
     height: 100vh;
     justify-content: space-between;
     padding: 1.5rem 1rem;
-    overflow-y: scroll;
+    overflow-y: hidden;
   }
 
   .header {
