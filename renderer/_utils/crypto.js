@@ -4,7 +4,7 @@ const keytar = remote.require('keytar')
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.aead_protect = true
-openpgp.config.use_native = true
+openpgp.config.use_native = false
 
 module.exports = {
 
@@ -16,10 +16,11 @@ module.exports = {
    * */
    // @TODO: Passphrase secret gpg key.
   encrypt: function(key, data, callback) {
+    var contents = new TextEncoder("utf-8").encode(data.contents)
     var opts = {
-      data: data.contents,
+      data: new Uint8Array(contents),
       passwords: [ key.phrase? key.phrase : null ],
-      filename: data.filename,
+      compression: openpgp.enums.compression.zip,
       armor: false
     }
     console.log('crypto:encrypt: opts: ', opts, ' key: ', key)
@@ -44,7 +45,7 @@ module.exports = {
     var opts = {
       message: openpgp.message.read(data.contents),
       format: data.encoding,
-      password: [ key.phrase? key.phrase : null ]
+      passwords: [ key.phrase? key.phrase : null ]
     }
     console.log('crypto:decrypt: opts: ', opts, 'key: ', key)
     openpgp.decrypt(opts).then((result) => {
