@@ -18,9 +18,19 @@ npm run setup
 Then, once everything is set up:
 ```
 👉 npm start
-
 ✨ 📝 🚀!
 ```
+
+__On Windows?__ If you don't already the
+[Windows Build Tools](https://github.com/felixrieseberg/windows-build-tools)
+installed, you must run these commands _instead_:  
+```
+npm install -g --production windows-build-tools
+npm run setup
+```
+
+This will install everything you need to build Txt successfully! 🎉  
+
 ## Disclaimer
 
 🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
@@ -45,7 +55,7 @@ than build a database, it relies on the filesystem. Anything you make with Txt
 can be read and reviewed somewhere else. There is no import/export tool, because
 you don't need one. Everything used is off the shelf.
 
-## Threat model
+### Threat model
 I'll write more on this later, but basically Txt is designed to allow you to
 store data in untrusted locations, such as a cloud service or on a USB stick.
 
@@ -67,14 +77,14 @@ who has access to the disk.
 ✅ Passphrase GPG encryption  
 ✅ Keychain support  
 ✅ Dark UI theme  
-⬜ Auto-updating  
+✅ Auto-updating  
+✅ Linux support  
+✅ Windows support  
 ⬜ GPG Private key encryption  
-⬜ Linux support  
 ⬜ Light UI theme  
 ⬜ Export to unencrypted text file  
 
 ### Planned for v1.0
-⬜ Windows support  
 ⬜ Markdown support  
 ⬜ Localisation (tbc)  
 ⬜ Export to [Are.na](https://are.na)  
@@ -97,8 +107,7 @@ who has access to the disk.
 ## Contacts
 Txt has a [mailing list](https://tinyletter.com/txt-app). Join it for very
 infrequent emails.  
-Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)
+Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)!
 
 ## Donate
-Support Txt's development via cryptocurrencies.
-Other options coming soon.
+Once there's something you can actually use, I'll add donation links here!
