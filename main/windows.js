@@ -27,6 +27,7 @@ module.exports = {
     })
 
     winManager.templates.set('main', {
+      'autoHideMenuBar': true,
       'backgroundColor': '#1B1B20',
       'frame': true,
       'height': 700,
@@ -40,14 +41,15 @@ module.exports = {
     })
 
     winManager.templates.set('prefs', {
+      'autoHideMenuBar': true,
       'frame': false,
       'titleBarStyle': 'hidden',
       'resizable': false,
       'modal': true
     })
 
-
     winManager.templates.set('setup', {
+      'autoHideMenuBar': true,
       'backgroundColor': '#1B1B20',
       'center': true,
       'frame': true,
@@ -60,6 +62,7 @@ module.exports = {
       'titleBarStyle': 'hiddenInset',
       'width': 448,
     })
+
     // Set up live defaults
     defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
     console.log(defs.app.path)
@@ -74,7 +77,7 @@ module.exports = {
   },
   // Event listener library
   // @TODO: Split into its own file
-  // @TODO: Move all crypto into the event listening library.
+  // @TODO: Move all crypto into the event listening library?
   initEvents: function () {
   // Take the user's first preferences, and create a new install.
     ipcMain.on('do:firstSetup', (event, prefs) => {
