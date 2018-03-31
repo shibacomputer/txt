@@ -80,6 +80,7 @@ who has access to the disk.
 ✅ Auto-updating  
 ✅ Linux support  
 ✅ Windows support  
+✅ Way smarter window management  
 ⬜ GPG Private key encryption  
 ⬜ Light UI theme  
 ⬜ Export to unencrypted text file  
@@ -94,7 +95,6 @@ who has access to the disk.
 ### Big todos
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜ Data management  
-⬜ Way smarter window management  
 ⬜ Better support for file permission edge cases  
 ⬜ DAT support???  
 ⬜ Collaboration / track changes??  
