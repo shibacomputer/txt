@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
+            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeypress=${resize} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,17 +34,19 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize}/>` :
+            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize} />` :
             `${name}`}
         </div>
       </button>
     `
+    document.getElementById('rename').focus()
   }
 
   function rename(e) {
     if (!opts.focus || opts.rename) return
     else {
       emit('state:library:rename:start', f)
+      document.getElementById('rename').focus()
     }
   }
 
@@ -68,6 +70,8 @@ function cell(f, opts, emit) {
   }
 
   function context(e) {
+    if (opts.rename) return
+    emit('state:library:select', f)
     emit('state:library:context:display', 'browser-cell')
   }
 

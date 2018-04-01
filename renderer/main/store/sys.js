@@ -19,6 +19,7 @@ function store (state, emitter) {
     emitter.on('state:composer:new', compose)
     emitter.on('state:composer:update', update)
     emitter.on('state:composer:revert', revert)
+    emitter.on('state:composer:close', close)
     emitter.on('state:composer:toolbar:report', report)
 
     emitter.on('state:library:toggle', toggleLibrary)
@@ -38,15 +39,10 @@ function store (state, emitter) {
     emitter.on('state:library:write:directory', mkdir)
     emitter.on('state:library:context:display', displayContext)
 
+    init()
+
   })
 
-  ipcRenderer.send('get:allPref')
-  ipcRenderer.once('done:getPref', (event, key, value) => {
-    state.data.prefs = value
-    list()
-  })
-
-  init()
 
   /**
    * Initialises the system state for the main window. This function gets its
@@ -94,6 +90,14 @@ function store (state, emitter) {
         }
       }
     }
+    emitter.emit('state:menu:update')
+
+    ipcRenderer.send('get:allPref')
+    ipcRenderer.once('done:getPref', (event, key, value) => {
+      state.data.prefs = value
+      list()
+    })
+
   }
 
   /**
@@ -186,6 +190,7 @@ function store (state, emitter) {
                 switch (res) {
                   case 1:
                     rn(f, newUri, (err, status) => {
+                      state.data.ui.sidebar.focusId = state.data.ui.sidebar.renamingId
                       state.data.ui.sidebar.renamingId = ''
                       emitter.emit('state:library:list')
                     })
@@ -283,6 +288,16 @@ function store (state, emitter) {
     })
   }
 
+  function close() {
+    state.data.ui.menu.close = false
+    state.data.ui.menu.revert = false
+    state.data.ui.menu.export = false
+    state.data.ui.menu.print = false
+    state.data.ui.menu.preview = false
+    state.data.ui.menu.close = false
+    emitter.emit('state:menu:update')
+  }
+
   /**
    * Reads a file.
    * @param f The target file object you wish to open.
@@ -358,7 +373,8 @@ function store (state, emitter) {
    * */
 
   function compose() {
-    var focus = parse(state.data.ui.sidebar.focusUri).dir
+    var focus = state.data.ui.sidebar.focusUri
+    focus = parse(focus).ext? parse(focus).dir : focus
     // @TODO: Abstract this into an init function
     var snapshot = {
       body: '',
@@ -471,7 +487,8 @@ function store (state, emitter) {
                 emitter.emit('state:composer:update', snapshot)
               }
 
-              state.data.ui.sidebar.openDirs.splice(focus, 1)
+              var exists = state.data.ui.sidebar.openDirs.indexOf(state.data.ui.sidebar.focusId)
+              state.data.ui.sidebar.openDirs.splice(exists, 1)
               state.data.ui.sidebar.focusId = ''
               state.data.ui.sidebar.focusUri = focus? focus : state.data.prefs.app.path
               state.data.ui.menu.trash = false
@@ -513,14 +530,6 @@ function store (state, emitter) {
      })
   }
 
-  function displayContext(type) {
-    // Context events
-    ipcRenderer.send('menu:context:new', type)
-  }
-
-  function updateMenu() {
-    ipcRenderer.send('menu:new', 'main', state.data.ui.menu)
-  }
   /**
    * Sets the active resource, based on a unique identifier.
    * @param id A unique identifier generated via the filesystem.
@@ -569,6 +578,17 @@ function store (state, emitter) {
   }
 
   // Interacting with Main.
+
+  // Out
+  function displayContext(type) {
+    ipcRenderer.send('menu:context:new', type)
+  }
+
+  function updateMenu() {
+    ipcRenderer.send('menu:new', 'main', state.data.ui.menu)
+  }
+
+  // In
   ipcRenderer.on('menu:file:new:file', (event, response) => {
     emitter.emit('state:composer:new')
   })
@@ -588,8 +608,7 @@ function store (state, emitter) {
       path: null,
       title: '',
     }
-    state.
-    emitter.emit('state:composer:update')
+    emitter.emit('state:composer:update', snapshot)
   })
   ipcRenderer.on('menu:file:revert', (event, response) => {
     var snapshot = state.data.text
