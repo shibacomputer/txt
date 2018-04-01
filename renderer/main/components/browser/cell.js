@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeypress=${update} />` :
+            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${f.name}`}
         </div>
       </button>

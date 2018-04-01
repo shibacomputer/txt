@@ -10,8 +10,9 @@ const appId = 'Txt'
 
 function store (state, emitter) {
   var renameTimeout
-
+  init()
   emitter.on('DOMContentLoaded', function () {
+
     emitter.on('state:init', init)
 
     emitter.on('state:menu:update', updateMenu)
@@ -38,9 +39,6 @@ function store (state, emitter) {
     emitter.on('state:library:write:file', commit)
     emitter.on('state:library:write:directory', mkdir)
     emitter.on('state:library:context:display', displayContext)
-
-    init()
-
   })
 
 
@@ -90,7 +88,6 @@ function store (state, emitter) {
         }
       }
     }
-    emitter.emit('state:menu:update')
 
     ipcRenderer.send('get:allPref')
     ipcRenderer.once('done:getPref', (event, key, value) => {
@@ -109,6 +106,7 @@ function store (state, emitter) {
       if (err) ipcRenderer.send('dialog:new:error')
       else state.data.lib = tree
       if (renameTimeout) emitter.emit('state:library:rename:cancel')
+      emitter.emit('state:menu:update')
       emitter.emit(state.events.RENDER)
     })
   }
