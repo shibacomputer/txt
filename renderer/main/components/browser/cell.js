@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeypress=${resize} />` :
+            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeypress=${update} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,30 +34,29 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize} />` :
+            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${name}`}
         </div>
       </button>
     `
-    document.getElementById('rename').focus()
   }
 
-  function rename(e) {
-    if (!opts.focus || opts.rename) return
-    else {
-      emit('state:library:rename:start', f)
-      document.getElementById('rename').focus()
+  function finishRename(e, code) {
+    if (e.srcElement && code != "Escape") {
+      f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
+      emit('state:library:rename:end', f, code)
+    } else {
+      f.newUri = f.name + (f.type === 'file'? '.gpg' : '')
+      emit('state:library:rename:end', f, code)
     }
-  }
 
-  function finishRename(e) {
-    f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
-    emit('state:library:rename:end', f)
   }
 
   function select(e) {
-    if (opts.rename) return
-    emit('state:library:select', f)
+    if (opts.rename) {
+      document.getElementById('rename').focus()
+      return
+    } else emit('state:library:select', f)
   }
 
   function open(e) {
@@ -75,10 +74,11 @@ function cell(f, opts, emit) {
     emit('state:library:context:display', 'browser-cell')
   }
 
-  function resize(e) {
+  function update(e) {
+    console.log(e.key)
+    if(e.key === "Enter" || e.key === "Escape") {
+      finishRename(e, e.key)
+    }
     e.srcElement.style.width = ((this.value.length + 1) * 8) + 'px';
   }
-
-  // Utility classes
-
 }

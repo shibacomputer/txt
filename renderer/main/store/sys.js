@@ -163,8 +163,14 @@ function store (state, emitter) {
    * Prepare the new renamed item.
    * @param f The target resource, including its new uri.
    * */
-  function finishRename(f) {
-    emitter.emit('state:library:rename:cancel')
+  function finishRename(f, code) {
+    if(code === 'Escape' || state.data.ui.sidebar.renamingId === '') {
+      console.log('Cancelled rename')
+      state.data.ui.sidebar.renamingId = ''
+      emitter.emit('state:library:rename:cancel')
+      emitter.emit('state:library:list')
+      return
+    }
     var newUri = parse(f.uri).dir + '/' + f.newUri
     if (f.uri != newUri) {
       console.log('Checking existing resource...')
@@ -175,6 +181,7 @@ function store (state, emitter) {
             if (!exists) {
               rn(f, newUri, (err, status) => {
                 state.data.ui.sidebar.renamingId = ''
+                emitter.emit('state:library:rename:cancel')
                 emitter.emit('state:library:list')
               })
             } else {
@@ -192,12 +199,14 @@ function store (state, emitter) {
                     rn(f, newUri, (err, status) => {
                       state.data.ui.sidebar.focusId = state.data.ui.sidebar.renamingId
                       state.data.ui.sidebar.renamingId = ''
+                      emitter.emit('state:library:rename:cancel')
                       emitter.emit('state:library:list')
                     })
                     break
                   default:
                     // cancel
                     state.data.ui.sidebar.renamingId = ''
+                    emitter.emit('state:library:rename:cancel')
                     emitter.emit('state:library:list')
                     break
                 }
