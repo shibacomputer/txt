@@ -60,6 +60,10 @@ function store (state, emitter) {
         path: null,
         title: null,
       },
+      file: {
+        selected: { },
+        active: { }
+      },
       lib: { },
       ui: {
         sidebar: {
@@ -119,11 +123,7 @@ function store (state, emitter) {
     if (state.data.ui.sidebar.maybeRename && cell.id === state.data.ui.sidebar.focusId) {
       emitter.emit('state:library:rename:start', cell)
     } else {
-      state.data.ui.sidebar.focusId = cell.id
-      state.data.ui.sidebar.focusUri = cell.uri
-      state.data.ui.sidebar.renamingId = ''
-      state.data.ui.sidebar.maybeRename = false
-
+      state.data.file = cell
       state.data.ui.menu.trash = true
       emitter.emit('state:menu:update')
       emitter.emit('state:library:rename:prepare')
@@ -605,6 +605,10 @@ function store (state, emitter) {
   ipcRenderer.on('menu:file:save', (event, response) => {
     var snapshot = state.data.text
     console.log(snapshot)
+    emitter.emit('state:library:write:file', snapshot)
+  })
+  ipcRenderer.on('menu:file:rename', (event, response) => {
+    var id = state.data.ui.sidebar.focusId
     emitter.emit('state:library:write:file', snapshot)
   })
   ipcRenderer.on('menu:file:close', (event, response) => {
