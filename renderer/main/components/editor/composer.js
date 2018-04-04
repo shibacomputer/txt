@@ -36,7 +36,7 @@ Editor.prototype.createElement = function (state, emit) {
       var contents = {
         body: editor.content.innerText? editor.content.innerText : state.data.text.body,
         stale: this.stale,
-        id: this.id? this.id : state.data.ui.sidebar.activeId,
+        id: this.id? this.id : state.data.ui.sidebar.item.active.id,
         path: this.path,
         title: this.title,
         modified: (editor.content.innerText != this.stale)

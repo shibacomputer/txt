@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
+            html`<input autocomplete={opts.rename} id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,7 +34,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
+            html`<input autocomplete={opts.rename} id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${name}`}
         </div>
       </button>
@@ -49,18 +49,14 @@ function cell(f, opts, emit) {
       f.newUri = f.name + (f.type === 'file'? '.gpg' : '')
       emit('state:library:rename:end', f, code)
     }
-
   }
 
   function select(e) {
-    if (opts.rename) {
-      document.getElementById('rename').focus()
-      return
-    } else emit('state:library:select', f)
+    if (opts.rename) return
+    emit('state:library:select', f)
   }
 
   function open(e) {
-    if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
     } else if (f.type === 'directory') {

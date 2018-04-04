@@ -16,17 +16,20 @@ function tree(state, emit) {
   }
 
   function tree(dir) {
+    const items = state.data.ui.sidebar.item
+    const text = state.data.text
+
     if (dir) {
       return html`
         <ul class=${style.tree}>
           ${
             dir.map( (f) => {
-              var opts = {}
-              opts.active = state.data.ui.sidebar.activeId === f.id ? true : false
+              var opts = { }
               opts.list = state.data.ui.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
-              opts.focus = state.data.ui.sidebar.focusId === f.id ? true : false
-              opts.rename = state.data.ui.sidebar.renamingId === f.id ? true : false
-              opts.modified = (state.data.ui.sidebar.activeId === f.id && state.data.modified) ? true : false
+              opts.focus = matchesFocus(f, items)
+              opts.active = matchesActive(f, items)
+              opts.rename = (matchesFocus(f, items) && state.data.ui.sidebar.renaming) ? true : false
+              opts.modified = (matchesOpen(f, text) && state.data.modified) ? true : false
               if (
                 (f.mime === 'text/gpg' || f.type === 'directory') &&
                 (f.name.slice(0,1) !== '.')
@@ -43,5 +46,26 @@ function tree(state, emit) {
         </ul>
       `
     }
+  }
+
+  function matchesActive(f, items) {
+    if (!items.active.id) return
+    if (items.active.id === f.id
+      || items.active.uri === f.uri) return true
+    else return false
+  }
+
+  function matchesFocus(f, items) {
+    if (!items.focus.id) return
+    if (items.focus.id === f.id
+      || items.focus.uri === f.uri) return true
+    else return false
+  }
+
+  function matchesOpen(f, text) {
+    if (!text.id) return
+    if (text.id === f.id
+      || text.uri === f.uri) return true
+    else return false
   }
 }

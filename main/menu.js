@@ -101,6 +101,14 @@ module.exports = {
               }
             },
             {
+              label: 'Rename',
+              enabled: opts.rename? opts.rename : false,
+              click: (item, win, event) => {
+                if (!win) return
+                else win.webContents.send('menu:file:rename')
+              }
+            },
+            {
               type: 'separator'
             },
             {
