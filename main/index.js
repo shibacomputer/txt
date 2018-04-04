@@ -12,7 +12,7 @@ const windows = require('./windows')
 const APP_NAME = "Txt"
 
 // Setup windows
-function launch(target, cb) {
+function launch() {
   windows.init(APP_NAME)
 
   if(!store.get('app.ready') || !store.get('app.path')) {

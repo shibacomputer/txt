@@ -28,7 +28,7 @@ function toolbar (elements, emit) {
   function center() {
     return html`
       <div class="${style.center} ${style.group}">
-        ${ elements.center }
+        <span class="${style.label}">${ elements.center }</span>
       </div>
     `
   }

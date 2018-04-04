@@ -8,14 +8,45 @@ module.exports = {
 
     switch (menu) {
       case 'setup':
-        menu = [{
-          role: 'help',
-          submenu: [{
-            label: 'Report an Issue…',
-            click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
+        menu = [
+          {
+            label: 'Edit',
+            submenu: [
+              {
+                role: 'undo'
+              },
+              {
+                role: 'redo'
+              },
+              {
+                type: 'separator'
+              },
+              {
+                role: 'cut'
+              },
+              {
+                role: 'copy'
+              },
+              {
+                role: 'paste'
+              },
+              {
+                role: 'delete'
+              },
+              {
+                role: 'selectall'
+              }
+            ]
+          },
+          {
+            role: 'help',
+            submenu: [{
+              label: 'Report an Issue…',
+              click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
             }
           ]
-        }]
+        }
+        ]
         break
 
       default:
@@ -67,6 +98,14 @@ module.exports = {
               click: (item, win, event) => {
                 if (!win) return
                 else win.webContents.send('menu:file:revert')
+              }
+            },
+            {
+              label: 'Rename',
+              enabled: opts.rename? opts.rename : false,
+              click: (item, win, event) => {
+                if (!win) return
+                else win.webContents.send('menu:file:rename')
               }
             },
             {

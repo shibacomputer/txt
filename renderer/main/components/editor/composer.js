@@ -10,7 +10,7 @@ function Editor () {
   if (!(this instanceof Editor)) return new Editor()
   this.body = ''
   this.stale = ''
-  this.path = null
+  this.uri = null
   this.title = 'Untitled'
   this.id = ''
   this.modified = false
@@ -23,7 +23,7 @@ Editor.prototype.createElement = function (state, emit) {
   this.body = state.data.text.body || ''
   this.stale = state.data.text.stale || this.body
   this.id = state.data.text.id || ''
-  this.path = state.data.text.path || null
+  this.uri = state.data.text.uri || null
   this.title = state.data.text.title || 'Untitled'
   this.modified = state.data.modified || false
   this.emit = emit
@@ -36,8 +36,8 @@ Editor.prototype.createElement = function (state, emit) {
       var contents = {
         body: editor.content.innerText? editor.content.innerText : state.data.text.body,
         stale: this.stale,
-        id: this.id? this.id : state.data.ui.sidebar.activeId,
-        path: this.path,
+        id: this.id? this.id : state.data.ui.sidebar.item.active.id,
+        uri: this.uri,
         title: this.title,
         modified: (editor.content.innerText != this.stale)
       }
