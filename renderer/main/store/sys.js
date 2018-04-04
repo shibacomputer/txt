@@ -359,12 +359,11 @@ function store (state, emitter) {
     var snapshot = {
       body: '',
       id: null,
-      uri: focus + '/Untitled.gpg',
+      uri: target + '/Untitled.gpg',
       stale: '',
       title: 'Untitled',
       isNew: true
     }
-    console.log('TARGET IS: ', snapshot.uri)
     emitter.emit('state:library:write:file', snapshot)
   }
 
@@ -411,9 +410,8 @@ function store (state, emitter) {
    * Make a directory, using the sidebar to create the desired uri.
    * */
   function mkdir() {
-    var focus = state.data.ui.sidebar.item.focus.uri
+    var focus = state.data.ui.sidebar.item.focus.uri ? state.data.ui.sidebar.item.focus.uri :  state.data.prefs.app.path
     focus = parse(focus).ext? parse(focus).dir : focus
-    console.log(focus)
     var uri = focus? focus + '/New folder' : state.data.prefs.app.path + '/New folder'
     console.log('Attempting to make ', uri)
     io.exists(uri, (exists) => {
@@ -465,11 +463,13 @@ function store (state, emitter) {
                 state.data.ui.sidebar.items.active = { }
                 emitter.emit('state:composer:update', snapshot)
               }
-
-              var exists = state.data.ui.sidebar.openDirs.indexOf(state.data.ui.sidebar.focusId)
-              state.data.ui.sidebar.openDirs.splice(exists, 1)
+              var exists = state.data.ui.sidebar.openDirs.indexOf(state.data.ui.sidebar.item.focus.id)
+              if (state.data.ui.sidebar.item.focus.type === 'directory')  {
+                state.data.ui.sidebar.openDirs.splice(exists, 1)
+              }
               state.data.ui.sidebar.item.focus = { }
               state.data.ui.menu.trash = false
+              state.data.ui.menu.rename = false
               emitter.emit('state:menu:update')
               emitter.emit('state:library:list')
             }

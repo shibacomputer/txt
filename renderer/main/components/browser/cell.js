@@ -17,7 +17,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input autocomplete={opts.rename} id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
+            html`<input autofocus={opts.rename} id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,7 +34,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input autocomplete={opts.rename} id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
+            html`<input autofocus={opts.rename} id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${name}`}
         </div>
       </button>
@@ -57,6 +57,7 @@ function cell(f, opts, emit) {
   }
 
   function open(e) {
+    if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
     } else if (f.type === 'directory') {
@@ -71,7 +72,6 @@ function cell(f, opts, emit) {
   }
 
   function update(e) {
-    console.log(e.key)
     if(e.key === "Enter" || e.key === "Escape") {
       finishRename(e, e.key)
     }
