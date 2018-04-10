@@ -11,13 +11,20 @@ openpgp.config.aead_protect = true
 openpgp.config.use_native = true
 
 function store (state, emitter) {
-  state.valid = false
-  state.useKey = false
-  state.string = ''
-  state.selectedKey = null
-  state.path = ''
-  state.workingPath = ''
-  state.availableKeys = []
+  state.progress = 1
+  state.author = {
+    name: '',
+    email: '',
+    phrase: null
+  }
+  state.key = { }
+  state.ui = {
+    valid: false,
+    availableKeys: [ ],
+    selectedKey: { },
+    uri: null,
+    newKey: true
+  }
 
   emitter.on('DOMContentLoaded', function () {
     if (!state.path) ipcRenderer.send('get:pref', 'author')
@@ -27,24 +34,17 @@ function store (state, emitter) {
       emitter.emit(state.events.RENDER)
     })
 
-    emitter.on('state:updateWorkPath', function(newPath) {
-      state.workingPath = newPath.path // We are passing the full returned path from Electron
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-      emitter.emit(state.events.RENDER)
-    })
-
     emitter.on('state:validatePassphrase', function (count) {
       state.validPassphrase = true
       emitter.emit(state.events.RENDER)
     })
 
     emitter.on('state:switchType', function (target) {
-      if (target === 'key' && !state.useKey) {
-        state.useKey = true
+      if (target === 'key' && !state.ui.newKey) {
+        state.ui.newKey = true
         emitter.emit(state.events.RENDER)
-      } else if (target === 'string' && state.useKey) {
-        state.useKey = false
+      } else if (target === 'string' && state.ui.newKey) {
+        state.ui.newKey = false
         emitter.emit(state.events.RENDER)
       }
     })

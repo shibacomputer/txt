@@ -98,13 +98,14 @@ const style = css`
     font-size: 13px;
     line-height: 1.5;
     margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
 
   .tip {
     color: var(--w);
     display: block;
     text-align: center;
+    margin-top: 0.5rem;
   }
 
   .stringtab input,
