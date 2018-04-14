@@ -1,135 +1,76 @@
 module.exports = store
 
 const fs = require('fs')
+const path = require('path')
 const { ipcRenderer } = require('electron')
-const { join } = require('path')
-
-const openpgp = require('openpgp')
-
-openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
-openpgp.config.aead_protect = true
-openpgp.config.use_native = true
 
 function store (state, emitter) {
-  state.progress = 1
-  state.author = {
-    name: '',
-    email: '',
-    phrase: null
-  }
-  state.key = { }
-  state.ui = {
-    valid: false,
-    availableKeys: [ ],
-    selectedKey: { },
-    uri: null,
-    newKey: true
-  }
+  init()
 
   emitter.on('DOMContentLoaded', function () {
-    if (!state.path) ipcRenderer.send('get:pref', 'author')
 
-    ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.path = join(value.homedir, '.gnupg', 'secring.gpg')
-      emitter.emit(state.events.RENDER)
-    })
+    emitter.on('state:init', init)
 
-    emitter.on('state:validatePassphrase', function (count) {
-      state.validPassphrase = true
-      emitter.emit(state.events.RENDER)
-    })
+    emitter.on('state:uri:set', setUri)
 
-    emitter.on('state:switchType', function (target) {
-      if (target === 'key' && !state.ui.newKey) {
-        state.ui.newKey = true
-        emitter.emit(state.events.RENDER)
-      } else if (target === 'string' && state.ui.newKey) {
-        state.ui.newKey = false
-        emitter.emit(state.events.RENDER)
-      }
-    })
+    emitter.on('state:doSetup', validateSetup)
+  })
 
-    emitter.on('state:updatePassphrase', function (value) {
-      state.string = value
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-    })
+  function init() {
+    state.progress = 1
+    state.phrase = null
+    state.key = { }
+    state.ui = {
+      valid: false,
+      uri: null,
+      newKey: true
+    }
+  }
 
-    emitter.on('state:writeKeyPath', function(target) {
-      state.path = target
-    })
+  function setUri(uri) {
+    state.ui.uri = uri.path
+    state.progress = 2
+    emitter.emit(state.events.RENDER)
+  }
 
-    emitter.on('state:loadKey', function(uri) {
+  function validatePassphrase() {}
 
-      fs.stat(uri, (err, stats) => { // Do we exist?
+
+  function validateSetup() {
+    // First, check to see if the working path exists.
+    if (state.ui.uri) {
+      fs.stat(state.ui.uri, (err, stats) => { // Do we exist?
+        // We must exist, because we have created a dir when selecting a dir.
         if (err) {
           // Send error message to ipc dialog
-          ipcRenderer.send('alert:err', err)
+          ipcRenderer.send('dialog:new:error')
           return
         } else {
-         fs.readFile(uri, (err, data) => {
-          if (err) {
-            ipcRenderer.send('alert:err', err)
-            return
-          } else {
-            emitter.emit('state:injestKey', data)
-          }
-         })
-        }
-      })
-    })
-
-    emitter.on('state:injestKey', function(data) {
-      const key = openpgp.key.readArmored(data.toString())
-
-      var newKey = {
-        name: key.keys[0].users[0].userId.userid,
-        id: key.keys[0].primaryKey.fingerprint.substr(key.keys[0].primaryKey.fingerprint.length - 6),
-        key: key.keys[0]
-      }
-
-      state.availableKeys.push(newKey)
-      state.selectedKey = newKey
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-      emitter.emit(state.events.RENDER)
-    })
-    // @TODO: Make this work properly
-    emitter.on('state:selectKey', function(key) {
-      state.selectedKey = key
-      emitter.emit(state.events.RENDER)
-    })
-
-    emitter.on('state:doSetup', function() {
-
-      // First, check to see if the working path exists.
-      console.log(state.workingPath, state.selectedKey, state.string)
-      if (state.workingPath && (state.selectedKey || state.string)) {
-        fs.stat(state.workingPath, (err, stats) => { // Do we exist?
-          // We must exist, because we have created a dir when selecting a dir.
-          if (err) {
-            // Send error message to ipc dialog
-            ipcRenderer.send('alert:err', err)
-            return
-          } else {
-            // Path exists
-            // @TODO: Test for writing to path
-            ipcRenderer.send('do:firstSetup', state)
-          }
-        })
-      }
-
-      ipcRenderer.once('done:setup', (event, err) => {
-        if (err) {
-          console.log(err)
-          // Goto error msg
-        } else {
-          ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
-            if (nextEvent) ipcRenderer.send(nextEvent, win)
+          // Path exists
+          // @TODO: Test for writing to path
+          ipcRenderer.send('dialog:new', {
+            type: 'info',
+            buttons: ['Continue', 'Back', 'Get Help' ],
+            defaultId: 0,
+            cancelId: 1,
+            message: 'Please take a moment to save your passphrase somewhere secure',
+            detail: 'Txt has no \'forgot passphrase\' functionality and your library will be lost if you forget your it.'
           })
-          ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
+          ipcRenderer.once('dialog:response', (event, res) => {
+            switch (res) {
+              case 2:
+                require('electron').shell.openExternal('https://txtapp.io/support')
+              case 1:
+                break
+              default:
+                doSetupTasks()
+                break
+            }
+          })
         }
       })
-    })
-  })
+    }
+  }
+
+  function doSetupTasks()
 }

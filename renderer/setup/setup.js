@@ -14,180 +14,94 @@ function setupApplication(state, emit) {
   return html`
     <body class="b-myc">
       <main class=${style.main}>
-
         <header class=${style.header}>
-          <div class="logo">
+          <div class=${style.logo}>
+            <svg width="44" height="48" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+              <linearGradient x1="13.416%" y1="9.772%" x2="86.596%" y2="100%" id="a">
+                <stop stop-color="#FB4FFF" offset="0%"/>
+                <stop stop-color="#FFD710" offset="54.582%"/>
+                <stop stop-color="#27FF98" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <path d="M616.015 186.602V219h-32.353V172.442H578V171h12.941v1.443h-5.662v44.937h29.118v-44.938h-5.661V171H622v1.443h-5.985v14.159zm-27.5 13.448c0-.443.359-.802.802-.802h20.234c.443 0 .802.36.802.802v.016c0 .443-.359.802-.802.802h-20.234a.802.802 0 0 1-.802-.802v-.016zm0 5.941c0-.443.359-.802.802-.802h16.999c.443 0 .802.36.802.802v.016c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.016zm0 5.942c0-.443.359-.803.802-.803h19.425c.443 0 .802.36.802.803v.015c0 .443-.359.802-.802.802h-19.425a.802.802 0 0 1-.802-.802v-.015zm0-17.82c0-.442.359-.802.802-.802h16.999c.443 0 .802.36.802.803v.015c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.015zM606.757 171l-6.063 8.033 6.356 8.41h-1.735l-5.513-7.33-5.547 7.33h-1.689l6.345-8.41-6.04-8.033h1.736l5.219 6.94 5.23-6.94h1.701z" transform="translate(-578 -171)" fill="url(#a)" fill-rule="evenodd"/>
+          </svg>
           </div>
+          <h1>Get started with Txt</h1>
         </header>
         ${ view() }
-        ${ navigation() }
+        ${ nextButton() }
       </main>
     </body>
   `
   function view () {
-    switch (state.progress) {
-      case 2:
-        return setupWorkPath()
-      break
-      case 1:
-        return setupIdentity()
-      break
-      case 3:
-        // return setupPhrase()
-      break
-    }
+    return html`
+      <div class=${ style.view }>
+        ${ state.progress >= 1? setupWorkPath() : null }
+        ${ state.progress >= 2? setupPassphrase() : null }
+      </div>
+    `
   }
 
   function setupWorkPath() {
     return html`
-      <section class=${style.settings}>
-        <div class=${style.folder}>
-          <label for="folderinput" class="b">Save work to...</label>
-          <div class=${style.locationBox}>
-            <input class=${style.locationButton} onchange=${updateUri} id="locationButton" type="file" webkitdirectory />
-            <div class=${style.location} onclick=${askForUri}>
-              ${state.ui.uri ? state.ui.uri : 'Set a directory...'}
-            </div><button onclick=${askForUri}>📁</button>
+      <section class="b ${style.option}">
+        <label for="location">Set library location</label>
+        <div class=${style.field}>
+          <input class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
+          <div class=${style.location} onclick=${askForUri}>
+            ${state.ui.uri ? state.ui.uri : 'Set a directory...'}
           </div>
-          <label class=${style.tip}>By default, Txt stores your work on your local computer.</label>
+          <button class=${style.locationButton} onclick=${askForUri}>
+            <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 2H7C5.05.667 4.05 0 4 0H0v12h16V2zM3.5 1l3 2H15v4H1V.998L3.5 1z" fill="currentColor" fill-rule="nonzero"/>
+            </svg>
+          </button>
+        </div>
+        <div class="w ${style.tip}">
+          <label class=${style.tip}>Choose a location for your Txt library. If you choose an existing library, Txt will ask for your passphrase.</label>
         </div>
       </section>
     `
 
 
     function askForUri() {
-      var locationButton = document.getElementById('locationButton')
-      locationButton.click()
+      var locationOSInput = document.getElementById('location')
+      locationOSInput.click()
     }
 
     function updateUri(e) {
-      emit('state:updateWorkPath', e.target.files[0])
+      emit('state:uri:set', e.target.files[0])
     }
   }
 
-  function setupIdentity() {
-    return html`
-      <section class=${style.settings}>
-        <div class=${style.segmented}>
-          <input type="radio"
-                 name="keytype"
-                 id="string"
-                 ${!state.ui.newKey? 'checked' : ''}>
-          <label for="string" data-value="string"
-                 onclick=${switchType}>Create a Key</label>
-          <input type="radio"
-                 name="keytype"
-                 id="key"
-                 ${state.ui.newKey? 'checked' : ''}>
-          <label for="key" data-value="key"
-                 onclick=${switchType}>Import a PGP Key</label>
+  function setupPassphrase() {
+      const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
+      const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
+      return html`
+      <section class="c ${style.option}">
+        <label for="passphrase">${inputLabel}</label>
+        <div class=${style.field}>
+          <input id="passphrase" class="c ${style.input}" />
         </div>
-        <div class=${style.keytab} style=${!state.ui.newKey? 'display: none' : ''}>
-          <label for="keyinput" class="b">Select your key</label>
-          ${keyDropdown()}
-          <label class=${style.tip}>Use a key to automatically encrypt and decrypt your work.</label>
-        </div>
-        <div class=${style.stringtab} style=${state.ui.newKey? 'display: none' : ''}>
-          <label for="nameInput" class="b">Name</label>
-          <input type="text"
-                 name="nameInput"
-                 id="nameInput"
-                 class="b b-input"
-                 onchange=${updateName}
-                 value=${state.author.name? state.author.name : 'Anonymous'}/>
-          <label for="emailInput" class="b">Email</label>
-          <input type="text"
-                name="emailInput"
-                id="emailInput"
-                class="b b-input"
-                onchange=${updateEmail}
-                value=${state.author.email? state.author.email : ''}/>
-          <label class=${style.tip}>Your profile is optional and is used for your encryption key and documents.</label>
+        <div class="w ${style.tip}">
+          <label class=${style.tip}>${tip}</label>
         </div>
       </section>
-    `
-    function switchType(e) {
-      emit('state:switchType', e.target.dataset.value)
-    }
-
-    function updateName(e) {
-
-    }
-
-    function updateEmail(e) {
-
-    }
-
-    function keyDropdown() {
-      return html`
-        <select name="keyinput" id="keyinput" class="b b-input" onchange=${respondToKeyDropdown}/>
-          <option ${ !state.ui.selectedKey ? 'selected' : '' } disabled></option>
-          ${ state.ui.availableKeys.length !== 0 ? html`
-            ${
-              state.ui.availableKeys.map( (key) => {
-                return html`
-                  <option value=${key.id} ${ key.id.localeCompare(state.ui.selectedKey.id) === 0 ? 'selected' : '' }> ${key.name} (${key.id}) </option>
-                `
-              })
-            }
-            ` : null
-          }
-          ${ state.ui.availableKeys.length !== 0 ? html `
-            <option disabled>────────────────────────────</option>` : null
-          }
-          <option ${ state.key ? '' : '' } value="import">Import from file...</option>
-        </select>
       `
-    }
-
-    function respondToKeyDropdown(e) {
-      if(e.target.selectedIndex === (e.target.length - 1)) {
-        ipcRenderer.once('done:getFile', (event, f) => {
-          if (f) emit('state:loadKey', f[0])
-          else return
-        })
-
-        let props = {
-          title: 'Import Private Key',
-          button: 'Import',
-          filters: [
-            { name: 'PGP Private Keys', extensions: ['asc', 'key'] }
-          ],
-          msg: 'Find and import your private key.',
-          properties: ['openFile']
-        }
-        ipcRenderer.send('get:file', props)
-      }
-    }
   }
 
-  function navigation() {
+  function nextButton() {
     return html`
       <footer class=${style.footer}>
-        ${ state.progress > 1?
-            html`
-              ${ previousButton() }
-              ${ nextButton() }
-            ` :
-            html`
-              ${ nextButton() }
-            `
-         }
+        <nav>
+          <button name="save" class="bg-m f button-m" ${state.ui.valid ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
+        </nav>
       </footer>
     `
-    function nextButton() {
-      return html`
-        <button name="save" class="bg-m f button-m" ${state.valid ? '' : 'disabled'}>Next</button>
-      `
+
+    function completeSetup() {
+      emit('state:doSetup')
     }
-
-    function prevButton() {
-      return html`
-
-      `
-    }
-
   }
-
-
 }
