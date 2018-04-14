@@ -5,3 +5,7 @@ node_modules
 .DS_Store
 release/
 dist/
+
+
+# Ignore sketch files
+*.sketch
