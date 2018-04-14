@@ -4,7 +4,6 @@ const keytar = remote.require('keytar')
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.aead_protect = true
-openpgp.config.use_native = false
 
 module.exports = {
 
@@ -86,7 +85,22 @@ module.exports = {
    * @param callback Returns a key and an error object
    * */
   createKey: function(opts, secret, callback) {
+    console.log('crypto:create: opts: ', opts, ' secret: ', secret)
 
+    var options = {
+      userIds: [ opts ],
+      numBits: 4096,
+      passphrase: secret
+    }
+
+    openpgp.generateKey(options).then( (key) => {
+
+      console.log('crypto:key: done: ', key)
+      callback(null, key)
+    }).catch( (err) => {
+      console.log('crypto:key: err: ', err)
+      callback(err, null)
+    })
   },
   /**
    * Reads a secret from the keychain.

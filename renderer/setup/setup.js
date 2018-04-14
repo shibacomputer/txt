@@ -14,6 +14,7 @@ function setupApplication(state, emit) {
   return html`
     <body class="b-myc">
       <main class=${style.main}>
+        ${state.ui.block ? blocker() : null }
         <header class=${style.header}>
           <div class=${style.logo}>
             <svg width="44" height="48" xmlns="http://www.w3.org/2000/svg">
@@ -34,6 +35,7 @@ function setupApplication(state, emit) {
       </main>
     </body>
   `
+
   function view () {
     return html`
       <div class=${ style.view }>
@@ -48,11 +50,11 @@ function setupApplication(state, emit) {
       <section class="b ${style.option}">
         <label for="location">Set library location</label>
         <div class=${style.field}>
-          <input class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
+          <input ${state.ui.block ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
           <div class=${style.location} onclick=${askForUri}>
-            ${state.ui.uri ? state.ui.uri : 'Set a directory...'}
+            ${state.uri ? state.uri : 'Set a directory...'}
           </div>
-          <button class=${style.locationButton} onclick=${askForUri}>
+          <button ${state.ui.block ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
             <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
               <path d="M16 2H7C5.05.667 4.05 0 4 0H0v12h16V2zM3.5 1l3 2H15v4H1V.998L3.5 1z" fill="currentColor" fill-rule="nonzero"/>
             </svg>
@@ -63,7 +65,6 @@ function setupApplication(state, emit) {
         </div>
       </section>
     `
-
 
     function askForUri() {
       var locationOSInput = document.getElementById('location')
@@ -82,7 +83,7 @@ function setupApplication(state, emit) {
     <section class="c ${style.option}">
       <label for="passphrase">${inputLabel}</label>
       <div class=${style.field}>
-        <input id="passphrase" class="c" onkeyup=${updatePassphrase}/>
+        <input id="passphrase" ${state.ui.block ? 'disabled' : '' } class="c" onkeyup=${updatePassphrase} value=${state.phrase}/>
       </div>
       <div class="w ${style.tip}">
         <label class=${style.tip}>${tip}</label>
@@ -98,7 +99,7 @@ function setupApplication(state, emit) {
     return html`
       <footer class=${style.footer}>
         <nav>
-          <button name="save" class="bg-m f button-m" ${state.ui.valid ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
+          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
         </nav>
       </footer>
     `
@@ -107,4 +108,13 @@ function setupApplication(state, emit) {
       emit('state:setup:validate')
     }
   }
+
+  function blocker () {
+    return html`
+      <div class=${style.blocker}>
+        <div class=${style.spinner}> </div>
+      </div>
+    `
+  }
+
 }

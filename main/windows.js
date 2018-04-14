@@ -83,12 +83,11 @@ module.exports = {
     ipcMain.on('do:firstSetup', (event, prefs) => {
       store.set({
         app: {
-          path: prefs.workingPath,
+          path: prefs.uri,
           ready: true,
           launchAtLogin: true
         },
         encryption: {
-          useKey: prefs.useKey,
           useKeychain: true
         }
       })

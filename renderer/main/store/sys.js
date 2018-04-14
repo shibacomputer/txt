@@ -50,7 +50,7 @@ function store (state, emitter) {
       modified: false,
       writing: false,
       fullscreen: false,
-      prefs: null,
+      prefs: { },
       text: {
         id: '',
         body: '',
