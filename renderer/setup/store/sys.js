@@ -4,6 +4,10 @@ const fs = require('fs')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 
+const crypto = require('../../_utils/crypto')
+
+const KEY_DEFAULT = '.txt.asc'
+
 function store (state, emitter) {
   init()
 
@@ -11,9 +15,11 @@ function store (state, emitter) {
 
     emitter.on('state:init', init)
 
-    emitter.on('state:uri:set', setUri)
+    emitter.on('state:uri:update', updateUri)
+    emitter.on('state:passphrase:update', updatePhrase)
 
-    emitter.on('state:doSetup', validateSetup)
+    emitter.on('state:setup:validate', validateSetup)
+    emitter.on('state:setup:do', doSetup)
   })
 
   function init() {
@@ -27,20 +33,23 @@ function store (state, emitter) {
     }
   }
 
-  function setUri(uri) {
+  function updateUri(uri) {
     state.ui.uri = uri.path
+    var keyPath = path.join(state.ui.uri + '/' + KEY_DEFAULT)
     state.progress = 2
     emitter.emit(state.events.RENDER)
   }
 
-  function validatePassphrase() {}
+  function updatePhrase(phrase) {
+    state.phrase = phrase
+  }
 
 
   function validateSetup() {
     // First, check to see if the working path exists.
     if (state.ui.uri) {
       fs.stat(state.ui.uri, (err, stats) => { // Do we exist?
-        // We must exist, because we have created a dir when selecting a dir.
+
         if (err) {
           // Send error message to ipc dialog
           ipcRenderer.send('dialog:new:error')
@@ -54,7 +63,7 @@ function store (state, emitter) {
             defaultId: 0,
             cancelId: 1,
             message: 'Please take a moment to save your passphrase somewhere secure',
-            detail: 'Txt has no \'forgot passphrase\' functionality and your library will be lost if you forget your it.'
+            detail: 'Txt has no \'forgot passphrase\' functionality and your library will be lost if you forget it!'
           })
           ipcRenderer.once('dialog:response', (event, res) => {
             switch (res) {
@@ -63,7 +72,7 @@ function store (state, emitter) {
               case 1:
                 break
               default:
-                doSetupTasks()
+                emitter.emit('state:setup:do')
                 break
             }
           })
@@ -72,5 +81,7 @@ function store (state, emitter) {
     }
   }
 
-  function doSetupTasks()
+  function doSetup() {
+
+  }
 }

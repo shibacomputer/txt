@@ -71,24 +71,27 @@ function setupApplication(state, emit) {
     }
 
     function updateUri(e) {
-      emit('state:uri:set', e.target.files[0])
+      emit('state:uri:update', e.target.files[0])
     }
   }
 
   function setupPassphrase() {
-      const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
-      const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
-      return html`
-      <section class="c ${style.option}">
-        <label for="passphrase">${inputLabel}</label>
-        <div class=${style.field}>
-          <input id="passphrase" class="c ${style.input}" />
-        </div>
-        <div class="w ${style.tip}">
-          <label class=${style.tip}>${tip}</label>
-        </div>
-      </section>
-      `
+    const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
+    const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
+    return html`
+    <section class="c ${style.option}">
+      <label for="passphrase">${inputLabel}</label>
+      <div class=${style.field}>
+        <input id="passphrase" class="c" onkeyup=${updatePassphrase}/>
+      </div>
+      <div class="w ${style.tip}">
+        <label class=${style.tip}>${tip}</label>
+      </div>
+    </section>
+    `
+    function updatePassphrase(e) {
+      emit('state:passphrase:update', e.target.value)
+    }
   }
 
   function nextButton() {
@@ -101,7 +104,7 @@ function setupApplication(state, emit) {
     `
 
     function completeSetup() {
-      emit('state:doSetup')
+      emit('state:setup:validate')
     }
   }
 }
