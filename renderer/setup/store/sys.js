@@ -23,7 +23,9 @@ function store (state, emitter) {
 
     emitter.on('state:ui:block', blockUi)
     emitter.on('state:setup:validate', validateSetup)
-    emitter.on('state:setup:do', doSetup)
+    emitter.on('state:setup:init', initSetup)
+    emitter.on('state:setup:load', loadSetup)
+
   })
 
   function init() {
@@ -108,7 +110,7 @@ function store (state, emitter) {
     }
   }
 
-  function doSetup() {
+  function initSetup() {
     emitter.emit('state:ui:block', true)
 
     var opts = {
@@ -129,17 +131,25 @@ function store (state, emitter) {
             ipcRenderer.send('dialog:new:error')
             emitter.emit('state:ui:block', false)
           } else {
-            crypto.writeKeychain(APPID, state.prefs.author.name, state.phrase, (err, success) => {
-              if (err) {
-                ipcRenderer.send('dialog:new:error')
-                emitter.emit('state:ui:block', false)
-              } else {
-                ipcRenderer.send('do:firstSetup', state)
-              }
-            })
+            ipcRenderer.send('do:firstSetup', state)
           }
+          ipcRenderer.once('done:setup', (event, err) => {
+            if (err) {
+              console.log(err)
+              // Goto error msg
+            } else {
+              ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
+                if (nextEvent) ipcRenderer.send(nextEvent, win)
+              })
+              ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
+            }
+          })
         })
       }
     })
+  }
+  function initSetup() {
+    emitter.emit('state:ui:block', true)
+    
   }
 }

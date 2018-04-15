@@ -80,22 +80,22 @@ module.exports = {
   // @TODO: Move all crypto into the event listening library?
   initEvents: function () {
   // Take the user's first preferences, and create a new install.
-    ipcMain.on('do:firstSetup', (event, prefs) => {
+    ipcMain.on('do:firstSetup', (event, state) => {
+      console.log(state.uri)
       store.set({
         app: {
-          path: prefs.uri,
+          path: state.uri,
           ready: true,
           launchAtLogin: true
         },
+        author: state.prefs.author,
         encryption: {
           useKeychain: true
         }
       })
 
       // Set up & save the key in the user's keychain.
-      if (prefs.string && prefs.useKey === false) {
-        keytar.setPassword(appId, prefs.selectedKey ? prefs.selectedKey.name : 'user', prefs.string )
-      }
+      keytar.setPassword(appId, state.prefs.author.name, state.phrase )
       event.sender.send('done:setup')
     })
 
