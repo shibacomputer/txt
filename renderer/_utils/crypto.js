@@ -6,10 +6,7 @@ openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.j
 openpgp.config.aead_protect = true
 openpgp.config.use_native = true
 
-console.log(window.localStorage)
-
 const keyring = new openpgp.Keyring()
-console.log(keyring)
 
 module.exports = {
 
@@ -20,22 +17,29 @@ module.exports = {
    * @param callback Returns errors or an encrypted blob.
    * */
    // @TODO: Passphrase secret gpg key.
-  encrypt: function(key, data, callback) {
+  encrypt: function(key, secret, data, callback) {
     var contents = new TextEncoder("utf-8").encode(data.contents)
-    var opts = {
-      data: new Uint8Array(contents),
-      passwords: [ key.phrase? key.phrase : null ],
-      compression: openpgp.enums.compression.zip,
-      armor: false
-    }
-    console.log('crypto:encrypt: opts: ', opts, ' key: ', key)
-    openpgp.encrypt(opts).then((result) => {
-      opts = null
-      console.log('crypto:encrypt: done. result: ', result)
-      callback(null, result.message.packets.write())
+    var privkey = openpgp.key.readArmored(key.privateKeyArmored).keys[0]
+    var pubkey = openpgp.key.readArmored(key.publicKeyArmored).keys
+
+    privKeyObj.decrypt(secret).then( (result) => {
+      var opts = {
+        data: new Uint8Array(contents),
+        publicKeys: pubkey,
+        privateKeys: [privkey],
+        compression: openpgp.enums.compression.zip
+      }
+      console.log('crypto:encrypt: opts: ', opts, ' key: ', key)
+      openpgp.encrypt(opts).then((result) => {
+        opts = null
+        console.log('crypto:encrypt: done. result: ', result)
+        callback(null, result.message.packets.write())
+      }).catch( (err) => {
+        opts = null
+        console.log('crypto:encrypt: err:', err)
+        callback(err, null)
+      })
     }).catch( (err) => {
-      opts = null
-      console.log('crypto:encrypt: err:', err)
       callback(err, null)
     })
   },
@@ -75,8 +79,19 @@ module.exports = {
   },
 
   /**
+   * Rekeys an item with new keys or passphrases.
+   * @param opts The current options.
+   * @param updates Your new options.
+   * @param callback Returns errors and a success boolean.
+   * */
+  getKey: function() {
+    console.log('sup ', keyring.getAllKeys())
+    return keyring.getAllKeys()
+  },
+  /**
    * Reads a private key and readies it for use.
    * @param opts The current options.
+   * @param secret The secret for importing the key.
    * @param callback Returns errors and a success boolean.
    * */
   importKey: function(key, secret, callback) {
@@ -86,15 +101,11 @@ module.exports = {
     privKeyObj.decrypt(secret).then( (result) => {
       keyring.publicKeys.importKey(key.publicKeyArmored)
       keyring.privateKeys.importKey(key.privateKeyArmored)
-
       keyring.store()
       callback(result)
     }).catch( (err) => {
       callback(err)
     })
-
-
-
   },
 
   /**
@@ -105,7 +116,6 @@ module.exports = {
    * */
   createKey: function(opts, secret, callback) {
     console.log('crypto:create: opts: ', opts, ' secret: ', secret)
-
     var options = {
       userIds: [ opts ],
       numBits: 4096,

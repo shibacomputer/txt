@@ -9,7 +9,7 @@ const crypto = require('../../_utils/crypto')
 const appId = 'Txt'
 
 function store (state, emitter) {
-  init()
+
   emitter.on('DOMContentLoaded', function () {
 
     emitter.on('state:init', init)
@@ -37,14 +37,15 @@ function store (state, emitter) {
     emitter.on('state:library:write:directory', mkdir)
     emitter.on('state:library:context:display', displayContext)
 
-    ipcRenderer.send('get:allPref')
-    ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.data.prefs = value
-      list()
-    })
-
   })
 
+  ipcRenderer.send('get:allPref')
+  ipcRenderer.once('done:getPref', (event, key, value) => {
+    state.data.prefs = value
+    list()
+  })
+
+  init()
 
   /**
    * Initialises the system state for the main window. This function gets its
@@ -53,10 +54,11 @@ function store (state, emitter) {
    * */
   function init() {
     state.data = {
+      unlocked: true,
       modified: false,
       writing: false,
       fullscreen: false,
-      prefs: { },
+      prefs: null,
       text: {
         id: '',
         body: '',
@@ -64,6 +66,7 @@ function store (state, emitter) {
         uri: null,
         title: null,
       },
+      key: crypto.getKey(),
       lib: { },
       ui: {
         sidebar: {
@@ -133,7 +136,6 @@ function store (state, emitter) {
    * @param f The target resource, including its new uri.
    * */
   function finishRename(f, code) {
-
     if(code === 'Escape') {
       state.data.ui.sidebar.renaming = false
       emitter.emit('state:library:list')
@@ -285,32 +287,30 @@ function store (state, emitter) {
         io.open(f.uri, (err, data) => {
           if (err) ipcRenderer.send('dialog:new:error')
           else {
-            if (state.data.prefs.encryption.useKeychain) {
-              crypto.readKeychain(appId, 'user', (err, secret) => {
-                crypto.decrypt({phrase: secret}, {contents: data, encoding: 'utf8'}, (err, plaintext) => {
-                  if (err) ipcRenderer.send('dialog:new:error')
-                  else {
-                    state.data.ui.sidebar.item.active = f
-                    console.log('decrypted, ', plaintext)
-                    var contents = {
-                      id: state.data.ui.sidebar.item.active.id,
-                      body: plaintext.data,
-                      stale: plaintext.data,
-                      title: f.name.replace('.gpg', ''),
-                      uri: f.uri
-                    }
-                    state.data.ui.menu.close = true
-                    state.data.ui.menu.export = true
-                    state.data.ui.menu.print = true
-                    state.data.ui.menu.preview = true
-                    state.data.ui.menu.close = true
-                    state.data.ui.menu.trash = true
-                    emitter.emit('state:menu:update')
-                    emitter.emit('state:composer:update', contents)
+            crypto.readKeychain(appId, 'user', (err, secret) => {
+              crypto.decrypt(key, secret, {contents: data, encoding: 'utf8'}, (err, plaintext) => {
+                if (err) ipcRenderer.send('dialog:new:error')
+                else {
+                  state.data.ui.sidebar.item.active = f
+                  console.log('decrypted, ', plaintext)
+                  var contents = {
+                    id: state.data.ui.sidebar.item.active.id,
+                    body: plaintext.data,
+                    stale: plaintext.data,
+                    title: f.name.replace('.gpg', ''),
+                    uri: f.uri
                   }
-                })
+                  state.data.ui.menu.close = true
+                  state.data.ui.menu.export = true
+                  state.data.ui.menu.print = true
+                  state.data.ui.menu.preview = true
+                  state.data.ui.menu.close = true
+                  state.data.ui.menu.trash = true
+                  emitter.emit('state:menu:update')
+                  emitter.emit('state:composer:update', contents)
+                }
               })
-            }
+            })
           }
         })
       }
