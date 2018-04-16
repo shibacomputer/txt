@@ -3,6 +3,7 @@ const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron')
 const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
 const defs = require('./defaults')
+const errors = require('./errors')
 const menu = require('./menu')
 const contextMenu = require('./context-menu')
 
@@ -159,16 +160,17 @@ module.exports = {
     ipcMain.on('dialog:new:error', (event, arg) => {
       let win = BrowserWindow.getFocusedWindow()
       if (win) {
-        var error = {
+        var err = errrors.parseErr(arg)
+        var opts = {
           type: 'error',
-          buttons: ['Continue', 'Back', 'Get Help' ],
+          buttons: [err.action, err.assist],
           defaultId: 0,
           cancelId: 1,
-          message: 'There was an error!',
-          detail: 'Please Try again'
+          message: err.message,
+          detail: err.detail
 
         }
-        dialog.showMessageBox(win, error, (response) => {
+        dialog.showMessageBox(win, opts, (response) => {
           if (response) event.sender.send('dialog:response', response)
           else event.sender.send('dialog:response', null)
         })

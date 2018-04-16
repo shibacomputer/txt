@@ -179,10 +179,7 @@ function store (state, emitter) {
               switch (res) {
                 case 2:
                   require('electron').shell.openExternal('https://txtapp.io/support')
-                case 1:
-                  break
                 default:
-                  state.ui.newKey? emitter.emit('state:setup:init') : emitter.emit('state:setup:load')
                   break
               }
               emitter.emit('state:ui:block', false)
