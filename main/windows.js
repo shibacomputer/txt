@@ -160,7 +160,7 @@ module.exports = {
     ipcMain.on('dialog:new:error', (event, arg) => {
       let win = BrowserWindow.getFocusedWindow()
       if (win) {
-        var err = errrors.parseErr(arg)
+        var err = errors.parseErr(arg)
         var opts = {
           type: 'error',
           buttons: [err.action, err.assist],
