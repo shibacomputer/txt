@@ -156,6 +156,25 @@ module.exports = {
       }
     })
 
+    ipcMain.on('dialog:new:error', (event, arg) => {
+      let win = BrowserWindow.getFocusedWindow()
+      if (win) {
+        var error = {
+          type: 'error',
+          buttons: ['Continue', 'Back', 'Get Help' ],
+          defaultId: 0,
+          cancelId: 1,
+          message: 'There was an error!',
+          detail: 'Please Try again'
+
+        }
+        dialog.showMessageBox(win, error, (response) => {
+          if (response) event.sender.send('dialog:response', response)
+          else event.sender.send('dialog:response', null)
+        })
+      }
+    })
+
     ipcMain.on('do:openWindow', (event, newWin, nextEvent) => {
       let thisWin = winManager.getCurrent()
       if (newWin) module.exports.prepare(newWin).open()
@@ -165,5 +184,7 @@ module.exports = {
     ipcMain.on('do:closeWin', (event, win) => {
       winManager.close(win.name)
     })
+
+
   }
 }
