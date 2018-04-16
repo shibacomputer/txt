@@ -85,7 +85,7 @@ function store (state, emitter) {
           return
         } else {
           // Path exists
-          // @TODO: Test for writing to path
+
           ipcRenderer.send('dialog:new', {
             type: 'info',
             buttons: ['Continue', 'Back', 'Get Help' ],
@@ -101,7 +101,7 @@ function store (state, emitter) {
               case 1:
                 break
               default:
-                emitter.emit('state:setup:do')
+                state.ui.newKey? emitter.emit('state:setup:init') : emitter.emit('state:setup:load')
                 break
             }
           })
@@ -148,8 +148,50 @@ function store (state, emitter) {
       }
     })
   }
-  function initSetup() {
+  function loadSetup() {
     emitter.emit('state:ui:block', true)
-    
+    var keyPath = path.join(state.uri + '/' + KEY_DEFAULT)
+    io.open(keyPath, (err, data) => {
+      if (err) {
+        console.log(err)
+        ipcRenderer.send('dialog:new:error', err)
+        emitter.emit('state:ui:block', false)
+      } else {
+        key = JSON.parse(data.toString('utf8'))
+        crypto.importKey(key, state.phrase, (result) => {
+          if (result === true) {
+            ipcRenderer.send('do:firstSetup', state)
+            ipcRenderer.once('done:setup', (event, err) => {
+              if (err) {
+                console.log(err)
+                // Goto error msg
+              } else {
+                ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
+                  if (nextEvent) ipcRenderer.send(nextEvent, win)
+                })
+                ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
+              }
+            })
+          } else {
+            console.log(result)
+            ipcRenderer.send('dialog:new:error', result)
+            ipcRenderer.once('dialog:response', (event, res) => {
+              switch (res) {
+                case 2:
+                  require('electron').shell.openExternal('https://txtapp.io/support')
+                case 1:
+                  break
+                default:
+                  state.ui.newKey? emitter.emit('state:setup:init') : emitter.emit('state:setup:load')
+                  break
+              }
+              emitter.emit('state:ui:block', false)
+            })
+
+          }
+        })
+        // Test the key
+      }
+    })
   }
 }

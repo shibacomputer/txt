@@ -9,7 +9,6 @@ const crypto = require('../../_utils/crypto')
 const appId = 'Txt'
 
 function store (state, emitter) {
-  var renameTimeout
   init()
   emitter.on('DOMContentLoaded', function () {
 
@@ -37,6 +36,13 @@ function store (state, emitter) {
     emitter.on('state:library:write:file', commit)
     emitter.on('state:library:write:directory', mkdir)
     emitter.on('state:library:context:display', displayContext)
+
+    ipcRenderer.send('get:allPref')
+    ipcRenderer.once('done:getPref', (event, key, value) => {
+      state.data.prefs = value
+      list()
+    })
+
   })
 
 
@@ -85,13 +91,6 @@ function store (state, emitter) {
         }
       }
     }
-
-    ipcRenderer.send('get:allPref')
-    ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.data.prefs = value
-      list()
-    })
-
   }
 
   /**

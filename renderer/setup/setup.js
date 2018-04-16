@@ -103,7 +103,6 @@ function setupApplication(state, emit) {
         </nav>
       </footer>
     `
-
     function completeSetup() {
       emit('state:setup:validate')
     }

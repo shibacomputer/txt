@@ -4,6 +4,12 @@ const keytar = remote.require('keytar')
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.aead_protect = true
+openpgp.config.use_native = true
+
+console.log(window.localStorage)
+
+const keyring = new openpgp.Keyring()
+console.log(keyring)
 
 module.exports = {
 
@@ -71,10 +77,23 @@ module.exports = {
   /**
    * Reads a private key and readies it for use.
    * @param opts The current options.
-   * @param updates Your new options.
    * @param callback Returns errors and a success boolean.
    * */
-  ingestKey: function(callback) {
+  importKey: function(key, secret, callback) {
+    var privkey = key.privateKeyArmored
+    var pubkey = key.publicKeyArmored
+    var privKeyObj = openpgp.key.readArmored(privkey).keys[0]
+    privKeyObj.decrypt(secret).then( (result) => {
+      keyring.publicKeys.importKey(key.publicKeyArmored)
+      keyring.privateKeys.importKey(key.privateKeyArmored)
+
+      keyring.store()
+      callback(result)
+    }).catch( (err) => {
+      callback(err)
+    })
+
+
 
   },
 
@@ -94,7 +113,6 @@ module.exports = {
     }
 
     openpgp.generateKey(options).then( (key) => {
-
       console.log('crypto:key: done: ', key)
       callback(null, key)
     }).catch( (err) => {
