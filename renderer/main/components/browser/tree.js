@@ -5,19 +5,27 @@ const io = require('../../../_utils/io')
 module.exports = tree
 
 function tree(state, emit) {
-  if (state.data.lib) return initTree()
+  if (state.lib) return initTree()
 
   function initTree () {
     return html`
       <main class="${style.treeBase}">
-        ${ tree(state.data.lib.children) }
+        ${ tree(state.lib.children) }
       </main>
     `
   }
 
+  function match(f, target) {
+    if (!target.id) return
+    if (target.id === f.id
+      || target.uri === f.uri) return true
+    else return false
+  }
+
   function tree(dir) {
-    const items = state.data.ui.sidebar.item
-    const text = state.data.text
+    const focus = state.status.focus
+    const active = state.status.active
+    const text = state.composer
 
     if (dir) {
       return html`
@@ -25,11 +33,11 @@ function tree(state, emit) {
           ${
             dir.map( (f) => {
               var opts = { }
-              opts.list = state.data.ui.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
-              opts.focus = matchesFocus(f, items)
-              opts.active = matchesActive(f, items)
-              opts.rename = (matchesFocus(f, items) && state.data.ui.sidebar.renaming) ? true : false
-              opts.modified = (matchesOpen(f, text) && state.data.modified) ? true : false
+              opts.list = state.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
+              opts.focus = match(f, focus)
+              opts.active = match(f, active)
+              opts.rename = (match(f, focus) && state.status.renaming) ? true : false
+              opts.modified = (match(f, text) && state.status.modified) ? true : false
               if (
                 (f.mime === 'text/gpg' || f.type === 'directory') &&
                 (f.name.slice(0,1) !== '.')
@@ -46,26 +54,5 @@ function tree(state, emit) {
         </ul>
       `
     }
-  }
-
-  function matchesActive(f, items) {
-    if (!items.active.id) return
-    if (items.active.id === f.id
-      || items.active.uri === f.uri) return true
-    else return false
-  }
-
-  function matchesFocus(f, items) {
-    if (!items.focus.id) return
-    if (items.focus.id === f.id
-      || items.focus.uri === f.uri) return true
-    else return false
-  }
-
-  function matchesOpen(f, text) {
-    if (!text.id) return
-    if (text.id === f.id
-      || text.uri === f.uri) return true
-    else return false
   }
 }

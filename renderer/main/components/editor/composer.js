@@ -20,12 +20,12 @@ function Editor () {
 Editor.prototype = Object.create(Nanocomponent.prototype)
 
 Editor.prototype.createElement = function (state, emit) {
-  this.body = state.data.text.body || ''
-  this.stale = state.data.text.stale || this.body
-  this.id = state.data.text.id || ''
-  this.uri = state.data.text.uri || null
-  this.title = state.data.text.title || 'Untitled'
-  this.modified = state.data.modified || false
+  this.body = state.composer.body || ''
+  this.stale = state.composer.stale || this.body
+  this.id = state.composer.id || ''
+  this.uri = state.composer.uri || null
+  this.title = state.composer.title || 'Untitled'
+  this.modified = state.status.modified || false
   this.emit = emit
   var el = html`
     <div class="composer"></div>
@@ -34,9 +34,9 @@ Editor.prototype.createElement = function (state, emit) {
     element: el,
     onChange: (contents) => {
       var contents = {
-        body: editor.content.innerText? editor.content.innerText : state.data.text.body,
+        body: editor.content.innerText? editor.content.innerText : state.composer.body,
         stale: this.stale,
-        id: this.id? this.id : state.data.ui.sidebar.item.active.id,
+        id: this.id? this.id : state.status.active.id,
         uri: this.uri,
         title: this.title,
         modified: (editor.content.innerText != this.stale)
@@ -59,5 +59,5 @@ Editor.prototype.createElement = function (state, emit) {
 
 Editor.prototype.update = function (state) {
   if (modified) return false
-  this.body = state.data.text.body
+  this.body = state.composer.body
 }

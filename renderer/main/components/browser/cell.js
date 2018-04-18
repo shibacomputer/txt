@@ -44,10 +44,10 @@ function cell(f, opts, emit) {
   function finishRename(e, code) {
     if (e.srcElement && code != "Escape") {
       f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
-      emit('state:library:rename:end', f, code)
+      emit('state:library:rename:commit', f, code)
     } else {
       f.newUri = f.name + (f.type === 'file'? '.gpg' : '')
-      emit('state:library:rename:end', f, code)
+      emit('state:library:rename:commit', f, code)
     }
   }
 

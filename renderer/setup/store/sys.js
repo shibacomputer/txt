@@ -13,7 +13,7 @@ const APP_ID = 'Txt'
 function store (state, emitter) {
   init()
 
-  emitter.on('DOMContentLoaded', function () {
+  emitter.on('DOMContentLoaded', () => {
 
     emitter.on('state:init', init)
 
@@ -98,6 +98,7 @@ function store (state, emitter) {
             switch (res) {
               case 2:
                 require('electron').shell.openExternal('https://txtapp.io/support')
+                break
               case 1:
                 break
               default:
@@ -179,6 +180,7 @@ function store (state, emitter) {
               switch (res) {
                 case 2:
                   require('electron').shell.openExternal('https://txtapp.io/support')
+                  break
                 default:
                   break
               }

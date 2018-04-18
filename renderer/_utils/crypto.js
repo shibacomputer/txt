@@ -16,7 +16,7 @@ module.exports = {
    * @param data The data to encrypt.
    * @param callback Returns errors or an encrypted blob.
    * */
-   // @TODO: Passphrase secret gpg key.
+
   encrypt: function(key, secret, data, callback) {
     var contents = new TextEncoder("utf-8").encode(data.contents)
     var privkey = openpgp.key.readArmored(key.privateKeyArmored).keys[0]

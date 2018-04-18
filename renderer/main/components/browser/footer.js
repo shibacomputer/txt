@@ -7,7 +7,7 @@ const button = require('../../../_components/button')
 module.exports = editorFooter
 
 function editorFooter(state, emit) {
-  const libPath = state.data.prefs? state.data.prefs.app.path : ''
+  const libPath = state.prefs? state.prefs.app.path : ''
   return html`
     <footer class=${ style.footer }>
       ${
