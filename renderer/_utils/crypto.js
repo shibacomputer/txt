@@ -18,22 +18,23 @@ module.exports = {
    * */
 
   encrypt: function(key, secret, data, callback) {
-    var contents = new TextEncoder("utf-8").encode(data.contents)
-    var privkey = openpgp.key.readArmored(key.privateKeyArmored).keys[0]
-    var pubkey = openpgp.key.readArmored(key.publicKeyArmored).keys
 
+    var contents = new TextEncoder("utf-8").encode(data.contents)
+    var privkey = key[1].armoredPrivate
+    var pubkey = key[0].armoredPublic
+    var privKeyObj = openpgp.key.readArmored(privkey).keys[0]
     privKeyObj.decrypt(secret).then( (result) => {
       var opts = {
         data: new Uint8Array(contents),
-        publicKeys: pubkey,
-        privateKeys: [privkey],
+        publicKeys: openpgp.key.readArmored(pubkey).keys,
+        privateKeys: [privKeyObj],
         compression: openpgp.enums.compression.zip
       }
       console.log('crypto:encrypt: opts: ', opts, ' key: ', key)
       openpgp.encrypt(opts).then((result) => {
         opts = null
         console.log('crypto:encrypt: done. result: ', result)
-        callback(null, result.message.packets.write())
+        callback(null, result.data)
       }).catch( (err) => {
         opts = null
         console.log('crypto:encrypt: err:', err)
@@ -85,9 +86,21 @@ module.exports = {
    * @param callback Returns errors and a success boolean.
    * */
   getKey: function() {
-    console.log('sup ', keyring.getAllKeys())
-    return keyring.getAllKeys()
+    var result = []
+    var keys = keyring.getAllKeys()
+    keys.forEach( (key) => {
+      var armored = { }
+      if (key.isPublic()) {
+        armored.armoredPublic = key.toPublic().armor()
+      }
+      if (key.isPrivate()) {
+        armored.armoredPrivate = key.armor()
+      }
+      result.push(armored)
+    })
+    return result
   },
+
   /**
    * Reads a private key and readies it for use.
    * @param opts The current options.
@@ -95,7 +108,7 @@ module.exports = {
    * @param callback Returns errors and a success boolean.
    * */
   importKey: function(key, secret, callback) {
-    var privkey = key.privateKeyArmored
+    var privkey = key[1].keyid.privateKeyArmored
     var pubkey = key.publicKeyArmored
     var privKeyObj = openpgp.key.readArmored(privkey).keys[0]
     privKeyObj.decrypt(secret).then( (result) => {

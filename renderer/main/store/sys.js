@@ -21,7 +21,7 @@ function store (state, emitter) {
 
       emitter.on('state:menu:update', updateMenu)
 
-      // emitter.on('state:composer:new', compose)
+      emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
       // emitter.on('state:composer:revert', revert)
       // emitter.on('state:composer:close', close)
@@ -38,9 +38,10 @@ function store (state, emitter) {
       emitter.on('state:library:open:directory', ls)
       // emitter.on('state:library:open:file', open)
       // emitter.on('state:library:read:file', read)
-      // emitter.on('state:library:write:file', commit)
+      emitter.on('state:library:write:file', commit)
       emitter.on('state:library:write:directory', mkdir)
       emitter.on('state:library:context:display', displayContext)
+      emitter.on('state:library:reveal', reveal)
 
       emitter.on('state:error', sendError)
 
@@ -368,15 +369,14 @@ function store (state, emitter) {
    * */
   function commit(snapshot) {
     if (state.prefs.encryption.useKeychain) {
-      crypto.readKeychain(appId, 'user', (err, secret) => {
-        console.log('About to encrypt: ', snapshot)
-        if (err) ipcRenderer.send('dialog:new:error')
+      crypto.readKeychain(appId, state.prefs.author.name, (err, secret) => {
+        if (err) emitter.emit('state:error', err)
         else {
-          crypto.encrypt({phrase: secret}, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
-            if (err) ipcRenderer.send('dialog:new:error')
+          crypto.encrypt(state.key, secret, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
+            if (err) emitter.emit('state:error', err)
             else {
               io.write(snapshot.uri, ciphertext, (err, status) => {
-                state.data.writing = false
+                state.status.writing = false
                 save(snapshot)
 
                 if (snapshot.isNew) emitter.emit('state:library:list')
@@ -456,6 +456,10 @@ function store (state, emitter) {
      })
   }
 
+  function reveal(uri) {
+    require('electron').shell.showItemInFolder(uri)
+  }
+
   // Interacting with Main.
   function sendError(error) {
     console.log('ui:error: ', error)
@@ -522,5 +526,8 @@ function store (state, emitter) {
   })
   ipcRenderer.on('sys:focus', (event, response) => {
     if (state.prefs.app.path) emitter.emit('state:library:list')
+  })
+  ipcRenderer.on('menu:context:reveal', (event, response) => {
+    emitter.emit('state:library:reveal', state.status.focus.uri)
   })
 }
