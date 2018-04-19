@@ -122,9 +122,9 @@ function store (state, emitter) {
       } else {
         emitter.emit('state:library:rename:commit') // Empty commit
         state.status.renaming = false
-        var exists = state.sidebar.openDirs.indexOf(d.id)
-        if (exists === -1) state.sidebar.openDirs.push(d.id)
-        else state.sidebar.openDirs.splice(exists, 1)
+        var index = state.sidebar.openDirs.indexOf(d.id)
+        if (index === -1) state.sidebar.openDirs.push(d.id)
+        else state.sidebar.openDirs.splice(index, 1)
         state.status.listing = false
         emitter.emit(state.events.RENDER)
       }
@@ -168,6 +168,11 @@ function store (state, emitter) {
             emitter.emit('state:error')
           }
           else {
+            var index = state.sidebar.openDirs.indexOf(state.status.focus.id)
+            if (state.status.focus.type === 'directory' && index === -1)  {
+              emitter.emit('state:library:open:directory', state.status.focus)
+            }
+
             emitter.emit('state:library:list')
           }
         })
@@ -197,6 +202,9 @@ function store (state, emitter) {
     emitter.emit(state.events.RENDER)
   }
 
+  /**
+   * Prepare the new renamed item.
+   * */
   function commitRename(f, commit) {
     if (!commit || !state.status.focus) {
       state.status.renaming = false
@@ -225,7 +233,6 @@ function store (state, emitter) {
       emitter.emit(state.events.RENDER)
     }
   }
-
 
   /**
    * Prepares to open a file, but checks for unsaved changes first.
@@ -356,6 +363,34 @@ function store (state, emitter) {
   }
 
   /**
+   * Asynchrounously encrypt and commit the current snapshot to disk,
+   * @param snapshot An object that contains the current editor snapshot.
+   * */
+  function commit(snapshot) {
+    if (state.prefs.encryption.useKeychain) {
+      crypto.readKeychain(appId, 'user', (err, secret) => {
+        console.log('About to encrypt: ', snapshot)
+        if (err) ipcRenderer.send('dialog:new:error')
+        else {
+          crypto.encrypt({phrase: secret}, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
+            if (err) ipcRenderer.send('dialog:new:error')
+            else {
+              io.write(snapshot.uri, ciphertext, (err, status) => {
+                state.data.writing = false
+                save(snapshot)
+
+                if (snapshot.isNew) emitter.emit('state:library:list')
+                else if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
+              })
+            }
+          })
+        }
+      })
+    }
+  }
+
+
+  /**
    * Tell the composer that the save is complete and ensures that the editor
    * returns to a saved and unmodified state.
    * @param contents An object that contains the current and stale text.
@@ -405,9 +440,9 @@ function store (state, emitter) {
                 state.status.active = { }
                 emitter.emit('state:composer:update', snapshot)
               }
-              var exists = state.sidebar.openDirs.indexOf(state.status.focus.id)
-              if (state.status.focus.type === 'directory')  {
-                state.sidebar.openDirs.splice(exists, 1)
+              var index = state.sidebar.openDirs.indexOf(state.status.focus.id)
+              if (state.status.focus.type === 'directory' && index != -1)  {
+                state.sidebar.openDirs.splice(index, 1)
               }
               state.status.focus = { }
               state.menu.trash = false
