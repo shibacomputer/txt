@@ -21,7 +21,10 @@ function editorFooter(state, emit) {
            })
          ],
          center: [
-          libPath
+          html `
+            <span oncontextmenu=${ showContextMenu }}>
+              ${ libPath }
+            </span>`
          ],
          left: [
            button({
@@ -35,4 +38,8 @@ function editorFooter(state, emit) {
     }
     </footer>
   `
+  function showContextMenu(e) {
+    console.log('hello')
+    emit('state:library:context:display', 'footer')
+  }
 }

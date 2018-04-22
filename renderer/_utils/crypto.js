@@ -18,7 +18,6 @@ module.exports = {
    * */
 
   encrypt: function(key, secret, data, callback) {
-
     var contents = new TextEncoder("utf-8").encode(data.contents)
     var privkey = key[1].armoredPrivate
     var pubkey = key[0].armoredPublic
@@ -80,14 +79,14 @@ module.exports = {
   },
 
   /**
-   * Rekeys an item with new keys or passphrases.
-   * @param opts The current options.
-   * @param updates Your new options.
-   * @param callback Returns errors and a success boolean.
+   * Returns the keys
+   * @param callback Returns keys
    * */
-  getKey: function() {
-    var result = []
-    var keys = keyring.getAllKeys()
+  getKey: function(callback) {
+    var result = [],
+        keys = keyring.getAllKeys(),
+        processed = 0
+
     keys.forEach( (key) => {
       var armored = { }
       if (key.isPublic()) {
@@ -97,8 +96,10 @@ module.exports = {
         armored.armoredPrivate = key.armor()
       }
       result.push(armored)
+      processed ++
+      if (processed === keys.length) callback(result)
     })
-    return result
+
   },
 
   /**
@@ -108,7 +109,8 @@ module.exports = {
    * @param callback Returns errors and a success boolean.
    * */
   importKey: function(key, secret, callback) {
-    var privkey = key[1].keyid.privateKeyArmored
+    console.log('crypto:key: importKey: ', key)
+    var privkey = key.privateKeyArmored
     var pubkey = key.publicKeyArmored
     var privKeyObj = openpgp.key.readArmored(privkey).keys[0]
     privKeyObj.decrypt(secret).then( (result) => {
@@ -143,6 +145,17 @@ module.exports = {
       callback(err, null)
     })
   },
+
+  /**
+   * Test for a key
+   * @param callback Returns true/false
+   * */
+  testForKey: function(callback) {
+    console.log('crypto:key: test: ')
+    if (keyring.getAllKeys().length > 0) callback(true)
+    else callback(false)
+  },
+
   /**
    * Reads a secret from the keychain.
    * @param service The app id as stored in the keychain.
@@ -150,8 +163,9 @@ module.exports = {
    * @param callback Returns an error and the secret.
    * */
   readKeychain: function(service, account, callback) {
-    console.log('crypto:')
+    console.log('crypto:keychain: read: ', service, account)
     keytar.getPassword(service, account).then( (secret) => {
+      console.log('crypto:keychain: done: ', service, account)
       callback(null, secret)
     }).catch( (err) => {
       callback(err, null)

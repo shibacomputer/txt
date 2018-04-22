@@ -132,27 +132,43 @@ function store (state, emitter) {
             ipcRenderer.send('dialog:new:error')
             emitter.emit('state:ui:block', false)
           } else {
-            ipcRenderer.send('do:firstSetup', state)
-          }
-          ipcRenderer.once('done:setup', (event, err) => {
-            if (err) {
-              console.log(err)
-              // Goto error msg
-            } else {
-              ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
-                if (nextEvent) ipcRenderer.send(nextEvent, win)
+            crypto.importKey(key, state.phrase, (result) => {
+              if (result === true) ipcRenderer.send('do:firstSetup', state)
+              else {
+                ipcRenderer.send('dialog:new:error', result)
+                ipcRenderer.once('dialog:response', (event, res) => {
+                  switch (res) {
+                    case 2:
+                      require('electron').shell.openExternal('https://txtapp.io/support')
+                      break
+                    default:
+                      break
+                  }
+                  emitter.emit('state:ui:block', false)
+                })
+              }
+              ipcRenderer.once('done:setup', (event, err) => {
+                if (err) {
+                  console.log(err)
+                  // Goto error msg
+                } else {
+                  debugger
+                  ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
+                    if (nextEvent) ipcRenderer.send(nextEvent, win)
+                  })
+                  ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
+                }
               })
-              ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
-            }
-          })
+            })
+          }
         })
       }
     })
   }
   function loadSetup() {
     emitter.emit('state:ui:block', true)
-    var keyPath = path.join(state.uri + '/' + KEY_DEFAULT)
-    io.open(keyPath, (err, data) => {
+    var keyUri = path.join(state.uri + '/' + KEY_DEFAULT)
+    io.open(keyUri, (err, data) => {
       if (err) {
         console.log(err)
         ipcRenderer.send('dialog:new:error', err)
@@ -167,6 +183,7 @@ function store (state, emitter) {
                 console.log(err)
                 // Goto error msg
               } else {
+                debugger
                 ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
                   if (nextEvent) ipcRenderer.send(nextEvent, win)
                 })
@@ -186,7 +203,6 @@ function store (state, emitter) {
               }
               emitter.emit('state:ui:block', false)
             })
-
           }
         })
         // Test the key

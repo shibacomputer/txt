@@ -5,7 +5,7 @@ const io = require('../../../_utils/io')
 module.exports = tree
 
 function tree(state, emit) {
-  if (state.lib) return initTree()
+  if (typeof state.lib != 'undefined') return initTree()
 
   function initTree () {
     return html`

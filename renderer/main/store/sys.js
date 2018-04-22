@@ -1,18 +1,19 @@
 module.exports = store
 
 const { ipcRenderer } = require('electron')
-const { parse } = require('path')
+const { join, parse } = require('path')
 
 const Mousetrap = require('mousetrap')
 
 const io = require('../../_utils/io')
 const crypto = require('../../_utils/crypto')
 
-const appId = 'Txt'
+const APP_ID = 'Txt'
+const KEY_DEFAULT = '.txtkey'
 
 function store (state, emitter) {
 
-  emitter.on(state.events.DOMCONTENTLOADED, function () {
+  emitter.on('DOMContentLoaded', () => {
 
     ipcRenderer.send('get:allPref')
     ipcRenderer.once('done:getPref', (event, key, value) => {
@@ -43,6 +44,8 @@ function store (state, emitter) {
       emitter.on('state:library:context:display', displayContext)
       emitter.on('state:library:reveal', reveal)
 
+      emitter.on('state:key:get', getKey)
+      emitter.on('state:key:import', addKey)
       emitter.on('state:error', sendError)
 
       emitter.emit('state:init', value)
@@ -73,7 +76,6 @@ function store (state, emitter) {
       uri: null,
       title: null
     }
-    state.key = crypto.getKey()
     state.lib = null
     state.sidebar = {
       visible: true,
@@ -90,7 +92,12 @@ function store (state, emitter) {
       library: true,
       rename: false
     }
-    emitter.emit('state:library:list')
+    state.key = { }
+
+    if (state.prefs) {
+      emitter.emit('state:library:list')
+      emitter.emit('state:key:get')
+    }
   }
 
   /**
@@ -290,7 +297,7 @@ function store (state, emitter) {
   }
 
   /**
-   * Discard unsaved changes, using the editor state to
+   * Discard unsaved changes, using the editor state to reset everything.
    * */
   function revert() {
     ipcRenderer.send('dialog:new', {
@@ -369,7 +376,7 @@ function store (state, emitter) {
    * */
   function commit(snapshot) {
     if (state.prefs.encryption.useKeychain) {
-      crypto.readKeychain(appId, state.prefs.author.name, (err, secret) => {
+      crypto.readKeychain(APP_ID, state.prefs.author.name, (err, secret) => {
         if (err) emitter.emit('state:error', err)
         else {
           crypto.encrypt(state.key, secret, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
@@ -427,7 +434,7 @@ function store (state, emitter) {
          break
         default:
           io.trash(focus, (err, status) => {
-            if (err) emitter.emit('state:error')
+            if (err) emitter.emit('state:error', err)
             else {
               if (state.composer.uri === focus) {
                 var snapshot = {
@@ -460,6 +467,52 @@ function store (state, emitter) {
     require('electron').shell.showItemInFolder(uri)
   }
 
+  function addKey() {
+    crypto.getKey( (newKeys) => {
+      console.log('KEYS ', newKeys)
+      state.key = newKeys
+      console.log('KEYS IN THE STATE !,' , state.key)
+      emitter.emit(state.events.RENDER)
+    })
+  }
+  /**
+   * Trash a resource using the sidebar to create the desired uri.
+   * */
+  function getKey() {
+    crypto.testForKey( (result) => {
+      if (result) emitter.emit('state:key:import')
+      else {
+        if (state.lib) importKeyFromDisk()
+      }
+    })
+  }
+
+  function importKeyFromDisk() {
+    var keyUri = join(state.lib.uri + '/' + KEY_DEFAULT)
+    io.open(keyUri, (err, data) => {
+      if (err) emitter.emit('state:error', err)
+      else {
+        var key = JSON.parse(data.toString('utf8'))
+        if (state.prefs.encryption.useKeychain) {
+          crypto.readKeychain(APP_ID, state.prefs.author.name, (err, secret) => {
+            if (err) emitter.emit('state:error', err)
+            else {
+              crypto.importKey(key, secret, (result) => {
+                if (result === true) {
+                  emitter.emit('state:key:import')
+                }
+                else emitter.emit('state:error', err)
+              })
+            }
+          })
+        } else {
+          // TODO: Ask for passphrase.
+        }
+      }
+    })
+  }
+
+
   // Interacting with Main.
   function sendError(error) {
     console.log('ui:error: ', error)
@@ -474,6 +527,7 @@ function store (state, emitter) {
       }
     })
   }
+
 
   // Out
   function displayContext(type) {
@@ -529,5 +583,9 @@ function store (state, emitter) {
   })
   ipcRenderer.on('menu:context:reveal', (event, response) => {
     emitter.emit('state:library:reveal', state.status.focus.uri)
+  })
+
+  ipcRenderer.on('menu:context:reveal:library', (event, response) => {
+    emitter.emit('state:library:reveal', state.prefs.lib.uri)
   })
 }
