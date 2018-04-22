@@ -7,7 +7,27 @@ module.exports = {
       case 'browser-cell':
         menu = [
           {
-            label: 'Reveal in Finder...',
+            label: 'New...',
+            submenu: [
+              {
+                label: 'New File',
+                click: (item, win, event) => {
+                  if (win) win.webContents.send('menu:file:new:file')
+                }
+              },
+              {
+                label: 'New Folder',
+                click: (item, win, event) => {
+                  if (win) win.webContents.send('menu:file:new:dir')
+                }
+              }
+            ]
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'Reveal...',
             click: (item, win, event) => {
               if (win) win.webContents.send('menu:context:reveal')
             }
@@ -29,6 +49,15 @@ module.exports = {
           }
         ]
         break
+      case 'footer':
+        menu = [
+          {
+            label: 'Reveal...',
+            click: (item, win, event) => {
+              if (win) win.webContents.send('menu:context:reveal:library')
+            }
+          }
+        ]
       }
     return menu
   }

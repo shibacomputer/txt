@@ -8,6 +8,7 @@ function cell(f, opts, emit) {
   opts = typeof opts === "object" ? opts : {}
   if(f.type === 'directory') return html`${dirCell()}`
   else return html`${fileCell()}`
+
   function dirCell() {
     return html`
       <button onclick=${select} ondblclick=${open} oncontextmenu=${context}
