@@ -54,7 +54,7 @@ module.exports = {
     var opts = {
       message: openpgp.message.read(data.contents),
       format: data.encoding,
-      passwords: [ key.phrase? key.phrase : null ]
+      passwords: [ key.phrase ]
     }
     console.log('crypto:decrypt: opts: ', opts, 'key: ', key)
     openpgp.decrypt(opts).then((result) => {
