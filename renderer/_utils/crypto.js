@@ -9,7 +9,6 @@ openpgp.config.use_native = true
 const keyring = new openpgp.Keyring()
 
 module.exports = {
-
   /**
    * Encrypt data.
    * @param key The key or passphrase for authentication.

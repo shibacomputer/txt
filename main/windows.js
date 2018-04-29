@@ -7,7 +7,8 @@ const errors = require('./errors')
 const menu = require('./menu')
 const contextMenu = require('./context-menu')
 
-const keytar = require('keytar')
+const pgp = require('./pgp')
+
 const appId = 'Txt'
 
 module.exports = {
@@ -68,6 +69,8 @@ module.exports = {
     defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
     console.log(defs.app.path)
     module.exports.initEvents()
+
+    pgp.getKey(defs.app.path)
   },
   prepare: function(winName) {
     let thisWindow = winManager.createNew(winName,
