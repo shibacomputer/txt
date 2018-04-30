@@ -70,7 +70,12 @@ module.exports = {
   },
 
   updateKeychain: async function(secret) {
-    const result = keytar.setPassword(APP_NAME, name, secret)
+    const result = await keytar.setPassword(APP_NAME, name, secret)
+    return result
+  },
+
+  killKeychain: async function() {
+    const result = await keytar.deletePassword(APP_NAME, name)
     return result
   }
 }
