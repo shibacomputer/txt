@@ -37,24 +37,24 @@
     "csjs-inject": "^1.0.1",
     "dir-to-json": "git+https://github.com/shibacomputer/dir-to-json.git",
     "electron-store": "^1.3.0",
-    "electron-updater": "^2.21.0",
+    "electron-updater": "^2.21.8",
     "electron-window-manager": "git+https://github.com/shibacomputer/electron-window-manager.git",
     "keytar": "^4.0.5",
     "mime": "^1.6.0",
     "mousetrap": "^1.6.1",
-    "nanocomponent": "^6.4.2",
-    "openpgp": "^3.0.3",
+    "nanocomponent": "^6.5.2",
+    "openpgp": "^3.0.8",
     "pell": "^1.0.4",
     "trash": "^4.3.0"
   },
   "devDependencies": {
-    "choo-devtools": "^2.2.0",
+    "choo-devtools": "^2.5.0",
     "choo-log": "^8.0.0",
-    "electron": "^1.8.3",
-    "electron-builder": "^20.8.1",
-    "electron-rebuild": "^1.6.0",
-    "spectron": "^3.7.2",
-    "svgo": "^1.0.3"
+    "electron": "^1.8.6",
+    "electron-builder": "^20.11.1",
+    "electron-rebuild": "^1.7.3",
+    "spectron": "^3.8.0",
+    "svgo": "^1.0.5"
   },
   "build": {
     "publish": [
