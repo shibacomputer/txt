@@ -18,16 +18,20 @@ const KEY_FILENAME = '.txtkey'
 var key, privkey, pubkey, pubKeyObj, privKeyObj, name, email
 
 module.exports = {
-  getKey: async function(uri) {
+  getKey: async function(uri, user) {
+    name = user.name
+    email = user.email
+
     fs.readFile(path.join(uri + '/' + KEY_FILENAME), (err, data) => {
       key = JSON.parse(data.toString('utf8'))
       setupKeysForUse(key)
     })
   },
 
-  generateKey: async function (uri, user) {
+  generateKey: async function (uri, user, secret) {
     const writeUri = path.join(uri + '/' + KEY_FILENAME)
-    const passphrase = await getSecret()
+
+    keytar.setPassword(APP_NAME, user.name, secret)
 
     name = user.name
     email = user.email
@@ -35,12 +39,16 @@ module.exports = {
     const options = {
       userIds: [{ name:name, email:email }],
       numBits: PGP_BITS,
-      passphrase: passphrase
+      passphrase: secret
     }
+    console.log('Generating key')
+    openpgp.generateKey(options).then( (key) => {
+      console.log('Done, here\'s a key ', key)
+    }).catch((err) => {
+      console.log(err)
+    })
 
-    key = await openpgp.generateKey(options)
     writeKeytoDisk(key, writeUri)
-
   },
 
   encrypt: async function(contents) {
@@ -67,11 +75,6 @@ module.exports = {
 
     const decrypted = await openpgp.decrypt(options)
     return decrypted.data
-  },
-
-  updateKeychain: async function(secret) {
-    const result = await keytar.setPassword(APP_NAME, name, secret)
-    return result
   },
 
   killKeychain: async function() {
@@ -102,8 +105,16 @@ async function writeKeyToDisk(key, uri) {
 }
 
 async function getSecret() {
-  const secret = keytar.getPassword(APP_NAME, name)
+  console.log('GETTING SECRET', name)
+  const secret = await keytar.getPassword(APP_NAME, name)
   return secret
+}
+
+function updateSecret(user, secret) {
+  console.log('SETTING SECRET', user.name, secret)
+  keytar.setPassword(APP_NAME, user.name, secret)
+  name = user.name
+  email = user.email
 }
 
 async function decryptKey() {

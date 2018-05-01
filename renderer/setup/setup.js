@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron')
-
 const html = require('choo/html')
 const style = require('./style')
 

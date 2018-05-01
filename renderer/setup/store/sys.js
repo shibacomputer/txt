@@ -4,7 +4,6 @@ const fs = require('fs')
 const path = require('path')
 const { ipcRenderer } = require('electron')
 
-const crypto = require('../../_utils/crypto')
 const io = require('../../_utils/io')
 
 const KEY_DEFAULT = '.txtkey'
@@ -39,8 +38,8 @@ function store (state, emitter) {
       block: false
     }
     state.prefs = { }
-    ipcRenderer.send('get:allPref')
-    ipcRenderer.once('done:getPref', (event, key, value) => {
+    ipcRenderer.send('pref:get:all')
+    ipcRenderer.once('pref:get:done', (event, key, value) => {
       state.prefs = value
       console.log(state.prefs)
     })
@@ -115,56 +114,31 @@ function store (state, emitter) {
     emitter.emit('state:ui:block', true)
 
     var opts = {
-      name: state.prefs.author.name,
-      email: state.prefs.author.email
+      author: {
+        name: state.prefs.author.name,
+        email: state.prefs.author.email
+      },
+      uri: state.uri,
+      phrase: state.phrase,
+      isNewInstall: state.ui.newKey
     }
-    crypto.createKey(opts, state.phrase, (err, key) => {
+
+    ipcRenderer.send('app:setup:init', opts)
+
+    ipcRenderer.once('app:setup:done', (event, err) => {
       if (err) {
-        ipcRenderer.send('dialog:new:error')
+        console.log(err)
+
         emitter.emit('state:ui:block', false)
       } else {
-        var keyPath = path.join(state.uri + '/' + KEY_DEFAULT)
-        var keyContents = JSON.stringify(key)
-        console.log(keyContents)
-        state.key = key
-        io.write(keyPath, keyContents, (err, success) => {
-          if (err) {
-            ipcRenderer.send('dialog:new:error')
-            emitter.emit('state:ui:block', false)
-          } else {
-            crypto.importKey(key, state.phrase, (result) => {
-              if (result === true) ipcRenderer.send('do:firstSetup', state)
-              else {
-                ipcRenderer.send('dialog:new:error', result)
-                ipcRenderer.once('dialog:response', (event, res) => {
-                  switch (res) {
-                    case 2:
-                      require('electron').shell.openExternal('https://txtapp.io/support')
-                      break
-                    default:
-                      break
-                  }
-                  emitter.emit('state:ui:block', false)
-                })
-              }
-              ipcRenderer.once('done:setup', (event, err) => {
-                if (err) {
-                  console.log(err)
-                  // Goto error msg
-                } else {
-                  debugger
-                  ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
-                    if (nextEvent) ipcRenderer.send(nextEvent, win)
-                  })
-                  ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
-                }
-              })
-            })
-          }
+        ipcRenderer.once('window:open:done', (event, nextEvent, win) => {
+          if (nextEvent) ipcRenderer.send(nextEvent, win)
         })
+        ipcRenderer.send('window:open', 'main', 'window:close')
       }
     })
   }
+
   function loadSetup() {
     emitter.emit('state:ui:block', true)
     var keyUri = path.join(state.uri + '/' + KEY_DEFAULT)
