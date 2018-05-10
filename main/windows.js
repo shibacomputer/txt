@@ -5,7 +5,6 @@ const store = require('./prefs/prefs')
 const defs = require('./defaults')
 const errors = require('./errors')
 const menu = require('./menu')
-const pgp = require('./pgp')
 const contextMenu = require('./context-menu')
 
 const appId = 'Txt'
@@ -75,13 +74,14 @@ module.exports = {
       'Txt',
       `file://${__dirname}/../renderer/${winName}/index.html`,
       winName)
-    return thisWindow
+
+    return thisWindow.create()
   }
 }
 
 // Event listener library
 // @TODO: Split into its own file
-async function initEvents () {
+function initEvents () {
   let result
   // Take the user's first preferences, and create a new install.
   ipcMain.on('app:setup:init', (event, data) => {
@@ -96,18 +96,7 @@ async function initEvents () {
         useKeychain: true
       }
     })
-
-    if (data.isNewInstall) {
-      pgp.generateKey(data.uri, data.author, data.phrase).then( () => {
-        console.log('Sup')
-        event.sender.send('app:setup:done')
-      })
-    } else {
-      pgp.getKey(data.uri, data.author).then( () => {
-        event.sender.send('app:setup:done')
-      })
-    }
-
+    event.sender.send('app:setup:done')
   })
 
   // Gets a preference and returns it.
@@ -178,7 +167,6 @@ async function initEvents () {
         cancelId: 1,
         message: err.message,
         detail: err.detail
-
       }
       dialog.showMessageBox(win, opts, (response) => {
         if (response) event.sender.send('dialog:response', response)
@@ -187,13 +175,18 @@ async function initEvents () {
     }
   })
 
-  ipcMain.on('do:openWindow', (event, newWin, nextEvent) => {
+  ipcMain.on('window:open', (event, newWin, nextEvent) => {
     let thisWin = winManager.getCurrent()
-    if (newWin) module.exports.prepare(newWin).open()
+    if (newWin) {
+      let win = module.exports.prepare(newWin)
+      win.object.on('ready-to-show', () => {
+        win.object.show()
+      })
+    }
     event.sender.send('done:openWindow', nextEvent, thisWin)
   })
 
-  ipcMain.on('do:closeWin', (event, win) => {
+  ipcMain.on('window:close', (event, win) => {
     winManager.close(win.name)
   })
 }

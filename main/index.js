@@ -9,17 +9,22 @@ const store = require('./prefs/prefs')
 const winManager = require('electron-window-manager')
 const windows = require('./windows')
 
-const APP_NAME = "Txt"
+const APP_NAME = process.env.npm_package_name
 
 // Setup windows
 function launch() {
   windows.init(APP_NAME)
 
+  let win
+
   if(!store.get('app.ready') || !store.get('app.path')) {
-    windows.prepare('setup').open()
+    win = windows.prepare('setup')
   } else {
-    windows.prepare('main').open()
+    win = windows.prepare('main')
   }
+  win.object.on('ready-to-show', () => {
+    win.object.show()
+  })
 }
 
 app.on('ready', () => {
