@@ -35,7 +35,7 @@ module.exports = {
     try {
       keytar.setPassword(APP_NAME, user.name, secret)
     } catch(e) {
-      console.log(e)
+      throw new Error(e)
     }
 
     let success = await setupKeysForUse(key, secret)
@@ -48,7 +48,7 @@ module.exports = {
     try {
       keytar.setPassword(APP_NAME, user.name, secret)
     } catch(e) {
-      console.log(e)
+      throw new Error(e)
     }
 
     name = user.name
@@ -65,7 +65,7 @@ module.exports = {
     } catch (e) {
       throw new Error(e)
     }
-    
+
     writeKeyToDisk(writeUri, key)
     return key
   },
@@ -110,7 +110,6 @@ module.exports = {
 }
 
 async function setupKeysForUse (unprocessedKey, phrase) {
-  console.log('setting up key')
   privkey = unprocessedKey.privateKeyArmored
   pubkey = unprocessedKey.publicKeyArmored
 
