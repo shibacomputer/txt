@@ -37,6 +37,7 @@ module.exports = {
     } catch(e) {
       console.log(e)
     }
+
     let success = await setupKeysForUse(key, secret)
     return success
   },
@@ -64,6 +65,7 @@ module.exports = {
     } catch (e) {
       throw new Error(e)
     }
+    
     writeKeyToDisk(writeUri, key)
     return key
   },

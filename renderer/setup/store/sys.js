@@ -81,16 +81,6 @@ function store (state, emitter) {
           ipcRenderer.send('dialog:new:error', err)
           return
         } else {
-          // Path exists
-          var opts = {
-            author: {
-              name: state.prefs.author.name,
-              email: state.prefs.author.email
-            },
-            uri: state.uri
-          }
-
-          //ipcRenderer.send('app:setup:init', opts) // Write prefs
           ipcRenderer.send('dialog:new', {
             type: 'info',
             buttons: ['Continue', 'Back', 'Get Help' ],
@@ -117,6 +107,14 @@ function store (state, emitter) {
   }
 
   async function initSetup() {
+    var opts = {
+      author: {
+        name: state.prefs.author.name,
+        email: state.prefs.author.email
+      },
+      uri: state.uri
+    }
+
     let result
     emitter.emit('state:ui:block', true)
     if (state.ui.newKey) {
@@ -126,7 +124,7 @@ function store (state, emitter) {
         console.log(e)
         ipcRenderer.send('dialog:new:error', e)
       }
-      if (result) ipcRenderer.send('app:setup:init')
+      if (result) ipcRenderer.send('app:setup:init', opts)
       emitter.emit('state:ui:block', false)
     } else {
       try {
@@ -135,9 +133,17 @@ function store (state, emitter) {
         displayErrorBox()
       }
       console.log(result)
-      if (result) ipcRenderer.send('app:setup:init')
+      if (result) ipcRenderer.send('app:setup:init', opts)
       else displayErrorBox()
     }
+
+    ipcRenderer.once('app:setup:done', (event, res) => { 
+      ipcRenderer.send('window:open', 'main', 'window:close')
+    })
+    
+    ipcRenderer.once('window:open:done', (event, nextEvent, win) => {
+      if (nextEvent) ipcRenderer.send(nextEvent, win)
+    })
   }
 
   function displayErrorBox(error) {

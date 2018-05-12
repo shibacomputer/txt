@@ -183,7 +183,7 @@ function initEvents () {
         win.object.show()
       })
     }
-    event.sender.send('done:openWindow', nextEvent, thisWin)
+    event.sender.send('window:open:done', nextEvent, thisWin)
   })
 
   ipcMain.on('window:close', (event, win) => {
