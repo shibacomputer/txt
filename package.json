@@ -51,7 +51,7 @@
     "choo-devtools": "^2.5.0",
     "choo-log": "^8.0.0",
     "electron": "^1.8.6",
-    "electron-builder": "^20.11.1",
+    "electron-builder": "^20.13.3",
     "electron-rebuild": "^1.7.3",
     "spectron": "^3.8.0",
     "svgo": "^1.0.5"
