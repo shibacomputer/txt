@@ -117,45 +117,51 @@ function store (state, emitter) {
   }
 
   async function initSetup() {
+    let result
     emitter.emit('state:ui:block', true)
-    console.log('hello')
     if (state.ui.newKey) {
       try {
-        await pgp.generateKey(state.uri, state.prefs.author, state.phrase)
+        result = await pgp.generateKey(state.uri, state.prefs.author, state.phrase)
       } catch (e) {
         console.log(e)
         ipcRenderer.send('dialog:new:error', e)
       }
+      if (result) ipcRenderer.send('app:setup:init')
       emitter.emit('state:ui:block', false)
     } else {
       try {
-        let result = await pgp.getKey(state.uri, state.prefs.author, state.phrase)
-        console.log('A result: ', result)
+        result = await pgp.getKey(state.uri, state.prefs.author, state.phrase)
       } catch (e) {
-        console.log(e)
-        // Wrong passphrase
-        ipcRenderer.send('dialog:new', {
-          type: 'error',
-          buttons: ['Try again', 'Get Help' ],
-          defaultId: 0,
-          cancelId: 1,
-          message: 'Wrong passphrase',
-          detail: 'That passphrase didn\'t work – please try again.'
-        })
-        ipcRenderer.once('dialog:response', (event, res) => {
-          switch (res) {
-            case 2:
-              require('electron').shell.openExternal('https://txtapp.io/support')
-              break
-            case 1:
-              break
-            default:
-              state.phrase = ''
-              emitter.emit(state.events.RENDER)
-              break
-          }
-        })
+        displayErrorBox()
       }
+      console.log(result)
+      if (result) ipcRenderer.send('app:setup:init')
+      else displayErrorBox()
     }
+  }
+
+  function displayErrorBox(error) {
+    emitter.emit('state:ui:block', false)
+    ipcRenderer.send('dialog:new', {
+      type: 'error',
+      buttons: ['Try again', 'Get Help' ],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Wrong passphrase',
+      detail: 'That passphrase didn\'t work – please try again.'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 2:
+          require('electron').shell.openExternal('https://txtapp.io/support')
+          break
+        case 1:
+          break
+        default:
+          state.phrase = ''
+          emitter.emit(state.events.RENDER)
+          break
+      }
+    })
   }
 }

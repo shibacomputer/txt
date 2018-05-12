@@ -26,13 +26,19 @@ module.exports = {
     let data
     try {
       data = await readF(path.join(uri, KEY_FILENAME))
-      key = JSON.parse(data.toString('utf8'))
     } catch (e) {
       throw new Error(e)
     }
+    
     key = JSON.parse(data.toString('utf8'))
-    await setupKeysForUse(key)
-    return privKeyObj
+    
+    try {
+      keytar.setPassword(APP_NAME, user.name, secret)
+    } catch(e) {
+      console.log(e)
+    }
+    let success = await setupKeysForUse(key, secret)
+    return success
   },
 
   generateKey: async function (uri, user, secret) {
@@ -58,8 +64,8 @@ module.exports = {
     } catch (e) {
       throw new Error(e)
     }
-
     writeKeyToDisk(writeUri, key)
+    return key
   },
 
   encrypt: async function(contents) {
@@ -101,7 +107,8 @@ module.exports = {
   }
 }
 
-async function setupKeysForUse (unprocessedKey) {
+async function setupKeysForUse (unprocessedKey, phrase) {
+  console.log('setting up key')
   privkey = unprocessedKey.privateKeyArmored
   pubkey = unprocessedKey.publicKeyArmored
 
@@ -111,13 +118,15 @@ async function setupKeysForUse (unprocessedKey) {
   let userId = privKeyObj.users[0].userId.userid
   email = userId.substring(userId.lastIndexOf('<') + 1, userId.lastIndexOf('>'))
   name = userId.substring(0, userId.lastIndexOf(' '))
-  console.log('setup')
+  
+  let isDecrypted
   
   try { 
-    decryptKey()
+    isDecrypted = await decryptKey(phrase? phrase : null)
   } catch (e) {
     throw new Error(e)
   }
+  return isDecrypted
 }
 
 async function writeKeyToDisk(uri, key) {
@@ -132,9 +141,14 @@ async function getSecret() {
   return secret
 }
 
-async function decryptKey() {
-  const passphrase = await getSecret()
-  const decryptedKey = await privKeyObj.decrypt(passphrase)
+async function decryptKey(phrase) {
+  let passphrase = phrase? phrase : await getSecret()
+  let decryptedKey
+  try {
+    decryptedKey = await privKeyObj.decrypt(passphrase)
+  } catch (e) {
+    throw new Error(e)
+  }
   return decryptedKey
 }
 
