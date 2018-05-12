@@ -1,6 +1,7 @@
 const openpgp = require('openpgp')
 const fs = require('fs')
 const path = require('path')
+const util = require('util')
 const keytar = require('keytar')
 
 const APP_NAME = process.env.npm_package_name
@@ -21,16 +22,17 @@ let key, privkey, pubkey, pubKeyObj, privKeyObj, name, email
 module.exports = {
   
   getKey: async function(uri, user, secret) {
-    fs.readFile(path.join(uri + '/' + KEY_FILENAME), (err, data) => {
+    const readF = util.promisify(fs.readFile)
+    let data
+    try {
+      data = await readF(path.join(uri, KEY_FILENAME))
       key = JSON.parse(data.toString('utf8'))
-      try {
-        setupKeysForUse(key)
-      } catch (e) {
-        console.log(e)
-      }
-      
-    })
-
+    } catch (e) {
+      throw new Error(e)
+    }
+    key = JSON.parse(data.toString('utf8'))
+    await setupKeysForUse(key)
+    return privKeyObj
   },
 
   generateKey: async function (uri, user, secret) {
@@ -93,13 +95,13 @@ module.exports = {
   deleteKeychainItem: async function() {
     try {
       keytar.deletePassword(APP_NAME, name)
-    } catch (err) {
+    } catch (e) {
       throw new Error(e)
     }
   }
 }
 
-function setupKeysForUse (unprocessedKey) {
+async function setupKeysForUse (unprocessedKey) {
   privkey = unprocessedKey.privateKeyArmored
   pubkey = unprocessedKey.publicKeyArmored
 
@@ -109,8 +111,13 @@ function setupKeysForUse (unprocessedKey) {
   let userId = privKeyObj.users[0].userId.userid
   email = userId.substring(userId.lastIndexOf('<') + 1, userId.lastIndexOf('>'))
   name = userId.substring(0, userId.lastIndexOf(' '))
-
-  decryptKey()
+  console.log('setup')
+  
+  try { 
+    decryptKey()
+  } catch (e) {
+    throw new Error(e)
+  }
 }
 
 async function writeKeyToDisk(uri, key) {
