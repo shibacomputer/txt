@@ -79,13 +79,13 @@ module.exports = {
       privateKeys: [privKeyObj],
       compression: PGP_COMPRESSION
     }
-
+    let ciphertext
     try {
-      const ciphertext = await openpgp.encrypt(options)
-      return ciphertext.data
+      ciphertext = await openpgp.encrypt(options)
     } catch (e) {
       throw new Error(e)
     }
+    return ciphertext.data
   },
 
   decrypt: async function(contents) {
