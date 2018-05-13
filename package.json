@@ -18,6 +18,7 @@
     "rebuild": "electron-rebuild -f -w keytar rabin-bindings",
     "setup": "npm install && npm run postinstall && npm run rebuild",
     "start": "NODE_ENV=dev electron main",
+    "start:hard": "rm -rf ~/Library/Application\\ Support/Electron/ && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
