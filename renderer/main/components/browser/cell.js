@@ -62,7 +62,7 @@ function cell(f, opts, emit) {
     if (f.type === 'file' && !opts.active) {
       emit('state:library:open:' + f.type, f)
     } else if (f.type === 'directory') {
-      emit('state:library:open:' + f.type, f)
+      emit('state:library:list', f, false)
     }
   }
 
