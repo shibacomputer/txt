@@ -2,6 +2,7 @@ module.exports = store
 
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
+const watch = require('node-watch')
 
 const Mousetrap = require('mousetrap')
 
@@ -24,9 +25,11 @@ function store (state, emitter) {
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
       emitter.on('state:library:toggle', toggleLibrary)
-      emitter.on('state:library:rename', edit)
-      emitter.on('state:library:update', update)
-      emitter.on('state:library:trash', prepareToTrash)
+      
+      emitter.on('state:item:rename', startRename)
+      emitter.on('state:item:commit', commitRename)
+      emitter.on('state:item:trash', prepareToTrash)
+
       emitter.on('state:library:context:new', newContextMenu)
       // emitter.on('state:composer:new', compose)
       // emitter.on('state:composer:update', update)
@@ -40,7 +43,7 @@ function store (state, emitter) {
       // emitter.on('state:library:select', select)
       // emitter.on('state:library:rename:start', startRename)
       // emitter.on('state:library:update', commitRename)
-      // emitter.on('state:library:trash', trash)
+      // emitter.on('state:item:trash', trash)
       // emitter.on('state:library:set:active', setActive)
       // emitter.on('state:library:open:directory', ls)
       // emitter.on('state:library:open:file', open)
@@ -101,10 +104,16 @@ function store (state, emitter) {
     }
     state.key = { }
 
-    if (state.prefs) {
+    if (state.prefs) emitter.emit('state:library:list', state.prefs.app.path, true)
+  
+  }
+
+  function initWatcher(baseUri) {
+    let watcher = watch(baseUri, { recursive: true, persistent: true })
+    watcher.on('change', (event, name) => {
+      // @TODO: Make this more granular
       emitter.emit('state:library:list', state.prefs.app.path, true)
-      // emitter.emit('state:key:get')
-    }
+    })
   }
 
   async function list(d, base) {
@@ -116,7 +125,11 @@ function store (state, emitter) {
     } catch (e) {
       ipcRenderer.send('dialog:new:error', e)
     }
-    if (base) state.lib = tree
+    if (base) {
+      // @TODO: Diff this.
+      state.lib = tree
+      initWatcher(state.prefs.app.path)
+    }
     else {
       var index = state.sidebar.openDirs.indexOf(d.id)
       if (index === -1) state.sidebar.openDirs.push(d.id)
@@ -124,10 +137,20 @@ function store (state, emitter) {
     }
     emitter.emit('state:menu:update')
     state.status.listing = false
-    console.log('hello')
     emitter.emit(state.events.RENDER) 
   }
 
+  async function mkdir(d) {
+    try {
+      io.mkdir(uri)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function write(f) {
+    
+  }
   async function select(i, context) {
     let selected = await selectLibraryItem(i)
     if (selected) {
@@ -138,7 +161,7 @@ function store (state, emitter) {
     }
   }
 
-  async function update(f) {
+  async function commitRename(f) {
     let oldUri = state.status.focus.uri
     let newUri = parse(f.uri).dir + '/' + f.newUri
 
@@ -154,7 +177,6 @@ function store (state, emitter) {
       console.log(e)
     }
     state.status.renaming = false
-    emitter.emit('state:library:list', state.prefs.app.path, true)
   }
 
   async function trash(f) {
@@ -163,8 +185,6 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    console.log('trash, redo')
-    emitter.emit('state:library:list', state.prefs.app.path, true)
   }
 
   function prepareToTrash() {
@@ -188,7 +208,7 @@ function store (state, emitter) {
     }) 
   }
 
-  function edit() {
+  function startRename() {
     if (!state.status.focus.id || state.status.renaming) return
     state.status.renaming = true
     emitter.emit(state.events.RENDER)
@@ -230,14 +250,17 @@ function store (state, emitter) {
   }
 
   // Responses to the menu system
+  ipcRenderer.on('window:focus', (event, response) => {
+
+  })
   ipcRenderer.on('menu:file:new:window', (event, response) => {
     ipcRenderer.send('window:open', 'main')
   })
   ipcRenderer.on('menu:file:rename', (event, response) => {
-    emitter.emit('state:library:rename')
+    emitter.emit('state:item:rename')
   })
   ipcRenderer.on('menu:file:trash', (event, response) => {
-    emitter.emit('state:library:trash')
+    emitter.emit('state:item:trash')
   })  
   ipcRenderer.on('menu:view:library', (event, response) => {
     emitter.emit('state:library:toggle')

@@ -36,6 +36,15 @@ module.exports = {
     return
   },
 
+  mkdir: async function(uri) {
+    try {
+      await mkdir(uri)
+    } catch (e) {
+      throw new Error(e)
+    }
+    return
+  },
+
   write: async function(uri, data) {
     try {
       await write(uri, data)
