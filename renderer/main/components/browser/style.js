@@ -4,6 +4,8 @@ const style = css`
   .browser {
     -webkit-overflow-scrolling: touch;
     align-items: stretch;
+    background: var(--g);
+    border-radius: 5px 5px 0px 0px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -28,12 +30,12 @@ const style = css`
   }
 
   .header {
-    border-bottom: 1px solid #303033;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 
   .footer {
-    border-top: 1px solid #303033;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 

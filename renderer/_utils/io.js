@@ -11,6 +11,11 @@ const APP_NAME = process.env.npm_package_name
 const APP_VERSION = process.env.npm_package_version
 const KEY_FILENAME = '.txtkey'
 
+const read = util.promisify(fs.readFile)
+const write = util.promisify(fs.writeFile)
+const mkdir = util.promisify(fs.mkdir)
+const mv = util.promisify(fs.rename)
+
 module.exports = {
   ls: async function(uri) {
     let dir
@@ -20,5 +25,35 @@ module.exports = {
       throw new Error(e)
     }
     return dir
+  },
+
+  mv: async function(uri) {
+    try {
+      await mv(uri.old, uri.new)
+    } catch (e) {
+      throw new Error(e)
+    }
+    return
+  },
+
+  write: async function(uri, data) {
+    try {
+      await write(uri, data)
+    } catch (e) {
+      throw new Error(e)
+    }
+    return
+  },
+
+  trash: async function(uri) {
+    console.log('trash, start, ', uri)
+    try {
+      trash(uri)
+    } catch (e) {
+      console.log(e)
+      throw new Error(e)
+    }
+    console.log('done')
+    return
   }
 }

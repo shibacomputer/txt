@@ -70,8 +70,8 @@ module.exports = {
     initEvents()
   },
   prepare: function(winName) {
-    let thisWindow = winManager.createNew(winName,
-      'Txt',
+    let thisWindow = winManager.createNew(
+      null, 'Txt',
       `file://${__dirname}/../renderer/${winName}/index.html`,
       winName)
 

@@ -18,11 +18,16 @@ function store (state, emitter) {
     ipcRenderer.once('pref:get:done', (event, key, value) => {
 
       emitter.on('state:init', init)
-
+      emitter.on('state:ui:focus', updateFocus)
       emitter.on('state:menu:update', updateApplicationMenu)
 
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
+      emitter.on('state:library:toggle', toggleLibrary)
+      emitter.on('state:library:rename', edit)
+      emitter.on('state:library:update', update)
+      emitter.on('state:library:trash', prepareToTrash)
+      emitter.on('state:library:context:new', newContextMenu)
       // emitter.on('state:composer:new', compose)
       // emitter.on('state:composer:update', update)
       // emitter.on('state:composer:revert', revert)
@@ -30,11 +35,11 @@ function store (state, emitter) {
 
       // emitter.on('state:composer:toolbar:report', report)
 
-      // emitter.on('state:library:toggle', toggleLibrary)
+      
       
       // emitter.on('state:library:select', select)
       // emitter.on('state:library:rename:start', startRename)
-      // emitter.on('state:library:rename:commit', commitRename)
+      // emitter.on('state:library:update', commitRename)
       // emitter.on('state:library:trash', trash)
       // emitter.on('state:library:set:active', setActive)
       // emitter.on('state:library:open:directory', ls)
@@ -61,6 +66,7 @@ function store (state, emitter) {
   function init(value) {
     state.unlocked = false
     state.prefs = value
+    state.uifocus = null
     state.status = {
       modified: false,
       writing: false,
@@ -118,19 +124,128 @@ function store (state, emitter) {
     }
     emitter.emit('state:menu:update')
     state.status.listing = false
+    console.log('hello')
     emitter.emit(state.events.RENDER) 
   }
 
-  function select(i) {
-    if (state.status.renaming) return
-    state.status.focus = i
-    state.menu.trash = true
-    state.menu.rename = true
+  async function select(i, context) {
+    let selected = await selectLibraryItem(i)
+    if (selected) {
+      emitter.emit(state.events.RENDER)
+      if (context) window.setTimeout(() => {
+        emitter.emit('state:library:context:new', i.type)
+      }, 50) 
+    }
+  }
+
+  async function update(f) {
+    let oldUri = state.status.focus.uri
+    let newUri = parse(f.uri).dir + '/' + f.newUri
+
+    if (oldUri === newUri) {
+      state.status.renaming = false
+      emitter.emit(state.events.RENDER)
+      return
+    }
+
+    try {
+      await io.mv({ old: oldUri, new: newUri })
+    } catch (e) {
+      console.log(e)
+    }
+    state.status.renaming = false
+    emitter.emit('state:library:list', state.prefs.app.path, true)
+  }
+
+  async function trash(f) {
+    try {
+      await io.trash(f.uri)
+    } catch (e) {
+      console.log(e)
+    }
+    console.log('trash, redo')
+    emitter.emit('state:library:list', state.prefs.app.path, true)
+  }
+
+  function prepareToTrash() {
+    var focus = state.status.focus.uri
+    if (focus) ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Move to Trash', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Trash ' + parse(focus).name + '?',
+      detail: 'The item will be moved to your computer\'s trash.'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 1:
+         // cancel
+         break
+        default:
+          trash(state.status.focus)
+      }
+    }) 
+  }
+
+  function edit() {
+    if (!state.status.focus.id || state.status.renaming) return
+    state.status.renaming = true
+    emitter.emit(state.events.RENDER)
+  }
+
+  function toggleLibrary() {
+    state.data.ui.sidebar.visible = !state.data.ui.sidebar.visible
+    state.data.ui.menu.library = !state.data.ui.menu.library
+    // Change trash focus to the current item
+    // Remove renaming
     emitter.emit('state:menu:update')
     emitter.emit(state.events.RENDER)
+  }
+
+  // Utils
+  function selectLibraryItem(i) {
+    return new Promise(resolve => {
+      if (state.status.renaming) resolve(false)
+      state.status.focus = i
+      state.menu.trash = true
+      state.menu.rename = true
+      emitter.emit('state:menu:update')
+      resolve(true)
+    })
+  }
+
+  function updateFocus(newFocus) {
+    if (state.uifocus === newFocus) return
+    else state.uifocus = newFocus
+  }
+
+  // Out
+  function newContextMenu(type) {
+    ipcRenderer.send('menu:context:new', type)
   }
 
   function updateApplicationMenu() {
     ipcRenderer.send('menu:new', 'main', state.menu)
   }
+
+  // Responses to the menu system
+  ipcRenderer.on('menu:file:new:window', (event, response) => {
+    ipcRenderer.send('window:open', 'main')
+  })
+  ipcRenderer.on('menu:file:rename', (event, response) => {
+    emitter.emit('state:library:rename')
+  })
+  ipcRenderer.on('menu:file:trash', (event, response) => {
+    emitter.emit('state:library:trash')
+  })  
+  ipcRenderer.on('menu:view:library', (event, response) => {
+    emitter.emit('state:library:toggle')
+  })
+
+  ipcRenderer.on('menu:context:reveal', (event, response) => {
+    emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
+  })
+
+  // Keyboard navigation
 }

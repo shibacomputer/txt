@@ -5,6 +5,7 @@ const style = require('./style')
 module.exports = cell
 
 function cell(f, opts, emit) {
+  let code
   opts = typeof opts === "object" ? opts : {}
   if(f.type === 'directory') return html`${dirCell()}`
   else return html`${fileCell()}`
@@ -42,13 +43,13 @@ function cell(f, opts, emit) {
     `
   }
 
-  function finishRename(e, code) {
+  function finishRename(e) {
     if (e.srcElement && code != "Escape") {
       f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
-      emit('state:library:rename:commit', f, code)
+      emit('state:library:update', f, code)
     } else {
       f.newUri = f.name + (f.type === 'file'? '.gpg' : '')
-      emit('state:library:rename:commit', f, code)
+      emit('state:library:update', f, code)
     }
   }
 
@@ -66,15 +67,14 @@ function cell(f, opts, emit) {
     }
   }
 
-  function context(e) {
+  async function context(e) {
     if (opts.rename) return
-    emit('state:library:select', f)
-    emit('state:library:context:display', 'browser-cell')
+    emit('state:library:select', f, true)
   }
 
   function update(e) {
     if(e.key === "Enter" || e.key === "Escape") {
-      finishRename(e, e.key)
+      code = e.key
     }
     e.srcElement.style.width = ((this.value.length + 1) * 8) + 'px';
   }

@@ -70,6 +70,14 @@ module.exports = {
               }
             },
             {
+              label: 'New Txt Window',
+              accelerator: 'CmdOrCtrl+Alt+Shift+N',
+              click: (item, win, event) => {
+                if (!win) return
+                else win.webContents.send('menu:file:new:window')
+              }
+            },            
+            {
               type: 'separator'
             },
             {
