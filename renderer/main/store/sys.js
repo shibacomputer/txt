@@ -7,7 +7,7 @@ const watch = require('node-watch')
 const Mousetrap = require('mousetrap')
 
 const io = require('../../_utils/io')
-const crypto = require('../../_utils/crypto')
+const pgp = require('../../_utils/crypto')
 
 
 function store (state, emitter) {
@@ -22,14 +22,16 @@ function store (state, emitter) {
       emitter.on('state:ui:focus', updateFocus)
       emitter.on('state:menu:update', updateApplicationMenu)
 
+      //emitter.om('state:key:init', initKey)
+
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
       emitter.on('state:library:toggle', toggleLibrary)
       
       emitter.on('state:item:rename', startRename)
       emitter.on('state:item:commit', commitRename)
+      emitter.on('state:item:make', mk)
       emitter.on('state:item:trash', prepareToTrash)
-
       emitter.on('state:library:context:new', newContextMenu)
       // emitter.on('state:composer:new', compose)
       // emitter.on('state:composer:update', update)
@@ -37,8 +39,6 @@ function store (state, emitter) {
       // emitter.on('state:composer:close', close)
 
       // emitter.on('state:composer:toolbar:report', report)
-
-      
       
       // emitter.on('state:library:select', select)
       // emitter.on('state:library:rename:start', startRename)
@@ -104,9 +104,20 @@ function store (state, emitter) {
     }
     state.key = { }
 
-    if (state.prefs) emitter.emit('state:library:list', state.prefs.app.path, true)
+    if (state.prefs) {
+      emitter.emit('state:key:init')
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    }
   
   }
+
+  /*
+  async function initKey() {
+    let decrypted
+    try {
+      pgp.getKey
+    } catch
+  } */
 
   function initWatcher(baseUri) {
     let watcher = watch(baseUri, { recursive: true, persistent: true })
@@ -140,17 +151,29 @@ function store (state, emitter) {
     emitter.emit(state.events.RENDER) 
   }
 
-  async function mkdir(d) {
+  async function mk(type) {
+
+    let base = state.status.focus.uri? state.status.focus.uri : state.prefs.app.path 
+    let uri = join(base, 'Untitled Folder')
     try {
-      io.mkdir(uri)
+      if (type === 'directory') io.mkdir(uri)
     } catch (e) {
       console.log(e)
     }
   }
 
-  async function write(f) {
+  async function write() {
     
   }
+
+  /*
+  async function encrypt(f, d) {
+    let contents = { }
+    try {
+      
+    }
+  } */
+
   async function select(i, context) {
     let selected = await selectLibraryItem(i)
     if (selected) {
@@ -250,9 +273,9 @@ function store (state, emitter) {
   }
 
   // Responses to the menu system
-  ipcRenderer.on('window:focus', (event, response) => {
-
-  })
+  ipcRenderer.on('menu:file:new:dir', (event, response) => {
+    emitter.emit('state:item:make', 'directory')
+  })  
   ipcRenderer.on('menu:file:new:window', (event, response) => {
     ipcRenderer.send('window:open', 'main')
   })

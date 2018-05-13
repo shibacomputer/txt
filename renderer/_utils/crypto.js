@@ -31,7 +31,6 @@ module.exports = {
     }
     
     key = JSON.parse(data.toString('utf8'))
-    
     try {
       keytar.setPassword(APP_NAME, user.name, secret)
     } catch(e) {
