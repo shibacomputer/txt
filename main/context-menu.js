@@ -13,7 +13,7 @@ module.exports = {
             }
           },
           { 
-            label: 'Open in New Txt Window',
+            label: 'Open in New Window',
             click: (item, win, event) => {
               if (win) win.webContents.send('menu:file:open', true)
             }

@@ -22,7 +22,7 @@ function store (state, emitter) {
       emitter.on('state:ui:focus', updateFocus)
       emitter.on('state:menu:update', updateApplicationMenu)
 
-      //emitter.om('state:key:init', initKey)
+      // emitter.om('state:key:init', initKey)
 
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
@@ -119,8 +119,8 @@ function store (state, emitter) {
     } catch
   } */
 
-  function initWatcher(baseUri) {
-    let watcher = watch(baseUri, { recursive: true, persistent: true })
+  function initWatcher(uri) {
+    let watcher = watch(uri, { recursive: true, persistent: true })
     watcher.on('change', (event, name) => {
       // @TODO: Make this more granular
       emitter.emit('state:library:list', state.prefs.app.path, true)
@@ -151,12 +151,14 @@ function store (state, emitter) {
     emitter.emit(state.events.RENDER) 
   }
 
-  async function mk(type) {
-
-    let base = state.status.focus.uri? state.status.focus.uri : state.prefs.app.path 
-    let uri = join(base, 'Untitled Folder')
+  async function mk() {
+    let d = state.status.focus
+    let base = d.uri? d.uri : state.prefs.app.path
+    let index = state.sidebar.openDirs.indexOf(d.id)
+    console.log(index)
+    let uri = join(index === -1? parse(base).dir : base, 'Untitled Folder')
     try {
-      if (type === 'directory') io.mkdir(uri)
+      io.mkdir(uri)
     } catch (e) {
       console.log(e)
     }
