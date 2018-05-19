@@ -36,29 +36,12 @@ function store (state, emitter) {
       emitter.on('state:item:read', prepareToRead)
       
       // emitter.on('state:composer:new', compose)
-      // emitter.on('state:composer:update', update)
+      emitter.on('state:composer:update', update)
       // emitter.on('state:composer:revert', revert)
       // emitter.on('state:composer:close', close)
 
       // emitter.on('state:composer:toolbar:report', report)
       
-      // emitter.on('state:library:select', select)
-      // emitter.on('state:library:rename:start', startRename)
-      // emitter.on('state:library:update', commitRename)
-      // emitter.on('state:item:trash', trash)
-      // emitter.on('state:library:set:active', setActive)
-      // emitter.on('state:library:open:directory', ls)
-      // emitter.on('state:library:open:file', open)
-      // emitter.on('state:library:read:file', read)
-      // emitter.on('state:library:write:file', commit)
-      // emitter.on('state:library:write:directory', mkdir)
-      // emitter.on('state:library:context:display', displayContext)
-      // emitter.on('state:library:reveal', reveal)
-
-      // emitter.on('state:key:get', getKey)
-      // emitter.on('state:key:import', addKey)
-      // emitter.on('state:error', sendError)
-
       emitter.emit('state:init', value)
     })
   })
@@ -219,7 +202,7 @@ function store (state, emitter) {
       uri: f.uri,
       title: f.title
     }
-    state.composer = contents
+    emitter.emit('state:composer:update', contents)
     console.log(state.composer)
   }
 
@@ -238,6 +221,24 @@ function store (state, emitter) {
       if (context) window.setTimeout(() => {
         emitter.emit('state:library:context:new', i.type)
       }, 50) 
+    }
+  }
+
+  function update(contents) {
+    console.log('updating with, ', contents)
+    state.composer = contents
+    if (state.composer.body !== state.composer.stale) {
+      state.status.modified = true
+      state.menu.save = true
+      state.menu.revert = true
+      emitter.emit('state:menu:update')
+    }
+    else {
+      state.status.modified = false
+      state.menu.save = false
+      state.menu.revert = false
+      emitter.emit('state:menu:update')
+      emitter.emit(state.events.RENDER)
     }
   }
 
@@ -304,8 +305,8 @@ function store (state, emitter) {
   }
 
   function toggleLibrary() {
-    state.data.ui.sidebar.visible = !state.data.ui.sidebar.visible
-    state.data.ui.menu.library = !state.data.ui.menu.library
+    state.sidebar.visible = !state.sidebar.visible
+    state.menu.library = !state.menu.library
     // Change trash focus to the current item
     // Remove renaming
     emitter.emit('state:menu:update')
