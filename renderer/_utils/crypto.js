@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const util = require('util')
 const keytar = require('keytar')
+const io = require('./io')
 
 const APP_NAME = process.env.npm_package_name
 const APP_VERSION = process.env.npm_package_version
@@ -20,24 +21,23 @@ openpgp.config.commentstring = 'https://txt.app'
 let key, privkey, pubkey, pubKeyObj, privKeyObj, name, email
 
 module.exports = {
-  
   getKey: async function(uri, user, secret) {
-    const readF = util.promisify(fs.readFile)
     let data
     try {
-      data = await readF(path.join(uri, KEY_FILENAME))
+      data = await io.read(path.join(uri, KEY_FILENAME))
     } catch (e) {
       throw new Error(e)
     }
     
     key = JSON.parse(data.toString('utf8'))
     try {
-      keytar.setPassword(APP_NAME, user.name, secret)
+      if (secret) keytar.setPassword(APP_NAME, user.name, secret)
     } catch(e) {
       throw new Error(e)
     }
-
+    console.log('hello')
     let success = await setupKeysForUse(key, secret)
+    console.log(success, key, privKeyObj)
     return success
   },
 
@@ -70,15 +70,17 @@ module.exports = {
   },
 
   encrypt: async function(contents) {
-    if (!pubKeyObj.primaryKey.decrypted) await decryptKey()
+    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey()
 
     const options = {
       data: contents,
-      publicKeys: pubKeyObj.keys,
+      publicKeys: pubKeyObj[0],
       privateKeys: [privKeyObj],
       compression: PGP_COMPRESSION
     }
+
     let ciphertext
+
     try {
       ciphertext = await openpgp.encrypt(options)
     } catch (e) {
@@ -87,11 +89,12 @@ module.exports = {
     return ciphertext.data
   },
 
-  decrypt: async function(contents) {
-    if (!pubKeyObj.primaryKey.decrypted) await decryptKey()
+  decrypt: async function(ciphertext) {
+    console.log(ciphertext)
+    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey()
 
     const options = {
-      message: new Uint8Array([contents]),
+      message: openpgp.message.readArmored(ciphertext),
       privateKeys: [privKeyObj]
     }
 
@@ -126,14 +129,13 @@ async function setupKeysForUse (unprocessedKey, phrase) {
   } catch (e) {
     throw new Error(e)
   }
+  
   return isDecrypted
 }
 
 async function writeKeyToDisk(uri, key) {
   let exportedKey = JSON.stringify(key)
-  fs.writeFile(uri, exportedKey, (err) => {
-    if (err) console.log(err)
-  })
+  io.write(uri, exportedKey)
 }
 
 async function getSecret() {

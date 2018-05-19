@@ -22,17 +22,19 @@ function store (state, emitter) {
       emitter.on('state:ui:focus', updateFocus)
       emitter.on('state:menu:update', updateApplicationMenu)
 
-      // emitter.om('state:key:init', initKey)
+      emitter.on('state:key:init', initKey)
 
       emitter.on('state:library:list', list)
       emitter.on('state:library:select', select)
       emitter.on('state:library:toggle', toggleLibrary)
-      
+      emitter.on('state:library:context:new', newContextMenu)
+
       emitter.on('state:item:rename', startRename)
       emitter.on('state:item:commit', commitRename)
-      emitter.on('state:item:make', mk)
+      emitter.on('state:item:make', prepareToMake)
       emitter.on('state:item:trash', prepareToTrash)
-      emitter.on('state:library:context:new', newContextMenu)
+      emitter.on('state:item:read', prepareToRead)
+      
       // emitter.on('state:composer:new', compose)
       // emitter.on('state:composer:update', update)
       // emitter.on('state:composer:revert', revert)
@@ -108,16 +110,18 @@ function store (state, emitter) {
       emitter.emit('state:key:init')
       emitter.emit('state:library:list', state.prefs.app.path, true)
     }
-  
   }
 
-  /*
+  
   async function initKey() {
     let decrypted
     try {
-      pgp.getKey
-    } catch
-  } */
+      decrypted = await pgp.getKey(state.prefs.app.path)
+    } catch (e) {
+      console.log(e)
+    }
+    state.unlocked = decrypted
+  }
 
   function initWatcher(uri) {
     let watcher = watch(uri, { recursive: true, persistent: true })
@@ -164,8 +168,59 @@ function store (state, emitter) {
     }
   }
 
-  async function write() {
+  async function write(type) {
+    console.log(type === 'new', state.status.focus)
+    state.writing = true
+    let c = state.composer
+    let f = type === 'new'? state.status.focus : state.status.active
+    let ciphertext
+    c.body = 'test'
+    console.log('writing...', c)
+    try {
+      ciphertext = await pgp.encrypt(c.body)
+    } catch(e) {
+      console.log(e)
+      return
+    }
     
+
+    let success
+    let filename = f.title? f.title + '.gpg' : 'Untitled.gpg'
+    let path = f.uri? join(f.uri, filename) : join(state.prefs.app.path, filename)
+    try {
+      success = await io.write(path, ciphertext) 
+    } catch (e) {
+      console.log(e)
+    }
+    state.writig = false
+    console.log('done')
+  }
+
+  async function read(f) {
+    let ciphertext 
+    try {
+      ciphertext = await io.read(f.uri)
+    } catch (e) {
+      console.log(e)
+    }
+    
+    console.log(ciphertext)
+    let body
+    try {
+      body = await pgp.decrypt(ciphertext)
+    } catch (e) {
+      console.log(e)
+    }
+    console.log('body: ', body)
+    let contents = {
+      id: f.id,
+      body: body,
+      stale: body,
+      uri: f.uri,
+      title: f.title
+    }
+    state.composer = contents
+    console.log(state.composer)
   }
 
   /*
@@ -210,6 +265,15 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
+  }
+
+  function prepareToMake(type) {
+    if (type === 'file') write('new')
+    else mk()
+  }
+ 
+  function prepareToRead(f) {
+    read(f)
   }
 
   function prepareToTrash() {
@@ -275,6 +339,10 @@ function store (state, emitter) {
   }
 
   // Responses to the menu system
+  ipcRenderer.on('menu:file:new:file', (event, response) => {
+    emitter.emit('state:item:make', 'file')
+  })  
+
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
     emitter.emit('state:item:make', 'directory')
   })  

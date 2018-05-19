@@ -46,12 +46,23 @@ module.exports = {
   },
 
   write: async function(uri, data) {
+    console.log(uri, data)
     try {
       await write(uri, data)
     } catch (e) {
       throw new Error(e)
     }
     return
+  },
+
+  read: async function(uri) {
+    let data
+    try {
+      data = await read(uri, 'utf8')
+    } catch (e) {
+      throw new Error(e)
+    }
+    return data
   },
 
   trash: async function(uri) {

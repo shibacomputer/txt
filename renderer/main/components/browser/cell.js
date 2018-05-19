@@ -61,7 +61,7 @@ function cell(f, opts, emit) {
   function open(e) {
     if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
-      emit('state:library:open:' + f.type, f)
+      emit('state:item:read', f)
     } else if (f.type === 'directory') {
       emit('state:library:list', f, false)
     }
