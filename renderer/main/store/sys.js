@@ -37,6 +37,7 @@ function store (state, emitter) {
       
       // emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
+      emitter.on('state:composer:write', write)
       // emitter.on('state:composer:revert', revert)
       // emitter.on('state:composer:close', close)
 
@@ -69,7 +70,7 @@ function store (state, emitter) {
       body: '',
       stale: '',
       uri: null,
-      title: null
+      name: null
     }
     state.lib = null
     state.sidebar = {
@@ -152,10 +153,8 @@ function store (state, emitter) {
   }
 
   async function write(type) {
-    console.log(type === 'new', state.status.focus)
     state.writing = true
     let c = state.composer
-    let f = type === 'new'? state.status.focus : state.status.active
     let ciphertext
     c.body = 'test'
     console.log('writing...', c)
@@ -166,16 +165,17 @@ function store (state, emitter) {
       return
     }
     
-
     let success
-    let filename = f.title? f.title + '.gpg' : 'Untitled.gpg'
+    let f = type === 'new'? state.status.focus : state.status.active
+    let filename = f.name? f.name + '.gpg' : 'Untitled.gpg'
     let path = f.uri? join(f.uri, filename) : join(state.prefs.app.path, filename)
+    
     try {
       success = await io.write(path, ciphertext) 
     } catch (e) {
       console.log(e)
     }
-    state.writig = false
+    state.writing = false
     console.log('done')
   }
 
@@ -200,7 +200,7 @@ function store (state, emitter) {
       body: body,
       stale: body,
       uri: f.uri,
-      title: f.title
+      name: f.name
     }
     emitter.emit('state:composer:update', contents)
     console.log(state.composer)
@@ -350,6 +350,16 @@ function store (state, emitter) {
   ipcRenderer.on('menu:file:new:window', (event, response) => {
     ipcRenderer.send('window:open', 'main')
   })
+
+  ipcRenderer.on('menu:file:save', (event, response) => {
+    emitter.emit('state:composer:write')
+  })
+  ipcRenderer.on('menu:file:close', (event, response) => {
+    emitter.emit('state:composer:close')
+  })
+  ipcRenderer.on('menu:file:revert', (event, response) => {
+    emitter.emit('state:composer:revert')
+  })
   ipcRenderer.on('menu:file:rename', (event, response) => {
     emitter.emit('state:item:rename')
   })
@@ -359,7 +369,9 @@ function store (state, emitter) {
   ipcRenderer.on('menu:view:library', (event, response) => {
     emitter.emit('state:library:toggle')
   })
-
+  ipcRenderer.on('menu:help:support', (event, response) => {
+    emitter.emit('state:toolbar:report')
+  })
   ipcRenderer.on('menu:context:reveal', (event, response) => {
     emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
   })

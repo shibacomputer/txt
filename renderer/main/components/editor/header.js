@@ -11,7 +11,7 @@ function editorHeader(state, emit) {
     <header class=${ style.header }>
       ${
         toolbar({
-        center: state.composer.title,
+        center: state.composer.name,
         right: [
           button({
             name: 'new',

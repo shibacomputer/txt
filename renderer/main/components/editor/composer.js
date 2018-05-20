@@ -11,7 +11,7 @@ function Editor () {
   this.body = ''
   this.stale = ''
   this.uri = null
-  this.title = 'Untitled'
+  this.name = 'Untitled'
   this.id = ''
   this.modified = false
   this.emit = null
@@ -24,7 +24,7 @@ Editor.prototype.createElement = function (state, emit) {
   this.stale = state.composer.stale || this.body
   this.id = state.composer.id || ''
   this.uri = state.composer.uri || null
-  this.title = state.composer.title || 'Untitled'
+  this.name = state.composer.name || 'Untitled'
   this.modified = state.status.modified || false
   this.emit = emit
   var el = html`
@@ -38,7 +38,7 @@ Editor.prototype.createElement = function (state, emit) {
         stale: this.stale,
         id: this.id? this.id : state.status.active.id,
         uri: this.uri,
-        title: this.title,
+        name: this.name,
         modified: (editor.content.innerText != this.stale)
       }
       this.body = contents.body
