@@ -155,8 +155,6 @@ function store (state, emitter) {
     state.writing = true
     let c = state.composer
     let ciphertext
-    c.body = 'test'
-    console.log('writing...', c)
     try {
       ciphertext = await pgp.encrypt(c.body)
     } catch(e) {
@@ -164,26 +162,34 @@ function store (state, emitter) {
       return
     }
     
-    let success, filename, f
-
+    let success, uri
+    
     if (type === 'new') {
-      f = state.status.focus
-      filename = 'Untitled.gpg'
+      let base
+      if (state.status.focus.uri) {
+        let index = state.sidebar.openDirs.indexOf(state.status.focus.id)
+        base = index === -1 ? parse(state.status.focus.uri).dir : state.status.focus.uri
+      } else {
+        base = state.prefs.app.path
+      }
+      let filename = 'Untitled.gpg'
+      uri = join(base, filename)
+      
     } else {
       f = state.status.active
-      filename = parse(state.status.active.uri).name
-    }
-    let base = f.uri? f.uri : state.prefs.app.path
-    let index = state.sidebar.openDirs.indexOf(f.id)
-    let uri = join(index === -1? parse(base).dir : base, filename)
-    console.log('uri: ', uri)
+      uri = f.uri
+    } 
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
       console.log(e)
     }
     state.writing = false
-    console.log('done')
+    state.status.modified = false
+    if (type === 'new') {
+      let d = { uri: uri }
+      emitter.emit('state:item:read', d)
+    }
   }
 
   async function read(f) {
@@ -193,8 +199,6 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    
-    console.log(ciphertext)
     let body
     try {
       body = await pgp.decrypt(ciphertext)
@@ -208,6 +212,7 @@ function store (state, emitter) {
       uri: f.uri,
       name: parse(f.uri).name
     }
+    state.status.active = f
     emitter.emit('state:composer:update', contents)
   }
 
