@@ -143,7 +143,6 @@ function store (state, emitter) {
     let d = state.status.focus
     let base = d.uri? d.uri : state.prefs.app.path
     let index = state.sidebar.openDirs.indexOf(d.id)
-    console.log(index)
     let uri = join(index === -1? parse(base).dir : base, 'Untitled Folder')
     try {
       io.mkdir(uri)
@@ -165,13 +164,21 @@ function store (state, emitter) {
       return
     }
     
-    let success
-    let f = type === 'new'? state.status.focus : state.status.active
-    let filename = f.name? f.name + '.gpg' : 'Untitled.gpg'
-    let path = f.uri? join(f.uri, filename) : join(state.prefs.app.path, filename)
-    
+    let success, filename, f
+
+    if (type === 'new') {
+      f = state.status.focus
+      filename = 'Untitled.gpg'
+    } else {
+      f = state.status.active
+      filename = parse(state.status.active.uri).name
+    }
+    let base = f.uri? f.uri : state.prefs.app.path
+    let index = state.sidebar.openDirs.indexOf(f.id)
+    let uri = join(index === -1? parse(base).dir : base, filename)
+    console.log('uri: ', uri)
     try {
-      success = await io.write(path, ciphertext) 
+      success = await io.write(uri, ciphertext) 
     } catch (e) {
       console.log(e)
     }
@@ -194,16 +201,14 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    console.log('body: ', body)
     let contents = {
       id: f.id,
       body: body,
       stale: body,
       uri: f.uri,
-      name: f.name
+      name: parse(f.uri).name
     }
     emitter.emit('state:composer:update', contents)
-    console.log(state.composer)
   }
 
   /*
@@ -245,7 +250,6 @@ function store (state, emitter) {
   async function commitRename(f) {
     let oldUri = state.status.focus.uri
     let newUri = parse(f.uri).dir + '/' + f.newUri
-
     if (oldUri === newUri) {
       state.status.renaming = false
       emitter.emit(state.events.RENDER)
@@ -257,6 +261,14 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
+    let contents = {
+      id: state.composer.id,
+      body: state.composer.body,
+      stale: state.composer.stale,
+      uri: newUri,
+      name: parse(f.newUri).name
+    }
+    emitter.emit('state:composer:update', contents)
     state.status.renaming = false
   }
 
@@ -266,6 +278,20 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
+    if (f.uri === state.status.active.uri) {
+      let contents = {
+        id: '',
+        body: '',
+        stale: '',
+        uri: null,
+        name: null
+      }
+      emitter.emit('state:composer:update', contents)
+    } 
+    if (f.uri === state.status.focus.uri ) {
+      state.status.focus = { }
+    }
+    console.log(state.status)
   }
 
   function prepareToMake(type) {

@@ -35,9 +35,7 @@ module.exports = {
     } catch(e) {
       throw new Error(e)
     }
-    console.log('hello')
     let success = await setupKeysForUse(key, secret)
-    console.log(success, key, privKeyObj)
     return success
   },
 
@@ -90,7 +88,6 @@ module.exports = {
   },
 
   decrypt: async function(ciphertext) {
-    console.log(ciphertext)
     if (!privKeyObj.primaryKey.isDecrypted) await decryptKey()
 
     const options = {
