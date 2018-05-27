@@ -5,7 +5,7 @@ const style = css`
     -webkit-overflow-scrolling: touch;
     align-items: stretch;
     background: var(--g);
-    border-radius: 5px 5px 0px 0px;
+    border-radius: 5px 0px 0px 5px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -30,12 +30,11 @@ const style = css`
   }
 
   .header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    
     width: 100%;
   }
 
   .footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 
@@ -95,11 +94,20 @@ const style = css`
     z-index: 1;
   }
 
+  .cell:hover:before {
+    background-color: #29292f;
+  }
+
+  .cell:hover {
+    color: (--w);
+    background-color: #29292f;
+  }
+
   .disabled {
     display: none;
   }
 
-  .focus, .focus.active, .focus.modified {
+  .focus, .focus.active, .focus.modified, .cell.focus:hover, .cell.focus.active:hover {
     color: var(--k);
   }
 
@@ -115,7 +123,7 @@ const style = css`
     color: var(--m);
   }
 
-  .focus:before {
+  .focus:before, .focus:hover:before {
     background-color: var(--w);
   }
 

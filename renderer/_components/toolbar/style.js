@@ -4,7 +4,7 @@ var style = css`
   .toolbar {
     align-items: center;
     box-sizing: border-box;
-    color: var(--w);
+    color: var(--c);
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
@@ -36,7 +36,7 @@ var style = css`
     box-sizing: border-box;
     flex: 1;
     font-family: 'HKG', sans-serif;
-    font-size: 13px;
+    font-size: 14px;
     justify-content: center;
     max-width: 75%;
     text-align: center;

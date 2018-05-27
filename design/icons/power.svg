@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
+    <title>power</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="power" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g transform="translate(2.000000, 2.000000)" id="Shape" stroke="#27FF98" stroke-width="1.25">
+            <path d="M10.2433333,2 C12.5859162,4.28799046 12.5855027,7.99688815 10.2424098,10.2843806 C7.89931686,12.5718731 4.10068314,12.5718731 1.75759022,10.2843806 C-0.585502697,7.99688815 -0.58591617,4.28799046 1.75666667,2"></path>
+            <path d="M6,0 L6,6.19047619"></path>
+        </g>
+    </g>
+</svg>

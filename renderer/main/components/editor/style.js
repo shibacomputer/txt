@@ -28,12 +28,10 @@ const style = css`
   }
 
   .header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 
   .footer {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 `

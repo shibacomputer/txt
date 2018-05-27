@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
+    <title>share</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="share" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g transform="translate(3.000000, 2.000000)" id="Shape" stroke="#27FF98" stroke-width="1.25">
+            <path d="M0,6 L0,10.8 C0,11.4627417 0.559644063,12 1.25,12 L8.75,12 C9.44035594,12 10,11.4627417 10,10.8 L10,6"></path>
+            <polyline stroke-linejoin="round" points="7.5 2.4 5 0 2.5 2.4"></polyline>
+            <path d="M5,0 L5,7.8"></path>
+        </g>
+    </g>
+</svg>
