@@ -15,7 +15,7 @@ function editor(state, emit) {
     <main class=${ style.main }>
       ${ header(state, emit)}
       <div class=${ style.base }>
-        ${ state.data.text.path? composer.render(state, emit) : null }
+        ${ state.composer.uri? composer.render(state, emit) : null }
       </div>
       ${ footer(state, emit)}
     </main>

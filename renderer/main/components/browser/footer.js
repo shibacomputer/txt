@@ -7,7 +7,7 @@ const button = require('../../../_components/button')
 module.exports = editorFooter
 
 function editorFooter(state, emit) {
-  const libPath = state.data.prefs? state.data.prefs.app.path : ''
+  const libPath = state.prefs? state.prefs.app.path : ''
   return html`
     <footer class=${ style.footer }>
       ${
@@ -21,7 +21,10 @@ function editorFooter(state, emit) {
            })
          ],
          center: [
-          libPath
+          html `
+            <span oncontextmenu=${ showContextMenu }}>
+              ${ libPath }
+            </span>`
          ],
          left: [
            button({
@@ -35,4 +38,8 @@ function editorFooter(state, emit) {
     }
     </footer>
   `
+  function showContextMenu(e) {
+    console.log('hello')
+    emit('state:library:context:display', 'footer')
+  }
 }

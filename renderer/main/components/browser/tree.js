@@ -5,28 +5,38 @@ const io = require('../../../_utils/io')
 module.exports = tree
 
 function tree(state, emit) {
-  if (state.data.lib) return initTree()
+  if (typeof state.lib != 'undefined') return initTree()
 
   function initTree () {
     return html`
       <main class="${style.treeBase}">
-        ${ tree(state.data.lib.children) }
+        ${ tree(state.lib.children) }
       </main>
     `
   }
 
+  function match(f, target) {
+    console.log(f, target)
+    if (target.id === f.id) return true
+    else return false
+  }
+
   function tree(dir) {
+    const focus = state.status.focus
+    const active = state.status.active
+    const text = state.composer
+
     if (dir) {
       return html`
         <ul class=${style.tree}>
           ${
             dir.map( (f) => {
-              var opts = {}
-              opts.active = state.data.ui.sidebar.activeId === f.id ? true : false
-              opts.list = state.data.ui.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
-              opts.focus = state.data.ui.sidebar.focusId === f.id ? true : false
-              opts.rename = state.data.ui.sidebar.renamingId === f.id ? true : false
-              opts.modified = (state.data.ui.sidebar.activeId === f.id && state.data.modified) ? true : false
+              var opts = { }
+              opts.list = state.sidebar.openDirs.indexOf(f.id) !== -1 ? true : false
+              opts.focus = match(f, focus)
+              opts.active = match(f, active)
+              opts.rename = (match(f, focus) && state.status.renaming) ? true : false
+              opts.modified = (match(f, text) && state.status.modified) ? true : false
               if (
                 (f.mime === 'text/gpg' || f.type === 'directory') &&
                 (f.name.slice(0,1) !== '.')

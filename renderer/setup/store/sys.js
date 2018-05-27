@@ -1,135 +1,173 @@
 module.exports = store
 
 const fs = require('fs')
+const path = require('path')
 const { ipcRenderer } = require('electron')
-const { join } = require('path')
 
-const openpgp = require('openpgp')
+const io = require('../../_utils/io')
+const pgp = require('../../_utils/crypto')
 
-openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
-openpgp.config.aead_protect = true
-openpgp.config.use_native = true
+const KEY_DEFAULT = '.txtkey'
+const APP_ID = 'Txt'
 
 function store (state, emitter) {
-  state.valid = false
-  state.useKey = false
-  state.string = ''
-  state.selectedKey = null
-  state.path = ''
-  state.workingPath = ''
-  state.availableKeys = []
+  init()
 
-  emitter.on('DOMContentLoaded', function () {
-    if (!state.path) ipcRenderer.send('get:pref', 'author')
+  emitter.on('DOMContentLoaded', () => {
 
-    ipcRenderer.once('done:getPref', (event, key, value) => {
-      state.path = join(value.homedir, '.gnupg', 'secring.gpg')
-      emitter.emit(state.events.RENDER)
+    emitter.on('state:init', init)
+
+    emitter.on('state:uri:update', updateUri)
+    emitter.on('state:passphrase:update', updatePhrase)
+    emitter.on('state:key:update', updateKey)
+
+    emitter.on('state:ui:block', blockUi)
+    emitter.on('state:setup:validate', validateSetup)
+    emitter.on('state:setup:init', initSetup)
+  })
+
+  function init() {
+    state.progress = 1
+    state.phrase = ''
+    state.uri = null
+    state.key = { }
+    state.ui = {
+      valid: false,
+      newKey: true,
+      block: false
+    }
+    state.prefs = { }
+    ipcRenderer.send('pref:get:all')
+    ipcRenderer.once('pref:get:done', (event, key, value) => {
+      state.prefs = value
+      console.log(state.prefs)
     })
+  }
 
-    emitter.on('state:updateWorkPath', function(newPath) {
-      state.workingPath = newPath.path // We are passing the full returned path from Electron
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-      emitter.emit(state.events.RENDER)
-    })
-
-    emitter.on('state:validatePassphrase', function (count) {
-      state.validPassphrase = true
-      emitter.emit(state.events.RENDER)
-    })
-
-    emitter.on('state:switchType', function (target) {
-      if (target === 'key' && !state.useKey) {
-        state.useKey = true
+  function updateUri(uri) {
+    state.uri = uri.path
+    var keyPath = path.join(state.uri + '/' + KEY_DEFAULT)
+    if (state.uri) {
+      state.progress = 2
+      fs.stat(keyPath, (err, stats) => {
+        err ? emitter.emit('state:key:update', true) : emitter.emit('state:key:update', false)
         emitter.emit(state.events.RENDER)
-      } else if (target === 'string' && state.useKey) {
-        state.useKey = false
-        emitter.emit(state.events.RENDER)
-      }
-    })
+      })
+    } else {
+      state.progress = 1
+      emitter.emit(state.events.RENDER)
+    }
+  }
 
-    emitter.on('state:updatePassphrase', function (value) {
-      state.string = value
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-    })
+  function updatePhrase(phrase) {
+    state.phrase = phrase.toString()
+  }
 
-    emitter.on('state:writeKeyPath', function(target) {
-      state.path = target
-    })
+  function updateKey(isNewKey) {
+    state.ui.newKey = isNewKey
+  }
 
-    emitter.on('state:loadKey', function(uri) {
+  function blockUi(block) {
+    state.ui.block = block
+    emitter.emit(state.events.RENDER)
+  }
 
-      fs.stat(uri, (err, stats) => { // Do we exist?
+  function validateSetup() {
+    // First, check to see if the working path exists.
+    if (state.uri) {
+      fs.stat(state.uri, (err, stats) => { // Do we exist?
         if (err) {
           // Send error message to ipc dialog
-          ipcRenderer.send('alert:err', err)
+          ipcRenderer.send('dialog:new:error', err)
           return
         } else {
-         fs.readFile(uri, (err, data) => {
-          if (err) {
-            ipcRenderer.send('alert:err', err)
-            return
-          } else {
-            emitter.emit('state:injestKey', data)
-          }
-         })
-        }
-      })
-    })
-
-    emitter.on('state:injestKey', function(data) {
-      const key = openpgp.key.readArmored(data.toString())
-
-      var newKey = {
-        name: key.keys[0].users[0].userId.userid,
-        id: key.keys[0].primaryKey.fingerprint.substr(key.keys[0].primaryKey.fingerprint.length - 6),
-        key: key.keys[0]
-      }
-
-      state.availableKeys.push(newKey)
-      state.selectedKey = newKey
-      if (state.workingPath && (state.selectedKey || state.string)) state.valid = true
-      else state.valid = false
-      emitter.emit(state.events.RENDER)
-    })
-    // @TODO: Make this work properly
-    emitter.on('state:selectKey', function(key) {
-      state.selectedKey = key
-      emitter.emit(state.events.RENDER)
-    })
-
-    emitter.on('state:doSetup', function() {
-
-      // First, check to see if the working path exists.
-      console.log(state.workingPath, state.selectedKey, state.string)
-      if (state.workingPath && (state.selectedKey || state.string)) {
-        fs.stat(state.workingPath, (err, stats) => { // Do we exist?
-          // We must exist, because we have created a dir when selecting a dir.
-          if (err) {
-            // Send error message to ipc dialog
-            ipcRenderer.send('alert:err', err)
-            return
-          } else {
-            // Path exists
-            // @TODO: Test for writing to path
-            ipcRenderer.send('do:firstSetup', state)
-          }
-        })
-      }
-
-      ipcRenderer.once('done:setup', (event, err) => {
-        if (err) {
-          console.log(err)
-          // Goto error msg
-        } else {
-          ipcRenderer.once('done:openWindow', (event, nextEvent, win) => {
-            if (nextEvent) ipcRenderer.send(nextEvent, win)
+          ipcRenderer.send('dialog:new', {
+            type: 'info',
+            buttons: ['Continue', 'Back', 'Get Help' ],
+            defaultId: 0,
+            cancelId: 1,
+            message: 'Please take a moment to save your passphrase somewhere secure',
+            detail: 'Txt has no \'forgot passphrase\' functionality and your library will be lost if you forget it!'
           })
-          ipcRenderer.send('do:openWindow', 'main', 'do:closeWin')
+          ipcRenderer.once('dialog:response', (event, res) => {
+            switch (res) {
+              case 2:
+                require('electron').shell.openExternal('https://txtapp.io/support')
+                break
+              case 1:
+                break
+              default:
+                emitter.emit('state:setup:init')
+                break
+            }
+          })
         }
       })
+    }
+  }
+
+  async function initSetup() {
+    var opts = {
+      author: {
+        name: state.prefs.author.name,
+        email: state.prefs.author.email
+      },
+      uri: state.uri
+    }
+
+    let result
+    emitter.emit('state:ui:block', true)
+    if (state.ui.newKey) {
+      try {
+        result = await pgp.generateKey(state.uri, state.prefs.author, state.phrase)
+      } catch (e) {
+        console.log(e)
+        ipcRenderer.send('dialog:new:error', e)
+      }
+      if (result) ipcRenderer.send('app:setup:init', opts)
+      emitter.emit('state:ui:block', false)
+    } else {
+      try {
+        result = await pgp.getKey(state.uri, state.prefs.author, state.phrase)
+      } catch (e) {
+        displayErrorBox()
+      }
+      console.log(result)
+      if (result) ipcRenderer.send('app:setup:init', opts)
+      else displayErrorBox()
+    }
+
+    ipcRenderer.once('app:setup:done', (event, res) => { 
+      ipcRenderer.send('window:open', 'main', 'window:close')
     })
-  })
+    
+    ipcRenderer.once('window:open:done', (event, nextEvent, win) => {
+      if (nextEvent) ipcRenderer.send(nextEvent, win)
+    })
+  }
+
+  function displayErrorBox(error) {
+    emitter.emit('state:ui:block', false)
+    ipcRenderer.send('dialog:new', {
+      type: 'error',
+      buttons: ['Try again', 'Get Help' ],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Wrong passphrase',
+      detail: 'That passphrase didn\'t work – please try again.'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 2:
+          require('electron').shell.openExternal('https://txtapp.io/support')
+          break
+        case 1:
+          break
+        default:
+          state.phrase = ''
+          emitter.emit(state.events.RENDER)
+          break
+      }
+    })
+  }
 }
