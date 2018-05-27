@@ -1,444 +1,338 @@
 module.exports = store
 
 const { ipcRenderer } = require('electron')
-const { parse } = require('path')
+const { join, parse } = require('path')
+const watch = require('node-watch')
+
+const Mousetrap = require('mousetrap')
 
 const io = require('../../_utils/io')
-const crypto = require('../../_utils/crypto')
+const pgp = require('../../_utils/crypto')
 
-const appId = 'Txt'
 
 function store (state, emitter) {
-  var renameTimeout
-
-  emitter.on('DOMContentLoaded', function () {
-    emitter.on('state:init', init)
-
-    emitter.on('state:menu:update', updateMenu)
-
-    emitter.on('state:composer:new', compose)
-    emitter.on('state:composer:update', update)
-    emitter.on('state:composer:revert', revert)
-    emitter.on('state:composer:toolbar:report', report)
-
-    emitter.on('state:library:toggle', toggleLibrary)
-    emitter.on('state:library:list', list)
-    emitter.on('state:library:select', select)
-    emitter.on('state:library:rename:prepare', prepareRename)
-    emitter.on('state:library:rename:start', rename)
-    emitter.on('state:library:rename:cancel', cancelRename)
-    emitter.on('state:library:rename:end', finishRename)
-    emitter.on('state:library:trash', trash)
-    emitter.on('state:library:set:active', setActive)
-    emitter.on('state:library:set:rename', setRename)
-    emitter.on('state:library:open:directory', ls)
-    emitter.on('state:library:open:file', open)
-    emitter.on('state:library:read:file', read)
-    emitter.on('state:library:write:file', commit)
-    emitter.on('state:library:write:directory', mkdir)
-    emitter.on('state:library:context:display', displayContext)
-
-  })
-
-  ipcRenderer.send('get:allPref')
-  ipcRenderer.once('done:getPref', (event, key, value) => {
-    state.data.prefs = value
-    list()
-  })
-
   init()
+
+  emitter.on('DOMContentLoaded', () => {
+
+    ipcRenderer.send('pref:get:all')
+    ipcRenderer.once('pref:get:done', (event, key, value) => {
+
+      emitter.on('state:init', init)
+      emitter.on('state:ui:focus', updateFocus)
+      emitter.on('state:menu:update', updateApplicationMenu)
+
+      emitter.on('state:key:init', initKey)
+
+      emitter.on('state:library:list', list)
+      emitter.on('state:library:select', select)
+      emitter.on('state:library:toggle', toggleLibrary)
+      emitter.on('state:library:context:new', newContextMenu)
+
+      emitter.on('state:item:rename', startRename)
+      emitter.on('state:item:commit', commitRename)
+      emitter.on('state:item:make', prepareToMake)
+      emitter.on('state:item:trash', prepareToTrash)
+      emitter.on('state:item:read', prepareToRead)
+      
+      // emitter.on('state:composer:new', compose)
+      emitter.on('state:composer:update', update)
+      emitter.on('state:composer:write', write)
+      // emitter.on('state:composer:revert', revert)
+      // emitter.on('state:composer:close', close)
+
+      // emitter.on('state:composer:toolbar:report', report)
+      
+      emitter.emit('state:init', value)
+    })
+  })
 
   /**
    * Initialises the system state for the main window. This function gets its
    * arguments via the main process, and doesn't take any local arguments.
    * This will only run when there is no state persistence.
    * */
-  function init() {
-    state.data = {
+  function init(value) {
+    state.unlocked = false
+    state.prefs = value
+    state.uifocus = null
+    state.status = {
       modified: false,
       writing: false,
+      listing: false,
       fullscreen: false,
-      prefs: null,
-      text: {
+      renaming: false,
+      focus: { },
+      active: { }
+    }
+    state.composer = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    state.lib = null
+    state.sidebar = {
+      visible: true,
+      openDirs: []
+    }
+    state.menu = {
+      save: false,
+      revert: false,
+      close: false,
+      trash: false,
+      trashCurrent: false,
+      export: false,
+      print: false,
+      preview: false,
+      library: true,
+      rename: false
+    }
+    state.key = { }
+
+    if (state.prefs) {
+      emitter.emit('state:key:init')
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    }
+  }
+
+  
+  async function initKey() {
+    let decrypted
+    try {
+      decrypted = await pgp.getKey(state.prefs.app.path)
+    } catch (e) {
+      console.log(e)
+    }
+    state.unlocked = decrypted
+  }
+
+  function initWatcher(uri) {
+    let watcher = watch(uri, { recursive: true, persistent: true })
+    watcher.on('change', (event, name) => {
+      // @TODO: Make this more granular
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+  }
+
+  async function list(d, base) {
+    state.status.listing = true
+    let uri = d.uri? d.uri : d
+    let tree 
+    try { 
+      tree = await io.ls(uri)
+    } catch (e) {
+      ipcRenderer.send('dialog:new:error', e)
+    }
+    if (base) {
+      // @TODO: Diff this.
+      state.lib = tree
+      initWatcher(state.prefs.app.path)
+    }
+    else {
+      var index = state.sidebar.openDirs.indexOf(d.id)
+      if (index === -1) state.sidebar.openDirs.push(d.id)
+      else state.sidebar.openDirs.splice(index, 1)
+    }
+    emitter.emit('state:menu:update')
+    state.status.listing = false
+    emitter.emit(state.events.RENDER) 
+  }
+
+  async function mk() {
+    let d = state.status.focus
+    let base = d.uri? d.uri : state.prefs.app.path
+    let index = state.sidebar.openDirs.indexOf(d.id)
+    let uri = join(index === -1? parse(base).dir : base, 'Untitled Folder')
+    try {
+      io.mkdir(uri)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  async function write(type) {
+    state.writing = true
+    let c = state.composer
+    let ciphertext
+    try {
+      ciphertext = await pgp.encrypt(c.body)
+    } catch(e) {
+      console.log(e)
+      return
+    }
+    
+    let success, uri
+    
+    if (type === 'new') {
+      let base
+      if (state.status.focus.uri) {
+        let index = state.sidebar.openDirs.indexOf(state.status.focus.id)
+        base = index === -1 ? parse(state.status.focus.uri).dir : state.status.focus.uri
+      } else {
+        base = state.prefs.app.path
+      }
+      let filename = 'Untitled.gpg'
+      uri = join(base, filename)
+      
+    } else {
+      f = state.status.active
+      uri = f.uri
+    } 
+    try {
+      success = await io.write(uri, ciphertext) 
+    } catch (e) {
+      console.log(e)
+    }
+    state.writing = false
+    state.status.modified = false
+    
+    switch (type) {
+      case 'new':
+        let d = { uri: uri }
+        emitter.emit('state:item:read', d)
+      break
+
+      case 'next':
+        emitter.emit('state:item:read', state.status.focus)
+      break
+    }
+  }
+
+  async function read(f) {
+    let ciphertext 
+    try {
+      ciphertext = await io.read(f.uri)
+    } catch (e) {
+      console.log(e)
+    }
+    let body
+    try {
+      body = await pgp.decrypt(ciphertext)
+    } catch (e) {
+      console.log(e)
+    }
+    let contents = {
+      id: f.id,
+      body: body,
+      stale: body,
+      uri: f.uri,
+      name: parse(f.uri).name
+    }
+    state.status.active = f
+    emitter.emit('state:composer:update', contents)
+  }
+
+  async function select(i, context) {
+    let selected = await selectLibraryItem(i)
+    if (selected) {
+      emitter.emit(state.events.RENDER)
+      if (context) window.setTimeout(() => {
+        emitter.emit('state:library:context:new', i.type)
+      }, 50) 
+    }
+  }
+
+  function update(contents) {
+    console.log('updating with, ', contents)
+    state.composer = contents
+    if (state.composer.body !== state.composer.stale) {
+      state.status.modified = true
+      state.menu.save = true
+      state.menu.revert = true
+      emitter.emit('state:menu:update')
+    }
+    else {
+      state.status.modified = false
+      state.menu.save = false
+      state.menu.revert = false
+      emitter.emit('state:menu:update')
+      emitter.emit(state.events.RENDER)
+    }
+  }
+
+  async function commitRename(f) {
+    let oldUri = state.status.focus.uri
+    let newUri = parse(f.uri).dir + '/' + f.newUri
+    if (oldUri === newUri) {
+      state.status.renaming = false
+      emitter.emit(state.events.RENDER)
+      return
+    }
+
+    try {
+      await io.mv({ old: oldUri, new: newUri })
+    } catch (e) {
+      console.log(e)
+    }
+    
+    let contents = {
+      id: state.composer.id,
+      body: state.composer.body,
+      stale: state.composer.stale,
+      uri: newUri,
+      name: parse(f.newUri).name
+    }
+    emitter.emit('state:composer:update', contents)
+    state.status.renaming = false
+  }
+
+  async function trash(f) {
+    try {
+      await io.trash(f.uri)
+    } catch (e) {
+      console.log(e)
+    }
+    if (f.id === state.status.focus.id ) state.status.focus = { }
+    if (f.id === state.status.active.id) {
+      let contents = {
         id: '',
         body: '',
         stale: '',
-        path: null,
-        title: null,
-      },
-      lib: { },
-      ui: {
-        sidebar: {
-          visible: true,
-          editingId: '',
-          renamingId: '',
-          activeId: '',
-          focusId: '',
-          focusUri: '',
-          maybeRename: false,
-          openDirs: [],
-          status: {
-            label: '',
-            percentage: null
-          }
-        },
-        menu: {
-          save: false,
-          revert: false,
-          close: false,
-          trash: false,
-          export: false,
-          print: false,
-          preview: false,
-          library: true
-        }
+        uri: null,
+        name: null
       }
+      emitter.emit('state:composer:update', contents)
     }
   }
 
-  /**
-   * Get the library path and list it.
-   * TODO: Compare the old tree to the new tree to prevent re-rendering.
-   * */
-  function list() {
-    io.ls(state.data.prefs.app.path, (err, tree) => {
-      if (err) ipcRenderer.send('dialog:new:error')
-      else state.data.lib = tree
-      if (renameTimeout) emitter.emit('state:library:rename:cancel')
-      emitter.emit(state.events.RENDER)
-    })
+  function prepareToMake(type) {
+    if (type === 'file') write('new')
+    else mk()
   }
-
-  /**
-   * Update the UI with the user-selected cell.
-   * @param cell The cell metadata for the new selected item.
-   * */
-  function select(cell) {
-    if (state.data.ui.sidebar.maybeRename && cell.id === state.data.ui.sidebar.focusId) {
-      emitter.emit('state:library:rename:start', cell)
-    } else {
-      state.data.ui.sidebar.focusId = cell.id
-      state.data.ui.sidebar.focusUri = cell.uri
-      state.data.ui.sidebar.renamingId = ''
-      state.data.ui.sidebar.maybeRename = false
-
-      state.data.ui.menu.trash = true
-      emitter.emit('state:menu:update')
-      emitter.emit('state:library:rename:prepare')
-      emitter.emit(state.events.RENDER)
-    }
-  }
-
-  /**
-   * Update the UI with the to-be-renamed cell.
-   * @param cell The cell metadata for the cell you want to rename.
-   * */
-  function rename(cell) {
-    if (!state.data.ui.sidebar.renamingId) {
-      state.data.ui.sidebar.renamingId = cell.id
-      emitter.emit('state:library:rename:cancel')
-      emitter.emit(state.events.RENDER)
-    }
-  }
-
-  function prepareRename() {
-    renameTimeout = window.setTimeout(() => {
-      state.data.ui.sidebar.maybeRename = true
-      renameTimeout = window.setTimeout(() => {
-        state.data.ui.sidebar.maybeRename = false
-      }, 1500)
-    }, 500)
-  }
-
-  function cancelRename() {
-    state.data.ui.sidebar.maybeRename = false
-    window.clearTimeout(renameTimeout)
-  }
-
-  /**
-   * Prepare the new renamed item.
-   * @param f The target resource, including its new uri.
-   * */
-  function finishRename(f) {
-    emitter.emit('state:library:rename:cancel')
-    var newUri = parse(f.uri).dir + '/' + f.newUri
-    if (f.uri != newUri) {
-      console.log('Checking existing resource...')
-      io.exists(f.uri, (exists) => {
-        if (!exists) ipcRenderer.send('dialog:new:error')
-        else {
-          io.exists(newUri, (exists) => {
-            if (!exists) {
-              rn(f, newUri, (err, status) => {
-                state.data.ui.sidebar.renamingId = ''
-                emitter.emit('state:library:list')
-              })
-            } else {
-              ipcRenderer.send('dialog:new', {
-                type: 'error',
-                buttons: ['OK', 'Cancel'],
-                defaultId: 0,
-                cancelId: 1,
-                message: f.newUri + ' already exists is this location.',
-                detail: 'Txt will never overwrite your existing files. Please choose a new name.'
-              })
-              ipcRenderer.once('dialog:response', (event, res) => {
-                switch (res) {
-                  case 1:
-                    rn(f, newUri, (err, status) => {
-                      state.data.ui.sidebar.renamingId = ''
-                      emitter.emit('state:library:list')
-                    })
-                    break
-                  default:
-                    // cancel
-                    state.data.ui.sidebar.renamingId = ''
-                    emitter.emit('state:library:list')
-                    break
-                }
-              })
-            }
-          })
-        }
-      })
-    } else {
-      state.data.ui.sidebar.renamingId = ''
-      emitter.emit(state.events.RENDER)
-    }
-  }
-
-  /**
-   * Write the new name to disk.
-   * @param f The target resource.
-   * @param newUri The new uri
-   * @param callback Returns an error and status.
-   * */
-  function rn(f, newUri, callback) {
-    io.mv(f.uri, newUri, (err, status) => {
-      if (err) ipcRenderer.send('dialog:new:error')
-      else {
-        callback(null, true)
-      }
-    })
-  }
-
-  /**
-   * Add or remove a directory to the collection of open directories.
-   * @param d The directory you are interacting with.
-   * */
-  function ls(d) {
-    io.exists(d.uri, (exists) => {
-      if (exists) {
-        emitter.emit('state:library:rename:cancel')
-        state.data.ui.sidebar.renamingId = ''
-        var exists = state.data.ui.sidebar.openDirs.indexOf(d.id)
-        if (exists === -1) state.data.ui.sidebar.openDirs.push(d.id)
-        else state.data.ui.sidebar.openDirs.splice(exists, 1)
-        emitter.emit(state.events.RENDER)
-      }
-    })
-  }
-
-  /**
-   * Prepares to open a file, but checks for unsaved changes first.
-   * @param f The target file you wish to open.
-   * */
-  function open(f) {
-    // Prevent opening files repeatedly
-    if (state.data.ui.sidebar.activeId === f.id || state.data.writing) return
-    emitter.emit('state:library:rename:cancel')
-    state.data.ui.sidebar.activeId = ''
-    if (state.data.modified) {
-      state.data.writing = true
+ 
+  function prepareToRead(f) {
+    if (state.status.modified) {
       ipcRenderer.send('dialog:new', {
         type: 'question',
         buttons: ['Save', 'Cancel', 'Discard changes'],
         defaultId: 0,
         cancelId: 1,
-        message: state.data.text.title + ' has been modified. Save changes?',
+        message: state.composer.title + ' has been modified. Save changes?',
         detail: 'Your changes will be lost if you choose to discard them.'
       })
-    } else {
-      emitter.emit('state:library:read:file', f)
-    }
-    ipcRenderer.once('dialog:response', (event, res) => {
-      switch (res) {
-        case 1:
-         // cancel
-         break
-        case 2:
-         // Discard changes
-         state.data.writing = false
-         emitter.emit('state:library:read:file', f)
-         break
-        default:
-         if (!state.data.wrting) {
-           var snapshot = state.data.text
-           snapshot.next = f
-           console.log('WRITING, ', snapshot)
-           emitter.emit('state:library:write:file', snapshot)
-         } else return
-         break
-       }
-    })
-  }
-
-  /**
-   * Reads a file.
-   * @param f The target file object you wish to open.
-   * */
-  function read(f) {
-    state.data.ui.sidebar.renamingId = ''
-    console.log('Reading, ', f)
-    io.exists(f.uri, (exists) => {
-      if (exists) {
-        io.open(f.uri, (err, data) => {
-          if (err) ipcRenderer.send('dialog:new:error')
-          else {
-            if (state.data.prefs.encryption.useKeychain) {
-              crypto.readKeychain(appId, 'user', (err, secret) => {
-                crypto.decrypt({phrase: secret}, {contents: data, encoding: 'utf8'}, (err, plaintext) => {
-                  if (err) ipcRenderer.send('dialog:new:error')
-                  else {
-                    console.log('decrypted, ', plaintext)
-                    var contents = {
-                      id: state.data.ui.sidebar.activeId? state.data.ui.sidebar.activeId : state.data.ui.sidebar.focusId,
-                      body: plaintext.data,
-                      stale: plaintext.data,
-                      title: f.name.replace('.gpg', ''),
-                      path: f.uri
-                    }
-                    emitter.emit('state:composer:update', contents)
-                    state.data.ui.menu.close = true
-                    state.data.ui.menu.export = true
-                    state.data.ui.menu.print = true
-                    state.data.ui.menu.preview = true
-                    state.data.ui.menu.close = true
-                    emitter.emit('state:menu:update')
-                    emitter.emit('state:library:set:active', contents.id)
-                  }
-                })
-              })
-            }
-          }
-        })
-      }
-    })
-  }
-
-  /**
-   * Asynchrounously encrypt and commit the current snapshot to disk,
-   * @param snapshot An object that contains the current editor snapshot.
-   * */
-  function commit(snapshot) {
-    if (state.data.prefs.encryption.useKeychain) {
-      crypto.readKeychain(appId, 'user', (err, secret) => {
-        console.log('About to encrypt: ', snapshot)
-        if (err) ipcRenderer.send('dialog:new:error')
-        else {
-          crypto.encrypt({phrase: secret}, {encoding: 'binary', filename: snapshot.title, contents: snapshot.body}, (err, ciphertext) => {
-            if (err) ipcRenderer.send('dialog:new:error')
-            else {
-              io.write(snapshot.path, ciphertext, (err, status) => {
-                state.data.writing = false
-                save(snapshot)
-
-                if (snapshot.isNew) emitter.emit('state:library:list')
-                else if (snapshot.next) emitter.emit('state:library:read:file', snapshot.next)
-              })
-            }
-          })
+      ipcRenderer.once('dialog:response', (event, res) => {
+        switch (res) {
+          case 1:
+            // cancel
+          break
+          case 2:
+            // Discard changes
+            read(f)
+          break
+          default:
+            if (!state.status.wrting) {
+              emitter.emit('state:composer:write', 'next')
+            } else return
+          break
         }
       })
-    }
+    } else read(f)
   }
 
-  /**
-   * Create a new resource.
-   * */
-
-  function compose() {
-    var focus = parse(state.data.ui.sidebar.focusUri).dir
-    // @TODO: Abstract this into an init function
-    var snapshot = {
-      body: '',
-      id: null,
-      path: focus? focus + '/Untitled.gpg' : state.data.prefs.app.path + '/Untitled.gpg',
-      stale: '',
-      title: 'Untitled',
-      isNew: true
-    }
-    emitter.emit('state:library:write:file', snapshot)
-  }
-
-  /**
-   * Update the editor. This is called both when interacting with the editor,
-   * and also loading new files.
-   * @param contents An object that contains the current and stale text.
-   * */
-  function update(contents) {
-    console.log('updating with, ', contents)
-    state.data.text = contents
-    if (state.data.text.body !== state.data.text.stale) {
-      state.data.modified = true
-      state.data.ui.menu.save = true
-      state.data.ui.menu.revert = true
-      emitter.emit('state:menu:update')
-    }
-    else {
-      state.data.modified = false
-      state.data.ui.menu.save = false
-      state.data.ui.menu.revert = false
-      emitter.emit('state:menu:update')
-      emitter.emit(state.events.RENDER)
-    }
-  }
-
-  /**
-   * Tell the composer that the save is complete and ensures that the editor
-   * returns to a saved and unmodified state.
-   * @param contents An object that contains the current and stale text.
-   * */
-  function save(contents) {
-    state.data.text.body = contents.body
-    state.data.text.stale = contents.body
-    state.data.modified = false
-    state.data.writing = false
-    state.data.ui.menu.save = false
-    state.data.ui.menu.revert = false
-    emitter.emit('state:menu:update')
-    emitter.emit(state.events.RENDER)
-  }
-
-  /**
-   * Make a directory, using the sidebar to create the desired uri.
-   * */
-  function mkdir() {
-    var focus = state.data.ui.sidebar.focusUri
-    focus = parse(focus).ext? parse(focus).dir : focus
-    console.log(focus)
-    var uri = focus? focus + '/New folder' : state.data.prefs.app.path + '/New folder'
-    console.log('Attempting to make ', uri)
-    io.exists(uri, (exists) => {
-      // @TODO: Make sure this doesn't return true when there are
-      // permission issues.
-      if (exists) ipcRenderer.send('dialog:new:error')
-      else {
-        io.mkdir(uri, (err, status) => {
-          if (err) ipcRenderer.send('dialog:new:error')
-          else {
-            emitter.emit('state:library:list')
-          }
-        })
-      }
-    })
-  }
-
-  /**
-   * Trash a resource using the sidebar to create the desired uri.
-   * */
-  function trash() {
-    var focus = state.data.ui.sidebar.focusUri
+  function prepareToTrash() {
+    var focus = state.status.focus.uri
     if (focus) ipcRenderer.send('dialog:new', {
       type: 'question',
       buttons: ['Move to Trash', 'Cancel'],
@@ -447,165 +341,94 @@ function store (state, emitter) {
       message: 'Trash ' + parse(focus).name + '?',
       detail: 'The item will be moved to your computer\'s trash.'
     })
-
     ipcRenderer.once('dialog:response', (event, res) => {
       switch (res) {
         case 1:
          // cancel
          break
         default:
-          io.trash(focus, (err, status) => {
-            if (err) ipcRenderer.send('dialog:new:error')
-            else {
-              if (state.data.text.path === focus) {
-                var snapshot = {
-                  id: '',
-                  body: '',
-                  stale: '',
-                  path: null,
-                  title: '',
-                }
-                state.data.ui.sidebar.activeId = ''
-                state.data.ui.sidebar.renamingId = ''
-
-                emitter.emit('state:composer:update', snapshot)
-              }
-
-              state.data.ui.sidebar.openDirs.splice(focus, 1)
-              state.data.ui.sidebar.focusId = ''
-              state.data.ui.sidebar.focusUri = focus? focus : state.data.prefs.app.path
-              state.data.ui.menu.trash = false
-              emitter.emit('state:menu:update')
-              emitter.emit('state:library:list')
-            }
-          })
-         break
-       }
-     })
+          trash(state.status.focus)
+      }
+    }) 
   }
 
-  /**
-   * Discard unsaved changes, using the editor state to
-   * */
-  function revert() {
-    ipcRenderer.send('dialog:new', {
-      type: 'question',
-      buttons: ['Revert changes', 'Cancel'],
-      defaultId: 0,
-      cancelId: 1,
-      message: 'Revert your changes?',
-      detail: 'Changes prior to your last save will be lost. This action cannot be undone.'
-    })
-
-    ipcRenderer.once('dialog:response', (event, res) => {
-      switch (res) {
-        case 1:
-         // cancel
-         break
-        default:
-          var contents = state.data.text
-          contents.body = contents.stale
-          state.data.ui.menu.revert = false
-          emitter.emit('state:menu:update')
-          save(contents)
-         break
-       }
-     })
-  }
-
-  function displayContext(type) {
-    // Context events
-    ipcRenderer.send('menu:context:new', type)
-  }
-
-  function updateMenu() {
-    ipcRenderer.send('menu:new', 'main', state.data.ui.menu)
-  }
-  /**
-   * Sets the active resource, based on a unique identifier.
-   * @param id A unique identifier generated via the filesystem.
-   * */
-  function setActive(id) {
-    state.data.ui.sidebar.activeId = id
+  function startRename() {
+    if (!state.status.focus.id || state.status.renaming) return
+    state.status.renaming = true
+    emitter.emit(state.events.RENDER)
   }
 
   function toggleLibrary() {
-    state.data.ui.sidebar.visible = !state.data.ui.sidebar.visible
-    state.data.ui.menu.library = !state.data.ui.menu.library
+    state.sidebar.visible = !state.sidebar.visible
+    state.menu.library = !state.menu.library
+    // Change trash focus to the current item
+    // Remove renaming
     emitter.emit('state:menu:update')
     emitter.emit(state.events.RENDER)
   }
-  /**
-   * Sets the renaming resource, based on a unique identifier.
-   * @param id A unique identifier generated via the filesystem.
-   * */
-  function setRename(id) {
-    state.data.ui.sidebar.renamingId = id
-  }
 
-  function report() {
-    ipcRenderer.send('dialog:new', {
-      type: 'question',
-      buttons: ['Report via Github', 'Email Support', 'Cancel'],
-      defaultId: 0,
-      cancelId: 1,
-      message: 'Found an issue? Need support?',
-      detail: 'Txt is in active development. If you\'ve found a bug, please open a ticket or get in touch via email.'
+  // Utils
+  function selectLibraryItem(i) {
+    return new Promise(resolve => {
+      if (state.status.renaming) resolve(false)
+      state.status.focus = i
+      state.menu.trash = true
+      state.menu.rename = true
+      emitter.emit('state:menu:update')
+      resolve(true)
     })
-
-    ipcRenderer.once('dialog:response', (event, res) => {
-      console.log(res)
-      switch (res) {
-        case 1:
-         require('electron').shell.openExternal('mailto:txt.support@shiba.computer?subject=[Support v1.0b] ')
-         break
-        case 2:
-         break
-        default:
-         require('electron').shell.openExternal('https://github.com/shibacomputer/txt/issues/new')
-         break
-       }
-   })
   }
 
-  // Interacting with Main.
+  function updateFocus(newFocus) {
+    if (state.uifocus === newFocus) return
+    else state.uifocus = newFocus
+  }
+
+  // Out
+  function newContextMenu(type) {
+    ipcRenderer.send('menu:context:new', type)
+  }
+
+  function updateApplicationMenu() {
+    ipcRenderer.send('menu:new', 'main', state.menu)
+  }
+
+  // Responses to the menu system
   ipcRenderer.on('menu:file:new:file', (event, response) => {
-    emitter.emit('state:composer:new')
-  })
+    emitter.emit('state:item:make', 'file')
+  })  
+
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
-    emitter.emit('state:library:write:directory')
+    emitter.emit('state:item:make', 'directory')
+  })  
+  ipcRenderer.on('menu:file:new:window', (event, response) => {
+    ipcRenderer.send('window:open', 'main')
   })
+
   ipcRenderer.on('menu:file:save', (event, response) => {
-    var snapshot = state.data.text
-    console.log(snapshot)
-    emitter.emit('state:library:write:file', snapshot)
+    emitter.emit('state:composer:write')
   })
   ipcRenderer.on('menu:file:close', (event, response) => {
-    var snapshot = {
-      id: '',
-      body: '',
-      stale: '',
-      path: null,
-      title: '',
-    }
-    state.
-    emitter.emit('state:composer:update')
+    emitter.emit('state:composer:close')
   })
   ipcRenderer.on('menu:file:revert', (event, response) => {
-    var snapshot = state.data.text
-    console.log(snapshot)
     emitter.emit('state:composer:revert')
   })
-  ipcRenderer.on('menu:file:trash', (event, response) => {
-    emitter.emit('state:library:trash')
+  ipcRenderer.on('menu:file:rename', (event, response) => {
+    emitter.emit('state:item:rename')
   })
+  ipcRenderer.on('menu:file:trash', (event, response) => {
+    emitter.emit('state:item:trash')
+  })  
   ipcRenderer.on('menu:view:library', (event, response) => {
     emitter.emit('state:library:toggle')
   })
   ipcRenderer.on('menu:help:support', (event, response) => {
-    emitter.emit('state:composer:toolbar:report')
+    emitter.emit('state:toolbar:report')
   })
-  ipcRenderer.on('sys:focus', (event, response) => {
-    if (state.data.prefs.app.path) emitter.emit('state:library:list')
+  ipcRenderer.on('menu:context:reveal', (event, response) => {
+    emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
   })
+
+  // Keyboard navigation
 }

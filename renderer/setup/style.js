@@ -3,7 +3,7 @@ const css = require('csjs-inject')
 const style = css`
   .main {
     -webkit-overflow-scrolling: touch;
-    align-items: center;
+    align-items: stretch;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -26,19 +26,24 @@ const style = css`
     text-align: center;
   }
 
-  .header > .logo {
-    background-color: grey;
-    height: 5rem;
-    margin-bottom: 1rem;;
+  .header .logo {
+    margin-bottom: 1rem;
     width: 5rem;
   }
 
-  .header > h1 {
-    font-family: 'FiraCode', monospace;
+  .header h1 {
+    color: var(--w);
+    font-family: 'HKG', sans-serif;
+    font-size: 14px;
+    font-weight: normal;
   }
 
-  .settings,
-  .footer {
+  .view {
+    flex-grow: 1;
+    margin: 1rem 0;
+  }
+
+  .option {
     align-items: stretch;
     display: flex;
     flex-direction: column;
@@ -47,127 +52,73 @@ const style = css`
     -webkit-app-region: no-drag;
   }
 
-  .settings {
-    flex: 1;
-    margin-top: 1rem;
-  }
-
-  .segmented {
-    align-items: stretch;
-    border: 1px solid var(--c);
+  .field {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    line-height: 1.5;
-    margin-bottom: 0.5rem;
   }
-
-  .segmented input {
-    position: absolute;
-    visibility: hidden;
-  }
-
-  .segmented label {
-    flex: 1;
-    font-family: 'HKG', sans-serif;
-    font-size: 13px;
-    padding: 0.55rem 1rem 0.5rem 1rem;
-    text-align: center;
-  }
-
-  .segmented input[type="radio"] + label {
-    color: var(--c);
-  }
-
-  .segmented input[type="radio"]:checked + label {
-    background: var(--c);
-    color: var(--k);
-  }
-
-  .stringtab,
-  .keytab {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .stringtab label,
-  .keytab label,
-  .folder label  {
-    display: block;
-    font-family: 'HKG', sans-serif;
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-  }
-
-  .tip {
-    color: var(--w);
-    display: block;
-    text-align: center;
-  }
-
-  .stringtab input,
-  .keytab select,
-  .folder .location {
+  .field input {
     border: 1px solid currentcolor;
     background: none;
+    flex-grow: 1;
     font-size: 13px;
     padding: 0.75rem 0.5rem 0.75rem 0.5rem;
     font-family: 'Mono', monospace;
     font-weight: normal;
     outline: none;
   }
-
-  .keytab select {
-    height: 41px;
-    border-radius: 0;
-  }
-
-  .stringtab input:focus,
-  .stringtab input:active {
-    background: var(--b);
+  .field input:focus {
+    background: var(--w);
     color: var(--k);
   }
-  .stringtab input::selection {
-    background: var(--k);
-  }
 
-  .folder {
-    border-top: 1px solid #222;
-    color: var(--b);
+  .field label,
+  .option label {
+    color: currentColor;
+    display: block;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
     margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    width: 100%;
+    margin-top: 1rem;
   }
 
-  .locationBox {
-    display: flex;
-    flex-direction: row;
+  .locationOSInput {
+    display:none;
   }
 
   .location {
-    flex: 1;
+    border: 1px solid currentcolor;
+    background: none;
+    flex-grow: 1;
+    font-size: 12px;
+    padding: 0.75rem 0.5rem 0.75rem 0.5rem;
+    font-family: 'Mono', monospace;
+    font-weight: normal;
+    outline: none;
   }
 
   .locationButton {
-    display: none;
-  }
-
-  .locationBox button {
     background: var(--b);
     border: none;
-    font-family: 'HKG', sans-serif;
-    font-size: 15px;
-    font-weight: bold;
     outline: var(--w);
     width: 3rem;
   }
 
-  .locationBox button:active {
+  .locationButton:active {
     background-color: var(--w);
     color: var(--k);
+  }
+
+  .tip label {
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+
+  .footer nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   .footer button {
@@ -176,6 +127,7 @@ const style = css`
     font-family: 'HKG', sans-serif;
     font-size: 15px;
     font-weight: bold;
+    flex-grow: 1;
     padding: 0.75rem 1rem 0.75rem 1rem;
   }
 
@@ -188,6 +140,60 @@ const style = css`
     background-color: var(--c);
     color: var(--k);
   }
+
+  .blocker {
+    align-items: center;
+    color: var(--c);
+    background: rgba(0,0,0,0.85);
+    border-radius: 6px;
+    bottom: 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 1px;
+    position: absolute;
+    right: 1px;
+    top: 1px;
+  }
+
+  .spinner {
+    border-radius: 50%;
+    color: var(--c);
+    font-size: 8px;
+    height: 1em;
+    position: relative;
+    width: 1em;
+    animation: anim 1.3s infinite linear;
+    transform: translateZ(0);
+  }
+
+  @keyframes anim {
+    0%,
+    100% {
+      box-shadow: 0 -3em 0 0.2em, 2em -2em 0 0em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 0;
+    }
+    12.5% {
+      box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em, 3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    25% {
+      box-shadow: 0 -3em 0 -0.5em, 2em -2em 0 0, 3em 0 0 0.2em, 2em 2em 0 0, 0 3em 0 -1em, -2em 2em 0 -1em, -3em 0 0 -1em, -2em -2em 0 -1em;
+    }
+    37.5% {
+      box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em, -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    50% {
+      box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em, -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+    }
+    62.5% {
+      box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0, -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+    }
+    75% {
+      box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em, 3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+    }
+    87.5% {
+      box-shadow: 0em -3em 0 0, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em, -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+    }
+}
 `
 
 module.exports = style

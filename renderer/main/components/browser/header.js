@@ -9,21 +9,7 @@ module.exports = editorHeader
 function editorHeader(state, emit) {
   return html`
     <header class=${ style.header }>
-      ${
-        toolbar({
-        center: 'Library',
-        right: [
-          button({
-            name: 'new',
-            classes: 'c',
-            icon: 'new-folder',
-            click: function() {
-              emit('state:library:write:directory')
-            }
-          })
-        ]
-      })
-    }
+      ${ toolbar({ right: 'Library' }) }
     </header>
   `
 }

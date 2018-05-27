@@ -18,7 +18,7 @@ const style = css`
   .base {
     -webkit-app-region: no-drag;
     align-items: stretch;
-    background-color: rgba(0,0,0,0.1);
+    background-color: var(--k);
     color: var(--w);
     display: flex;
     flex: 1;
@@ -28,12 +28,12 @@ const style = css`
   }
 
   .header {
-    border-bottom: 1px solid #303033;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 
   .footer {
-    border-top: 1px solid #303033;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     width: 100%;
   }
 `

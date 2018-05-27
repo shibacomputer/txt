@@ -80,13 +80,14 @@ who has access to the disk.
 ✅ Auto-updating  
 ✅ Linux support  
 ✅ Windows support  
-✅ Way smarter window management  
+✅ Smart window management (smarter than my prototype at least)  
 ⬜ GPG Private key encryption  
 ⬜ Light UI theme  
 ⬜ Export to unencrypted text file  
 
 ### Planned for v1.0
 ⬜ Markdown support  
+⬜ Decentralised software updates  
 ⬜ Localisation (tbc)  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
@@ -96,7 +97,6 @@ who has access to the disk.
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜ Data management  
 ⬜ Better support for file permission edge cases  
-⬜ DAT support???  
 ⬜ Collaboration / track changes??  
 ⬜ 2FA / Yubikey support  
 ⬜ Secure syncing  

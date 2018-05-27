@@ -5,9 +5,11 @@ const style = require('./style')
 module.exports = cell
 
 function cell(f, opts, emit) {
+  let code
   opts = typeof opts === "object" ? opts : {}
   if(f.type === 'directory') return html`${dirCell()}`
   else return html`${fileCell()}`
+
   function dirCell() {
     return html`
       <button onclick=${select} ondblclick=${open} oncontextmenu=${context}
@@ -17,7 +19,7 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} />` :
+            html`<input autofocus={opts.rename} id="rename" type="text" value=${f.name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${f.name}`}
         </div>
       </button>
@@ -34,23 +36,21 @@ function cell(f, opts, emit) {
         </svg>
         <div class=${style.metadata}>
           ${opts.rename?
-            html`<input id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeypress=${resize}/>` :
+            html`<input autofocus={opts.rename} id="rename" type="text" value=${name} class=${style.input} onblur=${finishRename} onkeyup=${update} />` :
             `${name}`}
         </div>
       </button>
     `
   }
 
-  function rename(e) {
-    if (!opts.focus || opts.rename) return
-    else {
-      emit('state:library:rename:start', f)
-    }
-  }
-
   function finishRename(e) {
-    f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
-    emit('state:library:rename:end', f)
+    if (e.srcElement && code != "Escape") {
+      f.newUri = e.srcElement.value + (f.type === 'file'? '.gpg' : '')
+      emit('state:item:commit', f, code)
+    } else {
+      f.newUri = f.name + (f.type === 'file'? '.gpg' : '')
+      emit('state:item:commit', f, code)
+    }
   }
 
   function select(e) {
@@ -61,20 +61,22 @@ function cell(f, opts, emit) {
   function open(e) {
     if (opts.rename) return
     if (f.type === 'file' && !opts.active) {
-      emit('state:library:open:' + f.type, f)
+      console.log(f)
+      emit('state:item:read', f)
     } else if (f.type === 'directory') {
-      emit('state:library:open:' + f.type, f)
+      emit('state:library:list', f, false)
     }
   }
 
-  function context(e) {
-    emit('state:library:context:display', 'browser-cell')
+  async function context(e) {
+    if (opts.rename) return
+    emit('state:library:select', f, true)
   }
 
-  function resize(e) {
+  function update(e) {
+    if(e.key === "Enter" || e.key === "Escape") {
+      code = e.key
+    }
     e.srcElement.style.width = ((this.value.length + 1) * 8) + 'px';
   }
-
-  // Utility classes
-
 }

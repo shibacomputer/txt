@@ -1,5 +1,3 @@
-const { ipcRenderer } = require('electron')
-
 const html = require('choo/html')
 const style = require('./style')
 
@@ -10,135 +8,110 @@ module.exports = setupApplication
  * new app install and related functionality setup.
  */
 function setupApplication(state, emit) {
-  let keysUri
-
-  function switchType(e) {
-    emit('state:switchType', e.target.dataset.value)
-  }
-
-  function updatePassphrase(e) {
-    emit('state:updatePassphrase', e.target.value)
-  }
-
-  function respondToKeyDropdown(e) {
-    if(e.target.selectedIndex === (e.target.length - 1)) {
-      ipcRenderer.once('done:getFile', (event, f) => {
-        if (f) emit('state:loadKey', f[0])
-        else return
-      })
-
-      let props = {
-        title: 'Import Private Key',
-        button: 'Import',
-        filters: [
-          { name: 'PGP Private Keys', extensions: ['asc', 'key'] }
-        ],
-        msg: 'Find and import your private key.',
-        properties: ['openFile']
-      }
-      ipcRenderer.send('get:file', props)
-    }
-  }
-
-  function keyDropdown() {
-    return html`
-      <select name="keyinput" id="keyinput" class="b b-input" onchange=${respondToKeyDropdown}/>
-        <option ${ !state.selectedKey ? 'selected' : '' } disabled></option>
-        ${ state.availableKeys.length !== 0 ? html`
-          ${
-            state.availableKeys.map( (key) => {
-              return html`
-                <option value=${key.id} ${ key.id.localeCompare(state.selectedKey.id) === 0 ? 'selected' : '' }> ${key.name} (${key.id}) </option>
-              `
-            })
-          }
-          ` : null
-        }
-        ${ state.availableKeys.length !== 0 ? html `
-          <option disabled>────────────────────────────</option>` : null
-        }
-        <option ${ state.selectedKey ? '' : '' } value="import">Import from file...</option>
-      </select>
-    `
-  }
-
-  function respondToPathButton() {
-    var locationButton = document.getElementById('locationButton')
-    locationButton.click()
-  }
-
-  function updateWorkPath(event) {
-    emit('state:updateWorkPath', event.target.files[0])
-  }
-
-  function respondToNextButton() {
-    emit('state:doSetup')
-  }
-
-  function nextButton() {
-    return html`
-      <button name="save" class="bg-m f button-m" ${state.valid ? '' : 'disabled'} onclick=${respondToNextButton}>Next</button>
-    `
-  }
 
   return html`
     <body class="b-myc">
       <main class=${style.main}>
-
+        ${state.ui.block ? blocker() : null }
         <header class=${style.header}>
-          <div class="logo">
+          <div class=${style.logo}>
+            <svg width="44" height="48" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+              <linearGradient x1="13.416%" y1="9.772%" x2="86.596%" y2="100%" id="a">
+                <stop stop-color="#FB4FFF" offset="0%"/>
+                <stop stop-color="#FFD710" offset="54.582%"/>
+                <stop stop-color="#27FF98" offset="100%"/>
+              </linearGradient>
+            </defs>
+            <path d="M616.015 186.602V219h-32.353V172.442H578V171h12.941v1.443h-5.662v44.937h29.118v-44.938h-5.661V171H622v1.443h-5.985v14.159zm-27.5 13.448c0-.443.359-.802.802-.802h20.234c.443 0 .802.36.802.802v.016c0 .443-.359.802-.802.802h-20.234a.802.802 0 0 1-.802-.802v-.016zm0 5.941c0-.443.359-.802.802-.802h16.999c.443 0 .802.36.802.802v.016c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.016zm0 5.942c0-.443.359-.803.802-.803h19.425c.443 0 .802.36.802.803v.015c0 .443-.359.802-.802.802h-19.425a.802.802 0 0 1-.802-.802v-.015zm0-17.82c0-.442.359-.802.802-.802h16.999c.443 0 .802.36.802.803v.015c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.015zM606.757 171l-6.063 8.033 6.356 8.41h-1.735l-5.513-7.33-5.547 7.33h-1.689l6.345-8.41-6.04-8.033h1.736l5.219 6.94 5.23-6.94h1.701z" transform="translate(-578 -171)" fill="url(#a)" fill-rule="evenodd"/>
+          </svg>
           </div>
-          <h1>Txt</h1>
-          <p>Simple, private journalling</p>
+          <h1>Get started with Txt</h1>
         </header>
-
-        <section class=${style.settings}>
-          <div class=${style.segmented}>
-            <input type="radio"
-                   name="keytype"
-                   id="string"
-                   ${!state.useKey? 'checked' : ''}>
-              <label for="string" data-value="string"
-                     onclick=${switchType}>Use a Passphrase</label>
-            <input type="radio"
-                   name="keytype"
-                   id="key"
-                   ${state.useKey? 'checked' : ''}>
-              <label for="key" data-value="key"
-                     onclick=${switchType}>Use a PGP Key</label>
-          </div>
-          <div class=${style.stringtab} style=${state.useKey? 'display: none' : ''}>
-            <label for="stringinput" class="b">Enter a passphrase</label>
-            <input type="text"
-                   name="stringinput"
-                   id="stringinput"
-                   class="b b-input"
-                   onchange=${updatePassphrase}
-                   value=${state.string}/>
-            <label class=${style.tip}>Choose a strong phrase to best protect your files. <span class="b">Save your passphrase somewhere safe. If you lose it, your work is gone forever!</span></label>
-          </div>
-          <div class=${style.keytab} style=${!state.useKey? 'display: none' : ''}>
-            <label for="keyinput" class="b">Select your key</label>
-            ${keyDropdown()}
-            <label class=${style.tip}>Use a key to automatically encrypt and decrypt your work. <span class="b">Don't have a key? Learn how to make one.</span></label>
-          </div>
-        </section>
-        <div class=${style.folder}>
-          <label for="folderinput" class="b">Save work to...</label>
-          <div class=${style.locationBox}>
-            <input class=${style.locationButton} onchange=${updateWorkPath} id="locationButton" type="file" webkitdirectory />
-            <div class=${style.location} onclick=${respondToPathButton}>
-              ${state.workingPath ? state.workingPath : 'Set a directory...'}
-            </div><button onclick=${respondToPathButton}>📁</button>
-          </div>
-          <label class=${style.tip}>By default, Txt stores your work on your local computer.</label>
-        </div>
-
-        <footer class=${style.footer}>
-          ${nextButton()}
-        </footer>
-
+        ${ view() }
+        ${ nextButton() }
       </main>
     </body>
   `
+
+  function view () {
+    return html`
+      <div class=${ style.view }>
+        ${ state.progress >= 1? setupWorkPath() : null }
+        ${ state.progress >= 2? setupPassphrase() : null }
+      </div>
+    `
+  }
+
+  function setupWorkPath() {
+    return html`
+      <section class="b ${style.option}">
+        <label for="location">Set library location</label>
+        <div class=${style.field}>
+          <input ${state.ui.block ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
+          <div class=${style.location} onclick=${askForUri}>
+            ${state.uri ? state.uri : 'Set a directory...'}
+          </div>
+          <button ${state.ui.block ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
+            <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 2H7C5.05.667 4.05 0 4 0H0v12h16V2zM3.5 1l3 2H15v4H1V.998L3.5 1z" fill="currentColor" fill-rule="nonzero"/>
+            </svg>
+          </button>
+        </div>
+        <div class="w ${style.tip}">
+          <label class=${style.tip}>Choose a location for your Txt library. If you choose an existing library, Txt will ask for your passphrase.</label>
+        </div>
+      </section>
+    `
+
+    function askForUri() {
+      var locationOSInput = document.getElementById('location')
+      locationOSInput.click()
+    }
+
+    function updateUri(e) {
+      emit('state:uri:update', e.target.files[0])
+    }
+  }
+
+  function setupPassphrase() {
+    const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
+    const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
+    return html`
+    <section class="c ${style.option}">
+      <label for="passphrase">${inputLabel}</label>
+      <div class=${style.field}>
+        <input id="passphrase" ${state.ui.block ? 'disabled' : '' } class="c" onkeyup=${updatePassphrase} value=${state.phrase}/>
+      </div>
+      <div class="w ${style.tip}">
+        <label class=${style.tip}>${tip}</label>
+      </div>
+    </section>
+    `
+    function updatePassphrase(e) {
+      emit('state:passphrase:update', e.target.value)
+    }
+  }
+
+  function nextButton() {
+    return html`
+      <footer class=${style.footer}>
+        <nav>
+          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
+        </nav>
+      </footer>
+    `
+    function completeSetup() {
+      emit('state:setup:validate')
+    }
+  }
+
+  function blocker () {
+    return html`
+      <div class=${style.blocker}>
+        <div class=${style.spinner}> </div>
+      </div>
+    `
+  }
+
 }

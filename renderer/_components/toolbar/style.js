@@ -30,18 +30,26 @@ var style = css`
 
   .left {
     justify-content: flex-start;
+    white-space: nowrap;
   }
   .center {
-    flex-grow: 1;
+    box-sizing: border-box;
+    flex: 1;
     font-family: 'HKG', sans-serif;
     font-size: 13px;
     justify-content: center;
+    max-width: 75%;
     text-align: center;
   }
-
+  .label {
+    padding: 0 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .right {
-    flex-basis: 33%;
     justify-content: flex-end;
+    white-space: nowrap;
   }
   .right li {
     margin-left: 8px;
