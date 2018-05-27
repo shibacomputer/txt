@@ -99,8 +99,8 @@ const style = css`
     display: none;
   }
 
-  .focus {
-    color: var(--w);
+  .focus, .focus.active, .focus.modified {
+    color: var(--k);
   }
 
   .active {
@@ -116,7 +116,7 @@ const style = css`
   }
 
   .focus:before {
-    background-color: #29292f;
+    background-color: var(--w);
   }
 
   .icon {
