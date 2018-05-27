@@ -42,7 +42,7 @@ const style = css`
     background: none;
     border: none;
     box-sizing: border-box;
-    color: #9898a5;
+    color: var(--w);
     display: flex;
     flex-direction: row;
     font-family: 'HKG', sans-serif;
@@ -95,12 +95,12 @@ const style = css`
   }
 
   .cell:hover:before {
-    background-color: #29292f;
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   .cell:hover {
     color: (--w);
-    background-color: #29292f;
+    background-color: rgba(255, 255, 255, 0.05);
   }
 
   .disabled {
