@@ -16,7 +16,7 @@ function editorApplication(state, emit) {
   document.title = 'Txt'
 
   return html`
-    <body class="b-myc ${style.app}">
+    <body class="${style.app}">
       ${ browser(state, emit) }
       ${ editor(state, emit) }
       ${ icons() }

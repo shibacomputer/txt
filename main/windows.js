@@ -28,7 +28,7 @@ module.exports = {
 
     winManager.templates.set('main', {
       'autoHideMenuBar': true,
-      'backgroundColor': '#1B1B20',
+      'backgroundColor': '#0D1317',
       'frame': true,
       'height': 700,
       'menu': menu.buildMenu('main', null),

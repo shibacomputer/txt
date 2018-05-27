@@ -5,7 +5,7 @@ const style = css`
     -webkit-overflow-scrolling: touch;
     align-items: stretch;
     background: var(--g);
-    border-radius: 5px 0px 0px 5px;
+    border-right: 1px solid #000;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
