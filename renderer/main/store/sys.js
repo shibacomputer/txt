@@ -82,6 +82,7 @@ function store (state, emitter) {
       revert: false,
       close: false,
       trash: false,
+      trashCurrent: false,
       export: false,
       print: false,
       preview: false,
@@ -223,14 +224,6 @@ function store (state, emitter) {
     emitter.emit('state:composer:update', contents)
   }
 
-  /*
-  async function encrypt(f, d) {
-    let contents = { }
-    try {
-      
-    }
-  } */
-
   async function select(i, context) {
     let selected = await selectLibraryItem(i)
     if (selected) {
@@ -273,6 +266,7 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
+    
     let contents = {
       id: state.composer.id,
       body: state.composer.body,
@@ -290,7 +284,8 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    if (f.uri === state.status.active.uri) {
+    if (f.id === state.status.focus.id ) state.status.focus = { }
+    if (f.id === state.status.active.id) {
       let contents = {
         id: '',
         body: '',
@@ -299,11 +294,7 @@ function store (state, emitter) {
         name: null
       }
       emitter.emit('state:composer:update', contents)
-    } 
-    if (f.uri === state.status.focus.uri ) {
-      state.status.focus = { }
     }
-    console.log(state.status)
   }
 
   function prepareToMake(type) {

@@ -16,9 +16,8 @@ function tree(state, emit) {
   }
 
   function match(f, target) {
-    if (!target.id) return
-    if (target.id === f.id
-      || target.uri === f.uri) return true
+    console.log(f, target)
+    if (target.id === f.id) return true
     else return false
   }
 
