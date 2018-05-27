@@ -186,9 +186,16 @@ function store (state, emitter) {
     }
     state.writing = false
     state.status.modified = false
-    if (type === 'new') {
-      let d = { uri: uri }
-      emitter.emit('state:item:read', d)
+    
+    switch (type) {
+      case 'new':
+        let d = { uri: uri }
+        emitter.emit('state:item:read', d)
+      break
+
+      case 'next':
+        emitter.emit('state:item:read', state.status.focus)
+      break
     }
   }
 
@@ -305,7 +312,32 @@ function store (state, emitter) {
   }
  
   function prepareToRead(f) {
-    read(f)
+    if (state.status.modified) {
+      ipcRenderer.send('dialog:new', {
+        type: 'question',
+        buttons: ['Save', 'Cancel', 'Discard changes'],
+        defaultId: 0,
+        cancelId: 1,
+        message: state.composer.title + ' has been modified. Save changes?',
+        detail: 'Your changes will be lost if you choose to discard them.'
+      })
+      ipcRenderer.once('dialog:response', (event, res) => {
+        switch (res) {
+          case 1:
+            // cancel
+          break
+          case 2:
+            // Discard changes
+            read(f)
+          break
+          default:
+            if (!state.status.wrting) {
+              emitter.emit('state:composer:write', 'next')
+            } else return
+          break
+        }
+      })
+    } else read(f)
   }
 
   function prepareToTrash() {
