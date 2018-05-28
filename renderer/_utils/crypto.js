@@ -1,12 +1,11 @@
 const openpgp = require('openpgp')
 const fs = require('fs')
 const path = require('path')
-const util = require('util')
 const keytar = require('keytar')
 const io = require('./io')
 
-const APP_NAME = process.env.npm_package_name
-const APP_VERSION = process.env.npm_package_version
+const APP_NAME = require('electron').remote.app.getName()
+const APP_VERSION = require('electron').remote.app.getVersion()
 const PGP_COMPRESSION = openpgp.enums.compression.zip
 const PGP_BITS = 4096
 const KEY_FILENAME = '.txtkey'

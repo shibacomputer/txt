@@ -14,7 +14,7 @@ function editorHeader(state, emit) {
         left: [
           button({
             name:'ShowLibrary',
-            classes: 'c',
+            classes: `${ !state.sidebar.visible && !state.status.fullscreen? style.darwinMargin : '' }`,
             icon: 'library',
             click: function() {
               emit('state:library:toggle')

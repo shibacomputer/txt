@@ -1,5 +1,10 @@
 const css = require('csjs-inject')
 
+let darwinMargin = '0px;'
+if (process.platform === 'darwin') {
+  darwinMargin = '70px;'
+}
+
 const style = css`
 
   .main {
@@ -34,6 +39,11 @@ const style = css`
   .footer {
     width: 100%;
   }
+
+  .darwinMargin {
+    margin-left: ${darwinMargin}
+  }
+
 `
 
 module.exports = style

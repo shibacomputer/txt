@@ -7,8 +7,8 @@ const trash = require('trash')
 
 mime.define({ 'text/gpg': ['gpg'] })
 
-const APP_NAME = process.env.npm_package_name
-const APP_VERSION = process.env.npm_package_version
+const APP_NAME = require('electron').remote.app.getName()
+const APP_VERSION = require('electron').remote.app.getVersion()
 const KEY_FILENAME = '.txtkey'
 
 const read = util.promisify(fs.readFile)
