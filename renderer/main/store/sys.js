@@ -52,7 +52,7 @@ function store (state, emitter) {
    * arguments via the main process, and doesn't take any local arguments.
    * This will only run when there is no state persistence.
    * */
-  function init(value) {
+  async function init(value) {
     state.unlocked = false
     state.prefs = value
     state.uifocus = null
@@ -93,7 +93,13 @@ function store (state, emitter) {
 
     if (state.prefs) {
       emitter.emit('state:key:init')
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+
+      try {
+        await list(state.prefs.app.path, true)
+      } catch (e) {
+        console.log(e)
+      }
+      initWatcher(state.prefs.app.path)
     }
   }
 
@@ -128,7 +134,6 @@ function store (state, emitter) {
     if (base) {
       // @TODO: Diff this.
       state.lib = tree
-      initWatcher(state.prefs.app.path)
     }
     else {
       var index = state.sidebar.openDirs.indexOf(d.id)
@@ -294,7 +299,6 @@ function store (state, emitter) {
       emitter.emit('state:composer:update', contents)
     }
     
-    
     state.status.renaming = false
   }
 
@@ -306,15 +310,7 @@ function store (state, emitter) {
     }
     if (f.id === state.status.focus.id ) state.status.focus = { }
     if (f.id === state.status.active.id) {
-      let contents = {
-        id: '',
-        body: '',
-        stale: '',
-        uri: null,
-        name: null
-      }
-      console.log(f.id, state.status.active.id)
-      emitter.emit('state:composer:update', contents)
+      close()
     }
   }
 
@@ -499,6 +495,14 @@ function store (state, emitter) {
   function updateApplicationMenu() {
     ipcRenderer.send('menu:new', 'main', state.menu)
   }
+
+  ipcRenderer.on('window:event:quit', (event, response) => {
+    // Close logic here
+  })
+
+  ipcRenderer.on('app:event:quit', (event, response) => {
+    // App close logic
+  })
 
   // Responses to the menu system
   ipcRenderer.on('menu:file:new:file', (event, response) => {
