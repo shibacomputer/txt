@@ -52,7 +52,7 @@ function tree(state, emit) {
   }
 
   function match(f, target) {
-    if (target.id === f.id) return true
+    if (target.uri === f.uri) return true
     else return false
   }
 

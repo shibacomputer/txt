@@ -288,15 +288,10 @@ function store (state, emitter) {
     }
     
     if (state.status.active === f) {
-      let contents = {
-        id: state.composer.id,
-        body: state.composer.body,
-        stale: state.composer.stale,
-        uri: newUri,
-        name: parse(f.newUri).name
-      }
-
-      emitter.emit('state:composer:update', contents)
+      state.composer.uri = newUri
+      state.composer.name = parse(state.composer.uri).name
+      state.status.active.uri = state.composer.uri
+      emitter.emit(state.events.RENDER)
     }
     
     state.status.renaming = false
