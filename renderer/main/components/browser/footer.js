@@ -28,9 +28,9 @@ function editorFooter(state, emit) {
          ],
          left: [
            button({
-            name: 'lock',
+            name: 'power',
             classes: 'c',
-            icon: 'lock',
+            icon: 'power',
             click: function() { console.log('lock') }
            })
         ]

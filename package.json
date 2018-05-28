@@ -14,6 +14,7 @@
     "build:win:beta": "NODE_ENV=dev build --win",
     "build:release": "build -wml -p always",
     "clean": "rm -rf dist",
+    "generate:assets": "svgo -f design/icons && spritesh --input design/icons --output renderer/_components/icons/icons.svg --prefix txt-",
     "postinstall": "electron-builder install-app-deps",
     "rebuild": "electron-rebuild -f -w keytar rabin-bindings",
     "setup": "npm install && npm run postinstall && npm run rebuild",
@@ -47,6 +48,7 @@
     "node-watch": "^0.5.8",
     "openpgp": "^3.0.8",
     "pell": "^1.0.4",
+    "spritesh": "^1.2.1",
     "trash": "^4.3.0"
   },
   "devDependencies": {

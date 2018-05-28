@@ -11,14 +11,23 @@ function editorHeader(state, emit) {
     <header class=${ style.header }>
       ${
         toolbar({
+        left: [
+          button({
+            name:'ShowLibrary',
+            classes: 'c',
+            icon: 'library',
+            click: function() {
+              emit('state:library:toggle')
+            }
+          })
+        ],
         center: `${state.composer.name? state.composer.name : ``}${state.status.modified? `*`:``}`,
         right: [
           button({
-            name: 'new',
+            name: 'history',
             classes: 'c',
-            icon: 'new',
+            icon: 'history',
             click: function() {
-              emit('state:composer:new')
             }
           })
         ]

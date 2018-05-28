@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 50 (54983) - http://www.bohemiancoding.com/sketch -->
-    <title>preview</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="preview" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g transform="translate(1.000000, 3.000000)" stroke="#27FF98" stroke-width="1.25">
-            <path d="M0,5 C0,5 2.54545455,0 7,0 C11.4545455,0 14,5 14,5 C14,5 11.4545455,10 7,10 C2.54545455,10 0,5 0,5 Z" id="Shape"></path>
-            <ellipse id="Oval" cx="7" cy="5" rx="1.90909091" ry="1.875"></ellipse>
-        </g>
-    </g>
-</svg>
+<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg"><g transform="translate(4 7)" stroke="#27FF98" stroke-width="1.5" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><path d="M0 5.5S2.91 0 8 0s8 5.5 8 5.5S13.09 11 8 11 0 5.5 0 5.5z"/><ellipse cx="8" cy="5.5" rx="2.182" ry="2.063"/></g></svg>
