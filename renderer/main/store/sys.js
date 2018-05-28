@@ -38,8 +38,8 @@ function store (state, emitter) {
       // emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
       emitter.on('state:composer:write', write)
-      // emitter.on('state:composer:revert', revert)
-      // emitter.on('state:composer:close', close)
+      emitter.on('state:composer:revert', prepareToRevert)
+      emitter.on('state:composer:close', prepareToClose)
 
       // emitter.on('state:composer:toolbar:report', report)
       
@@ -197,6 +197,9 @@ function store (state, emitter) {
       case 'next':
         emitter.emit('state:item:read', state.status.focus)
       break
+
+      case 'close':
+        close()
     }
   }
 
@@ -310,7 +313,94 @@ function store (state, emitter) {
         uri: null,
         name: null
       }
+      console.log(f.id, state.status.active.id)
       emitter.emit('state:composer:update', contents)
+    }
+  }
+
+  function close() {
+    let contents = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+
+    state.status.modified = false
+    state.status.active = { }
+    state.menu.save = false
+    state.menu.revert = false
+    state.menu.close = false
+    state.menu.export = false
+    state.menu.print = false 
+    state.menu.preview = false
+    state.menu.trashCurrent = false
+    emitter.emit('state:menu:update')
+    emitter.emit('state:composer:update', contents)
+  }
+
+  function revert() {
+    let contents = {
+      id: state.composer.id,
+      body: state.composer.stale,
+      stale: state.composer.stale,
+      uri: state.composer.uri,
+      name: state.composer.name
+    }
+    emitter.emit('state:menu:update')
+    emitter.emit('state:composer:update', contents)
+  }
+
+  function prepareToRevert() {
+    ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Revert', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Are you sure you want to revert ' + state.composer.name + '?',
+      detail: 'Your changes will be permanently lost if you choose to revert them.'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 1:
+          // cancel
+        break
+        default:
+          revert()
+        break
+      }
+    })
+  }
+
+  function prepareToClose() {
+    if (state.status.modified) {
+      ipcRenderer.send('dialog:new', {
+        type: 'question',
+        buttons: ['Save', 'Cancel', 'Discard changes'],
+        defaultId: 0,
+        cancelId: 1,
+        message: state.composer.title + ' has been modified. Save changes?',
+        detail: 'Your changes will be lost if you choose to discard them.'
+      })
+      ipcRenderer.once('dialog:response', (event, res) => {
+        switch (res) {
+          case 1:
+            // cancel
+          break
+          case 2:
+            // Discard changes
+            close()
+          break
+          default:
+            if (!state.status.wrting) {
+              emitter.emit('state:composer:write', 'close')
+            } else return
+          break
+        }
+      })
+    } else {
+      close()
     }
   }
 

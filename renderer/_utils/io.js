@@ -66,14 +66,11 @@ module.exports = {
   },
 
   trash: async function(uri) {
-    console.log('trash, start, ', uri)
     try {
       trash(uri)
     } catch (e) {
-      console.log(e)
       throw new Error(e)
     }
-    console.log('done')
     return
   }
 }
