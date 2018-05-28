@@ -141,8 +141,8 @@ function initEvents () {
   ipcMain.on('menu:context:new', (event, type) => {
     let win = BrowserWindow.getFocusedWindow()
     if (win) {
-      var test = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
-      test.popup(win)
+      var context = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
+      context.popup(win)
     }
   })
 

@@ -279,7 +279,7 @@ module.exports = {
               require('electron').shell.openExternal('https://txtapp.io/donate')
             }
           },
-          {type: 'separator'},
+          { type: 'separator' },
           {
             label: 'Preferences…',
             accelerator: 'Cmd+,',

@@ -22,13 +22,13 @@ function editorFooter(state, emit) {
          ],
          center: [
           html `
-            <span oncontextmenu=${ showContextMenu }}>
+            <span class="w" oncontextmenu=${ showContextMenu }}>
               ${ libPath }
             </span>`
          ],
          left: [
            button({
-            name: 'power',
+            name: 'power ',
             classes: 'c',
             icon: 'power',
             click: function() { console.log('lock') }
@@ -40,6 +40,6 @@ function editorFooter(state, emit) {
   `
   function showContextMenu(e) {
     console.log('hello')
-    emit('state:library:context:display', 'footer')
+    emit('state:library:context:new', 'footer')
   }
 }

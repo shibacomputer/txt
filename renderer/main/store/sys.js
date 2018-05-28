@@ -201,25 +201,37 @@ function store (state, emitter) {
   }
 
   async function read(f) {
-    let ciphertext 
+    let ciphertext
+    let contents = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    emitter.emit('state:composer:update', contents)
+    
     try {
       ciphertext = await io.read(f.uri)
     } catch (e) {
       console.log(e)
     }
+    
     let body
     try {
       body = await pgp.decrypt(ciphertext)
     } catch (e) {
       console.log(e)
     }
-    let contents = {
+
+    contents = {
       id: f.id,
       body: body,
       stale: body,
       uri: f.uri,
       name: parse(f.uri).name
     }
+
     state.status.active = f
     emitter.emit('state:composer:update', contents)
   }
@@ -235,8 +247,8 @@ function store (state, emitter) {
   }
 
   function update(contents) {
-    console.log('updating with, ', contents)
     state.composer = contents
+
     if (state.composer.body !== state.composer.stale) {
       state.status.modified = true
       state.menu.save = true
@@ -267,14 +279,19 @@ function store (state, emitter) {
       console.log(e)
     }
     
-    let contents = {
-      id: state.composer.id,
-      body: state.composer.body,
-      stale: state.composer.stale,
-      uri: newUri,
-      name: parse(f.newUri).name
+    if (state.status.active === f) {
+      let contents = {
+        id: state.composer.id,
+        body: state.composer.body,
+        stale: state.composer.stale,
+        uri: newUri,
+        name: parse(f.newUri).name
+      }
+
+      emitter.emit('state:composer:update', contents)
     }
-    emitter.emit('state:composer:update', contents)
+    
+    
     state.status.renaming = false
   }
 
