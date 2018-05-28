@@ -1,13 +1,16 @@
 const html = require('choo/html')
 const style = require('./style')
 const cell = require('./cell')
-const io = require('../../../_utils/io')
+
 module.exports = tree
 
 function tree(state, emit) {
-  if (typeof state.lib != 'undefined') return initTree()
+  console.log(state.lib.children.filter(f => (f.mime === "text/gpg" || f.type === "directory")))
+  if (typeof state.lib === 'undefined') return initEmptyState()
+  else if (state.lib.children.filter(f => (f.mime === "text/gpg" || f.type === "directory")).length > 0) return initTree()
+  else return(initEmptyState())
 
-  function initTree () {
+  function initTree() {
     return html`
       <main class="${style.treeBase}">
         ${ tree(state.lib.children) }
@@ -15,8 +18,40 @@ function tree(state, emit) {
     `
   }
 
+  function initEmptyState() {
+    return html`
+      <main class=${style.emptyTreeBase}>
+        <div class=${style.emptyTreeIllustration}>
+          <svg>
+            <use xlink:href="#txt-writer">
+          </svg>
+        </div>
+        <div class=${style.emptyTreeMessage}>
+          Welcome to Txt.<br />
+          Each file you create is 
+          encrypted and stored in your library.
+
+          <div class=${style.emptyTreeActions}>
+            <button data-type="file" name="file" onclick=${make}>New File</button>
+            <button data-type="dir" name="dir" onclick=${make}>New Folder</button>
+          </div>
+          <button class=${style.emptyTreeSecondaryAction} onclick=${openGuide}>Welcome Guide</button>
+        </div>
+
+      </main>
+    `
+  }
+
+  function make(e) {
+    if(e.srcElement.dataset.type === 'file') emit('state:item:make', 'file')
+    else emit('state:item:make', 'directory')
+  }
+
+  function openGuide() {
+    require('electron').shell.openExternal('https://txtapp.io/support/guide')
+  }
+
   function match(f, target) {
-    console.log(f, target)
     if (target.id === f.id) return true
     else return false
   }

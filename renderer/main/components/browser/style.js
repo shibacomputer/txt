@@ -18,10 +18,77 @@ const style = css`
     width: 25vw;
   }
 
+  .treeBase, .emptyTreeBase {
+    flex-grow: 1;
+  }
+
   .treeBase {
     -webkit-app-region: no-drag;
     flex-grow: 1;
     overflow-y: scroll;
+  }
+
+  .emptyTreeBase {
+    align-items: center;
+    color: var(--c);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .emptyTreeIllustration {
+    margin-bottom: 1rem;
+  }
+  .emptyTreeIllustration > svg {
+    height: 64px;
+    width: 48px;
+  }
+
+  .emptyTreeMessage {
+    font-size: 13px;
+    max-width: 12rem;
+    text-align: center;
+    width: 85%;
+  }
+
+  .emptyTreeActions {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .emptyTreeActions > button {
+    background: none;
+    border: 1px solid currentColor;
+    box-sizing: border-box;
+    color: var(--c)
+    outline: none;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+    flex-grow: 1;
+    padding: 0.55rem 0.45rem 0.45rem 0.45rem;
+    width: 45%;
+  }
+  .emptyTreeActions > button:focus {
+    outline: var(--w);
+  }
+  .emptyTreeActions > button:active {
+    background: var(--c);
+    color: var(--k);
+    outline: var(--w);
+  }
+  .emptyTreeActions > button:first-child {
+    margin-right: 0.5rem;
+  }
+  .emptyTreeSecondaryAction {
+    background: none;
+    border: none;
+    color: var(--b);
+    outline: none;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+  }
+  .emptyTreeSecondaryAction:active {
+    color: var(--w);
   }
 
   .tree {
