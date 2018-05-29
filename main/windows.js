@@ -80,6 +80,12 @@ module.exports = {
     win.on('focus', () => {
       win.webContents.send('window:event:focus')
     })
+    win.on('enter-full-screen', () => {
+      win.webContents.send('window:event:fullscreen', true)
+    })
+    win.on('leave-full-screen', () => {
+      win.webContents.send('window:event:fullscreen', false)
+    })
 
     return thisWindow
   }

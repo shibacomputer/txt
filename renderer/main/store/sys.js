@@ -516,60 +516,65 @@ function store (state, emitter) {
     ipcRenderer.send('menu:new', 'main', state.menu)
   }
 
-  ipcRenderer.on("window:event:blur", (event, response) => {
+  ipcRenderer.on("window:event:blur", (event) => {
     emitter.emit('state:ui:focus', 'blur', true)
   })
 
-  ipcRenderer.on("window:event:focus", (event, response) => {
+  ipcRenderer.on("window:event:focus", (event) => {
     if (state.uifocus !== 'modal') emitter.emit('state:ui:focus', 'general', true)
   })
 
-  ipcRenderer.on('window:event:quit', (event, response) => {
+  ipcRenderer.on("window:event:fullscreen", (event, arg) => {
+    console.log(event, arg)
+    state.status.fullscreen = arg
+    emitter.emit(state.events.RENDER)
+  })
+  ipcRenderer.on('window:event:quit', (event) => {
     // Close logic here
   })
 
-  ipcRenderer.on('app:event:quit', (event, response) => {
+  ipcRenderer.on('app:event:quit', (event) => {
     // App close logic
   })
 
   // Responses to the menu system
-  ipcRenderer.on('menu:about:prefs', (event, response) => {
+  ipcRenderer.on('menu:about:prefs', (event) => {
     emitter.emit('state:modal:show', 'prefs')
   })
 
-  ipcRenderer.on('menu:file:new:file', (event, response) => {
+  ipcRenderer.on('menu:file:new:file', (event) => {
     emitter.emit('state:item:make', 'file')
   })
 
-  ipcRenderer.on('menu:file:new:dir', (event, response) => {
+  ipcRenderer.on('menu:file:new:dir', (event) => {
     emitter.emit('state:item:make', 'directory')
   })  
-  ipcRenderer.on('menu:file:new:window', (event, response) => {
+  ipcRenderer.on('menu:file:new:window', (event) => {
     ipcRenderer.send('window:open', 'main')
   })
 
-  ipcRenderer.on('menu:file:save', (event, response) => {
+  ipcRenderer.on('menu:file:save', (event) => {
     emitter.emit('state:composer:write')
   })
-  ipcRenderer.on('menu:file:close', (event, response) => {
+  ipcRenderer.on('menu:file:close', (event) => {
     emitter.emit('state:composer:close')
   })
-  ipcRenderer.on('menu:file:revert', (event, response) => {
+  ipcRenderer.on('menu:file:revert', (event) => {
     emitter.emit('state:composer:revert')
   })
-  ipcRenderer.on('menu:file:rename', (event, response) => {
+  ipcRenderer.on('menu:file:rename', (event) => {
     emitter.emit('state:item:rename')
   })
-  ipcRenderer.on('menu:file:trash', (event, response) => {
+  ipcRenderer.on('menu:file:trash', (event) => {
     emitter.emit('state:item:trash')
   })  
-  ipcRenderer.on('menu:view:library', (event, response) => {
+  ipcRenderer.on('menu:view:library', (event) => {
     emitter.emit('state:library:toggle')
   })
-  ipcRenderer.on('menu:help:support', (event, response) => {
+  ipcRenderer.on('menu:help:support', (event) => {
     emitter.emit('state:toolbar:report')
   })
-  ipcRenderer.on('menu:context:reveal', (event, response) => {
+  ipcRenderer.on('menu:context:reveal', (event) => {
     emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
   })
 
