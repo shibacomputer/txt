@@ -147,9 +147,14 @@ function store (state, emitter) {
 
   async function mk() {
     let d = state.status.focus
-    let base = d.uri? d.uri : state.prefs.app.path
-    let index = state.sidebar.openDirs.indexOf(d.id)
-    let uri = join(index === -1? parse(base).dir : base, 'Untitled Folder')
+    let base
+    
+    if (d.uri) {
+      let index = state.sidebar.openDirs.indexOf(d.id)
+      index === -1? parse(base).dir : base
+    } else base = state.prefs.app.path
+    
+    let uri = join(base, 'Untitled Folder')
     try {
       io.mkdir(uri)
     } catch (e) {
@@ -158,6 +163,7 @@ function store (state, emitter) {
   }
 
   async function write(type) {
+    debugger
     state.writing = true
     let ciphertext
     let c = type === 'new'?  '' : state.composer.body
@@ -192,18 +198,16 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    state.status.modified = false
+    if (type !== 'new') state.status.modified = false
     state.writing = false
     
     switch (type) {
       case 'new':
         let d = { uri: uri }
-        console.log('hello')
         if (!state.status.active) emitter.emit('state:item:read', d)
       break
 
       case 'next':
-        
         if (state.status.active) await close()
         emitter.emit('state:item:read', state.status.focus)
       break
@@ -375,7 +379,7 @@ function store (state, emitter) {
         buttons: ['Save', 'Cancel', 'Discard changes'],
         defaultId: 0,
         cancelId: 1,
-        message: state.composer.title + ' has been modified. Save changes?',
+        message: state.composer.name + ' has been modified. Save changes?',
         detail: 'Your changes will be lost if you choose to discard them.'
       })
       ipcRenderer.once('dialog:response', (event, res) => {
@@ -411,7 +415,7 @@ function store (state, emitter) {
         buttons: ['Save', 'Cancel', 'Discard changes'],
         defaultId: 0,
         cancelId: 1,
-        message: state.composer.title + ' has been modified. Save changes?',
+        message: state.composer.name + ' has been modified. Save changes?',
         detail: 'Your changes will be lost if you choose to discard them.'
       })
       ipcRenderer.once('dialog:response', (event, res) => {
