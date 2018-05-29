@@ -60,6 +60,7 @@ function store (state, emitter) {
     state.status = {
       modified: false,
       writing: false,
+      reading: false,
       listing: false,
       fullscreen: false,
       renaming: false,
@@ -164,7 +165,6 @@ function store (state, emitter) {
   }
 
   async function write(type) {
-    debugger
     state.writing = true
     let ciphertext
     let c = type === 'new'?  '' : state.composer.body
@@ -219,6 +219,8 @@ function store (state, emitter) {
   }
 
   async function read(f) {
+    state.status.reading = true
+    emitter.emit(state.events.RENDER)
     let ciphertext
     let contents = {
       id: '',
@@ -251,6 +253,7 @@ function store (state, emitter) {
     }
 
     state.status.active = f
+    state.status.reading = false
     emitter.emit('state:composer:update', contents)
   }
 
@@ -499,7 +502,6 @@ function store (state, emitter) {
 
   function showModal(type) {
     emitter.emit('state:ui:focus', 'modal', true)
-    
     window.setTimeout(() => {
       ipcRenderer.send('modal:new', type)
     }, 100) 
