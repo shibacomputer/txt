@@ -153,7 +153,7 @@ function store (state, emitter) {
 
     if (d.uri) {
       let index = state.sidebar.openDirs.indexOf(d.id)
-      index === -1? parse(base).dir : base
+      base = index === -1? parse(d.uri).dir : d.uri
     } else base = state.prefs.app.path
     
     let uri = join(base, 'Untitled Folder')
@@ -317,9 +317,9 @@ function store (state, emitter) {
       console.log(e)
     }
     if (f.id === state.status.focus.id ) state.status.focus = { }
-    if (f.id === state.status.active.id) {
-      close()
-    }
+    if (f.id === state.status.active.id) close()
+    let index = state.sidebar.openDirs.indexOf(f.id)
+    if (index === -1) state.sidebar.openDirs.splice(index, 1)
   }
 
   async function close() {
