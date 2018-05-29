@@ -3,6 +3,7 @@ module.exports = store
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
 const watch = require('node-watch')
+const chokidar = require('chokidar')
 
 const Mousetrap = require('mousetrap')
 
@@ -117,11 +118,23 @@ function store (state, emitter) {
   }
 
   function initWatcher(uri) {
+
+    var watcher = chokidar.watch('/Users/shibacomputer/Txt/**/*', {
+      ignored: /(^|[\/\\])\../,
+      persistent: true
+    });
+
+    watcher.on('ready', function () {
+      var watchList = watcher.getWatched()
+      console.log('watch list', watchList)
+    })
+    /*
     let watcher = watch(uri, { recursive: true, persistent: true })
     watcher.on('change', (event, name) => {
       // @TODO: Make this more granular
       emitter.emit('state:library:list', state.prefs.app.path, true)
     })
+    */
   }
 
   async function list(d, base) {

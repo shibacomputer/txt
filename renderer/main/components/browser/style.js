@@ -15,7 +15,7 @@ const style = css`
     max-width: 320px;
     min-width: 240px;
     overflow-y: hidden;
-    transition: transform 200ms ease-in-out;
+    transition: transform 100ms ease-in-out;
     width: 25vw;
   }
 

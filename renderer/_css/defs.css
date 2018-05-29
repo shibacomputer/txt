@@ -8,6 +8,20 @@
                 font-style: normal;
                 src:  url('../_assets/fonts/plex-r.otf') format('opentype') }
 
+  @font-face {  font-family: 'Mono';
+                font-weight: normal;
+                font-style: italic;
+                src:  url('../_assets/fonts/plex-i.otf') format('opentype') }
+
+  @font-face {  font-family: 'Mono';
+                font-weight: bold;
+                font-style: normal;
+                src:  url('../_assets/fonts/plex-b.otf') format('opentype') }
+
+  @font-face {  font-family: 'Mono';
+                font-weight: bold;
+                font-style: italic;
+                src:  url('../_assets/fonts/plex-bi.otf') format('opentype') }
 
   @font-face {  font-family: 'HKG';
                 font-weight: normal;
