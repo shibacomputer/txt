@@ -11,13 +11,23 @@ function editorFooter(state, emit) {
     <footer class=${ style.footer }>
       ${
         toolbar({
+          left: [
+            !state.sidebar.visible? button({
+              name: 'lock',
+              classes: 'c',
+              icon: 'power',
+              click: function() { 
+                emit('state:lock')
+              }
+            })  : null
+          ],
           right: [
            button({
              name: 'preview',
              classes: 'c',
              icon: 'preview',
              click: function() {
-              emit('state:composer:export')
+              emit('state:modal:show', 'preview')
              }
            }),
            button({
@@ -25,7 +35,7 @@ function editorFooter(state, emit) {
              classes: 'c',
              icon: 'share',
              click: function() {
-              emit('state:composer:export')
+              emit('state:library:context:new', 'share')
              }
            })
          ]

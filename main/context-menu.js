@@ -103,7 +103,7 @@ module.exports = {
             }
           }
         ]
-        break
+      break
       case 'directory': 
         menu = [
           {
@@ -148,7 +148,7 @@ module.exports = {
             }
           }
         ]
-        break
+      break
       case 'footer':
         menu = [
           {
@@ -158,7 +158,42 @@ module.exports = {
             }
           }
         ]
-      }
+      break
+      case 'share':
+        menu = [
+          {
+            label: 'to Plain Text…',
+            click: (item, win, event) => {
+              if (win) win.webContents.send('menu:file:duplicate')
+            }
+          },
+          {
+            label: 'to Encrypted File…',
+            click: (item, win, event) => {
+              if (win) win.webContents.send('menu:file:duplicate')
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'to PDF…',
+            click: (item, win, event) => {
+
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: 'to Are.na…',
+            click: (item, win, event) => {
+
+            }
+          }
+        ]
+      break  
+    }
     return menu
   }
 }

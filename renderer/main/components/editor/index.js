@@ -6,6 +6,7 @@ const Composer = require('./composer')
 const header = require('./header')
 const footer = require('./footer')
 
+// ${ state.status.reading? spinner(): null }
 
 module.exports = editor
 
@@ -22,7 +23,7 @@ function editor(state, emit) {
       ${ header(state, emit)}
       <div class=${ style.base }>
         ${ state.composer.uri? composer.render(state, emit) : null }
-        ${ state.status.reading? spinner(): null }
+        
       </div>
       ${ footer(state, emit)}
     </main>
