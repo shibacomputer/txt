@@ -186,7 +186,7 @@ function initEvents () {
     if (newWin) {
       let win = module.exports.prepare(newWin)
 
-      win.on('ready-to-show', () => {
+      win.object.on('ready-to-show', () => {
         win.object.show()
       })
     }

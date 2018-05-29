@@ -15,6 +15,7 @@ const style = css`
     max-width: 320px;
     min-width: 240px;
     overflow-y: hidden;
+    transition: transform 200ms ease-in-out;
     width: 25vw;
   }
 
@@ -97,7 +98,6 @@ const style = css`
   }
 
   .header {
-    
     width: 100%;
   }
 
@@ -171,7 +171,8 @@ const style = css`
   }
 
   .disabled {
-    display: none;
+    position: absolute;
+    transform: translateX(-100%);
   }
 
   .focus, .focus.active, .focus.modified, .cell.focus:hover, .cell.focus.active:hover {

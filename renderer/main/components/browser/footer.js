@@ -17,7 +17,7 @@ function editorFooter(state, emit) {
               name: 'settings',
               classes: 'c',
               icon: 'settings',
-              click: function() { console.log('setting' )}
+              click: function() { emit('state:modal:show', 'prefs') }
            })
          ],
          center: [

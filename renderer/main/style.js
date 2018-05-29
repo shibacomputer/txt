@@ -4,7 +4,7 @@ const style = css`
   .app {
     display: flex;
     flex-direction: row;
-    transition: opacity 200ms linear, filter 250ms linear;
+    transition: opacity 100ms linear, filter 250ms linear;
   }
 
   .unfocused {

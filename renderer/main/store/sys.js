@@ -498,7 +498,11 @@ function store (state, emitter) {
   }
 
   function showModal(type) {
-    ipcRenderer.send('modal:new', type)
+    emitter.emit('state:ui:focus', 'modal', true)
+    
+    window.setTimeout(() => {
+      ipcRenderer.send('modal:new', type)
+    }, 100) 
   }
 
   // Out
@@ -528,7 +532,6 @@ function store (state, emitter) {
 
   // Responses to the menu system
   ipcRenderer.on('menu:about:prefs', (event, response) => {
-    emitter.emit('state:ui:focus', 'modal', true)
     emitter.emit('state:modal:show', 'prefs')
   })
 
