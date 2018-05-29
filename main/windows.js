@@ -36,16 +36,10 @@ module.exports = {
       'minWidth': 640,
       'resizable': true,
       'scrollBounce': true,
+      'sandbox': true,
+      'sharedWorker': true,
       'titleBarStyle': 'hiddenInset',
       'width': 1000
-    })
-
-    winManager.templates.set('prefs', {
-      'autoHideMenuBar': true,
-      'frame': false,
-      'titleBarStyle': 'hidden',
-      'resizable': false,
-      'modal': true
     })
 
     winManager.templates.set('setup', {
@@ -188,5 +182,17 @@ function initEvents () {
 
   ipcMain.on('window:close', (event, win) => {
     winManager.close(win.name)
+  })
+
+  ipcMain.on('modal:new', (event, newModal) => {
+    let thisWin = winManager.getCurrent()
+    let top = thisWin.object
+    if (thisWin) {
+      let child = new BrowserWindow( { parent: top, modal: true, show: false} )
+      child.loadURL(`file://${__dirname}/../renderer/${newModal}/index.html`)
+      child.once('ready-to-show', () => {
+        child.show()
+      })
+    }
   })
 }

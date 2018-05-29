@@ -294,7 +294,8 @@ module.exports = {
             accelerator: 'Cmd+,',
             enabled: menu === 'setup'? false : true,
             click: (item, win, event) => {
-              console.log('prefs');
+              if (!win) return
+              else win.webContents.send('menu:about:prefs')
             }
           },
           {type: 'separator'},

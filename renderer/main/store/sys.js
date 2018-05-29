@@ -43,6 +43,7 @@ function store (state, emitter) {
 
       // emitter.on('state:composer:toolbar:report', report)
       
+      emitter.on('state:modal:show', showModal)
       emitter.emit('state:init', value)
     })
   })
@@ -148,7 +149,7 @@ function store (state, emitter) {
   async function mk() {
     let d = state.status.focus
     let base
-    
+
     if (d.uri) {
       let index = state.sidebar.openDirs.indexOf(d.id)
       index === -1? parse(base).dir : base
@@ -486,9 +487,19 @@ function store (state, emitter) {
     })
   }
 
-  function updateFocus(newFocus) {
+  function updateFocus(newFocus, reload) {
     if (state.uifocus === newFocus) return
-    else state.uifocus = newFocus
+    else {
+      state.uifocus = newFocus
+      if (reload) {
+        console.log('hi')
+        emitter.emit(state.events.RENDER)
+      }
+    }
+  }
+
+  function showModal(type) {
+    ipcRenderer.send('modal:new', type)
   }
 
   // Out
@@ -509,9 +520,14 @@ function store (state, emitter) {
   })
 
   // Responses to the menu system
+  ipcRenderer.on('menu:about:prefs', (event, response) => {
+    emitter.emit('state:ui:focus', 'modal', true)
+    // emitter.emit('state:modal:show', 'prefs')
+  })
+
   ipcRenderer.on('menu:file:new:file', (event, response) => {
     emitter.emit('state:item:make', 'file')
-  })  
+  })
 
   ipcRenderer.on('menu:file:new:dir', (event, response) => {
     emitter.emit('state:item:make', 'directory')

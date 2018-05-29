@@ -14,9 +14,9 @@ module.exports = editorApplication
 
 function editorApplication(state, emit) {
   document.title = 'Txt'
-
+  console.log(state.uifocus === 'modal')
   return html`
-    <body class="${style.app}">
+    <body class="${style.app} ${ state.uifocus === 'modal' ? style.unfocused : null}" >
       ${ browser(state, emit) }
       ${ editor(state, emit) }
       ${ icons() }
