@@ -46,7 +46,6 @@ module.exports = {
   },
 
   write: async function(uri, data) {
-    console.log(uri, data)
     try {
       await write(uri, data)
     } catch (e) {

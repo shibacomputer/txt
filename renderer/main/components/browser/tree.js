@@ -5,7 +5,6 @@ const cell = require('./cell')
 module.exports = tree
 
 function tree(state, emit) {
-  console.log(state.lib.children.filter(f => (f.mime === "text/gpg" || f.type === "directory")))
   if (typeof state.lib === 'undefined') return initEmptyState()
   else if (state.lib.children.filter(f => (f.mime === "text/gpg" || f.type === "directory")).length > 0) return initTree()
   else return(initEmptyState())

@@ -159,10 +159,11 @@ function store (state, emitter) {
 
   async function write(type) {
     state.writing = true
-    let c = state.composer
     let ciphertext
+    let c = type === 'new'?  '' : state.composer.body
+    
     try {
-      ciphertext = await pgp.encrypt(c.body)
+      ciphertext = await pgp.encrypt(c)
     } catch(e) {
       console.log(e)
       return
@@ -185,26 +186,30 @@ function store (state, emitter) {
       f = state.status.active
       uri = f.uri
     } 
+
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
       console.log(e)
     }
-    state.writing = false
     state.status.modified = false
+    state.writing = false
     
     switch (type) {
       case 'new':
         let d = { uri: uri }
-        emitter.emit('state:item:read', d)
+        console.log('hello')
+        if (!state.status.active) emitter.emit('state:item:read', d)
       break
 
       case 'next':
+        
+        if (state.status.active) await close()
         emitter.emit('state:item:read', state.status.focus)
       break
 
       case 'close':
-        close()
+        await close()
     }
   }
 
@@ -309,7 +314,7 @@ function store (state, emitter) {
     }
   }
 
-  function close() {
+  async function close() {
     let contents = {
       id: '',
       body: '',
@@ -317,7 +322,7 @@ function store (state, emitter) {
       uri: null,
       name: null
     }
-
+    emitter.emit('state:composer:update', contents)
     state.status.modified = false
     state.status.active = { }
     state.menu.save = false
@@ -328,7 +333,6 @@ function store (state, emitter) {
     state.menu.preview = false
     state.menu.trashCurrent = false
     emitter.emit('state:menu:update')
-    emitter.emit('state:composer:update', contents)
   }
 
   function revert() {
@@ -417,6 +421,7 @@ function store (state, emitter) {
           break
           case 2:
             // Discard changes
+            close()
             read(f)
           break
           default:
