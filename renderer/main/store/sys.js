@@ -2,7 +2,6 @@ module.exports = store
 
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
-const watch = require('node-watch')
 const chokidar = require('chokidar')
 
 const Mousetrap = require('mousetrap')
@@ -119,7 +118,7 @@ function store (state, emitter) {
 
   function initWatcher(uri) {
 
-    var watcher = chokidar.watch('/Users/shibacomputer/Txt/**/*', {
+    var watcher = chokidar.watch(join(state.prefs.app.path, '/**/*'), {
       ignored: /(^|[\/\\])\../,
       persistent: true
     });
@@ -127,6 +126,26 @@ function store (state, emitter) {
     watcher.on('ready', function () {
       var watchList = watcher.getWatched()
       console.log('watch list', watchList)
+    })
+
+    watcher.on('change', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('add', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('addDir', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('unlinkDir', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('unlink', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
     /*
     let watcher = watch(uri, { recursive: true, persistent: true })
@@ -169,7 +188,7 @@ function store (state, emitter) {
       base = index === -1? parse(d.uri).dir : d.uri
     } else base = state.prefs.app.path
     
-    let uri = join(base, 'Untitled Folder')
+    let uri = join(base, 'New Folder')
     try {
       io.mkdir(uri)
     } catch (e) {
