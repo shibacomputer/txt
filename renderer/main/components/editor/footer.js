@@ -11,13 +11,21 @@ function editorFooter(state, emit) {
     <footer class=${ style.footer }>
       ${
         toolbar({
-          left: [
+          right: [
            button({
-             name: 'report',
+             name: 'preview',
              classes: 'c',
-             icon: 'issue',
+             icon: 'preview',
              click: function() {
-              emit('state:composer:toolbar:report')
+              emit('state:composer:export')
+             }
+           }),
+           button({
+             name: 'share',
+             classes: 'c',
+             icon: 'share',
+             click: function() {
+              emit('state:composer:export')
              }
            })
          ]
