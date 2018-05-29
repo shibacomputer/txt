@@ -10,8 +10,14 @@ const style = css`
     font-size: 13px;
     height: 100vh;
     justify-content: space-between;
-    padding: 1.5rem 1rem;
     overflow-y: hidden;
+    padding: 1.5rem 1rem;
+    transition: opacity 100ms linear, filter 250ms linear;
+  }
+
+  .unfocused {
+    opacity: 0.45;
+    filter: grayscale(100%);
   }
 
   .header {

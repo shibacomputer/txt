@@ -492,7 +492,6 @@ function store (state, emitter) {
     else {
       state.uifocus = newFocus
       if (reload) {
-        console.log('hi')
         emitter.emit(state.events.RENDER)
       }
     }
@@ -511,6 +510,14 @@ function store (state, emitter) {
     ipcRenderer.send('menu:new', 'main', state.menu)
   }
 
+  ipcRenderer.on("window:event:blur", (event, response) => {
+    emitter.emit('state:ui:focus', 'blur', true)
+  })
+
+  ipcRenderer.on("window:event:focus", (event, response) => {
+    if (state.uifocus !== 'modal') emitter.emit('state:ui:focus', 'general', true)
+  })
+
   ipcRenderer.on('window:event:quit', (event, response) => {
     // Close logic here
   })
@@ -522,7 +529,7 @@ function store (state, emitter) {
   // Responses to the menu system
   ipcRenderer.on('menu:about:prefs', (event, response) => {
     emitter.emit('state:ui:focus', 'modal', true)
-    // emitter.emit('state:modal:show', 'prefs')
+    emitter.emit('state:modal:show', 'prefs')
   })
 
   ipcRenderer.on('menu:file:new:file', (event, response) => {

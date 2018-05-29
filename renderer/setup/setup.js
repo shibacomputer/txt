@@ -10,8 +10,8 @@ module.exports = setupApplication
 function setupApplication(state, emit) {
 
   return html`
-    <body class="b-myc">
-      <main class=${style.main}>
+    <body class="${ state.uifocus === 'modal' || state.uifocus === 'blur' ? 'b-b' : 'b-myc' }">
+      <main class="${style.main} ${ state.uifocus === 'modal' || state.uifocus === 'blur' ? style.unfocused : null}">
         ${state.ui.block ? blocker() : null }
         <header class=${style.header}>
           <div class=${style.logo}>

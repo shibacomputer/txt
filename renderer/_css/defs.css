@@ -37,7 +37,7 @@
 
   /* Gradients */
   --myc:   linear-gradient(45deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
-  --bck:   linear-gradient(-180deg, #00D7FF 0%, #27FF98 51%, #000000 100%);
+  --bck:   linear-gradient(45deg, #00D7FF 0%, #27FF98 51%, #000000 100%);
 }
 
 .c { color: var(--c) }
@@ -60,7 +60,7 @@
 .bg-f { background-color: var(--f) }
 .bg-r { background-color: var(--r) }
 
-.b-myc, .b-bck {
+.b-myc, .b-bck, .b-b {
   border: 1px solid transparent;
   background-clip: padding-box;
   border-radius: 6px;
@@ -83,6 +83,17 @@
   left: -20px;
   right: -20px;
   background: var(--bck);
+  content: '';
+  z-index: -1;
+}
+
+.b-b::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--g);
   content: '';
   z-index: -1;
 }

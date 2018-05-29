@@ -53,6 +53,8 @@ module.exports = {
       'menu': menu.buildMenu('setup', null),
       'minimizable': true,
       'resizable': false,
+      'sandbox': true,
+      'sharedWorker': true,
       'titleBarStyle': 'hiddenInset',
       'width': 448,
     })
@@ -69,7 +71,17 @@ module.exports = {
       `file://${__dirname}/../renderer/${winName}/index.html`,
       winName)
 
-    return thisWindow.create()
+    thisWindow.create()
+
+    let win = thisWindow.object
+    win.on('blur', () => {
+      win.webContents.send('window:event:blur')
+    })
+    win.on('focus', () => {
+      win.webContents.send('window:event:focus')
+    })
+
+    return thisWindow
   }
 }
 
@@ -173,7 +185,8 @@ function initEvents () {
     let thisWin = winManager.getCurrent()
     if (newWin) {
       let win = module.exports.prepare(newWin)
-      win.object.on('ready-to-show', () => {
+
+      win.on('ready-to-show', () => {
         win.object.show()
       })
     }
