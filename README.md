@@ -50,7 +50,7 @@ make sure it's really useful on a day to day basis without any sort of platform
 lock in. This MVP focuses on text entry, but 1.0 will include image embeds and
 management. We'll see where this goes from there.
 
-Choosing PGP and the filesystem as the app's foundation is deliberate. Rather
+Choosing GPG and the filesystem as the app's foundation is deliberate. Rather
 than build a database, it relies on the filesystem. Anything you make with Txt
 can be read and reviewed somewhere else. There is no import/export tool, because
 you don't need one. Everything used is off the shelf.
@@ -72,23 +72,25 @@ who has access to the disk.
 
 ## Features
 ### Planned for beta
-✅ Simple PGP-managed filesystem-based notekeeping  
+✅ Simple GPG-managed filesystem-based notekeeping  
 ✅ Text editor  
-✅ Passphrase GPG encryption  
 ✅ Keychain support  
 ✅ Dark UI theme  
 ✅ Auto-updating  
 ✅ Linux support  
 ✅ Windows support  
 ✅ Smart window management (smarter than my prototype at least)  
-⬜ GPG Private key encryption  
+✅ GPG Private key encryption  
+⬜ Switch or replace keys  
+⬜ Import existing text files      
+⬜ Export to passphrase encrypted GPG text file  
 ⬜ Light UI theme  
 ⬜ Export to unencrypted text file  
 
 ### Planned for v1.0
 ⬜ Markdown support  
 ⬜ Decentralised software updates  
-⬜ Localisation (tbc)  
+⬜ Localisation (First languages: Spanish/German/Japanese)  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
 ⬜ Automatic image management  

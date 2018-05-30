@@ -286,6 +286,10 @@ function store (state, emitter) {
 
     state.status.active = f
     state.status.reading = false
+    state.menu.close = true
+    state.menu.print = true
+    state.menu.export = true
+    emitter.emit('state:menu:update')
     emitter.emit('state:composer:update', contents)
   }
 

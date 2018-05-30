@@ -22,7 +22,7 @@ function editorHeader(state, emit) {
           })
         ],
         center: `${state.composer.name? state.composer.name : ``}${state.status.modified? `*`:``}`,
-        right: [
+        right: state.composer.uri? [
           button({
             name: 'history',
             classes: 'c',
@@ -30,7 +30,7 @@ function editorHeader(state, emit) {
             click: function() {
             }
           })
-        ]
+        ] : ''
       })
     }
     </header>

@@ -21,7 +21,7 @@ function editorFooter(state, emit) {
               }
             })  : null
           ],
-          right: [
+          right: state.composer.uri? [
            button({
              name: 'preview',
              classes: 'c',
@@ -38,7 +38,7 @@ function editorFooter(state, emit) {
               emit('state:library:context:new', 'share')
              }
            })
-         ]
+         ] : ''
         })
       }
     </footer>
