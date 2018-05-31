@@ -11,9 +11,9 @@ const PGP_BITS = 4096
 const KEY_FILENAME = '.txtkey'
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
-openpgp.config.aead_protect = true
 openpgp.config.use_native = true
 openpgp.config.zero_copy = true
+openpgp.config.checksum_required = true
 openpgp.config.versionstring = APP_NAME + '.app v' + APP_VERSION
 openpgp.config.commentstring = 'https://txt.app'
 
