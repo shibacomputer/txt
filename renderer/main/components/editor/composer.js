@@ -1,6 +1,9 @@
 const Nanocomponent = require('nanocomponent')
 const html = require('choo/html')
 const pell = require('pell')
+const TurndownService = require('turndown')
+const turndownService = new TurndownService()
+
 
 const style = require('./style')
 
@@ -10,8 +13,9 @@ function Editor () {
   if (!(this instanceof Editor)) return new Editor()
   this.body = ''
   this.stale = ''
+  this.rendered = ''
   this.uri = null
-  this.name = 'Untitled'
+  this.name = ''
   this.id = ''
   this.modified = false
   this.emit = null
@@ -22,6 +26,7 @@ Editor.prototype = Object.create(Nanocomponent.prototype)
 Editor.prototype.createElement = function (state, emit) {
   this.body = state.composer.body || ''
   this.stale = state.composer.stale || this.body
+  this.rendered = this.rendered || ''
   this.id = state.composer.id || ''
   this.uri = state.composer.uri || null
   this.name = state.composer.name || 'Untitled'
@@ -32,7 +37,8 @@ Editor.prototype.createElement = function (state, emit) {
   `
   const editor = pell.init({
     element: el,
-    onChange: (contents) => {
+    actions: ['bold', 'italic', 'heading1', 'heading2', 'olist', 'ulist'],
+    onChange: (html) => {
       var contents = {
         body: editor.content.innerText? editor.content.innerText : state.composer.body,
         stale: this.stale,
@@ -42,8 +48,11 @@ Editor.prototype.createElement = function (state, emit) {
         modified: (editor.content.innerText != this.stale)
       }
       this.body = contents.body
-      console.log(this)
+      this.rendered = turndownService.turndown(html)
+
+      console.log(this.rendered)
       this.emit('state:composer:update', contents)
+      
     },
     styleWithCSS: true,
     actions: [],

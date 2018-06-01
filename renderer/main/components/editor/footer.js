@@ -12,15 +12,33 @@ function editorFooter(state, emit) {
       ${
         toolbar({
           left: [
+            !state.sidebar.visible? button({
+              name: 'lock',
+              classes: 'c',
+              icon: 'power',
+              click: function() { 
+                emit('state:lock')
+              }
+            })  : null
+          ],
+          right: state.composer.uri? [
            button({
-             name: 'report',
+             name: 'preview',
              classes: 'c',
-             icon: 'issue',
+             icon: 'preview',
              click: function() {
-              emit('state:composer:toolbar:report')
+              emit('state:modal:show', 'preview')
+             }
+           }),
+           button({
+             name: 'share',
+             classes: 'c',
+             icon: 'share',
+             click: function() {
+              emit('state:library:context:new', 'share')
              }
            })
-         ]
+         ] : ''
         })
       }
     </footer>

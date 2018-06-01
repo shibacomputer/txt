@@ -7,8 +7,8 @@ const trash = require('trash')
 
 mime.define({ 'text/gpg': ['gpg'] })
 
-const APP_NAME = process.env.npm_package_name
-const APP_VERSION = process.env.npm_package_version
+const APP_NAME = require('electron').remote.app.getName()
+const APP_VERSION = require('electron').remote.app.getVersion()
 const KEY_FILENAME = '.txtkey'
 
 const read = util.promisify(fs.readFile)
@@ -46,7 +46,6 @@ module.exports = {
   },
 
   write: async function(uri, data) {
-    console.log(uri, data)
     try {
       await write(uri, data)
     } catch (e) {
@@ -66,14 +65,11 @@ module.exports = {
   },
 
   trash: async function(uri) {
-    console.log('trash, start, ', uri)
     try {
       trash(uri)
     } catch (e) {
-      console.log(e)
       throw new Error(e)
     }
-    console.log('done')
     return
   }
 }

@@ -32,20 +32,14 @@ module.exports = {
       'frame': true,
       'height': 700,
       'menu': menu.buildMenu('main', null),
-      'minHeight': 320,
-      'minWidth': 600,
+      'minHeight': 480,
+      'minWidth': 640,
       'resizable': true,
       'scrollBounce': true,
+      'sandbox': true,
+      'sharedWorker': true,
       'titleBarStyle': 'hiddenInset',
       'width': 1000
-    })
-
-    winManager.templates.set('prefs', {
-      'autoHideMenuBar': true,
-      'frame': false,
-      'titleBarStyle': 'hidden',
-      'resizable': false,
-      'modal': true
     })
 
     winManager.templates.set('setup', {
@@ -59,6 +53,8 @@ module.exports = {
       'menu': menu.buildMenu('setup', null),
       'minimizable': true,
       'resizable': false,
+      'sandbox': true,
+      'sharedWorker': true,
       'titleBarStyle': 'hiddenInset',
       'width': 448,
     })
@@ -75,7 +71,23 @@ module.exports = {
       `file://${__dirname}/../renderer/${winName}/index.html`,
       winName)
 
-    return thisWindow.create()
+    thisWindow.create()
+
+    let win = thisWindow.object
+    win.on('blur', () => {
+      win.webContents.send('window:event:blur')
+    })
+    win.on('focus', () => {
+      win.webContents.send('window:event:focus')
+    })
+    win.on('enter-full-screen', () => {
+      win.webContents.send('window:event:fullscreen', true)
+    })
+    win.on('leave-full-screen', () => {
+      win.webContents.send('window:event:fullscreen', false)
+    })
+
+    return thisWindow
   }
 }
 
@@ -141,8 +153,8 @@ function initEvents () {
   ipcMain.on('menu:context:new', (event, type) => {
     let win = BrowserWindow.getFocusedWindow()
     if (win) {
-      var test = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
-      test.popup(win)
+      var context = Menu.buildFromTemplate(contextMenu.buildMenu(type.toString()))
+      context.popup(win)
     }
   })
 
@@ -179,6 +191,7 @@ function initEvents () {
     let thisWin = winManager.getCurrent()
     if (newWin) {
       let win = module.exports.prepare(newWin)
+
       win.object.on('ready-to-show', () => {
         win.object.show()
       })
@@ -188,5 +201,17 @@ function initEvents () {
 
   ipcMain.on('window:close', (event, win) => {
     winManager.close(win.name)
+  })
+
+  ipcMain.on('modal:new', (event, newModal) => {
+    let thisWin = winManager.getCurrent()
+    let top = thisWin.object
+    if (thisWin) {
+      let child = new BrowserWindow( { parent: top, modal: true, show: false} )
+      child.loadURL(`file://${__dirname}/../renderer/${newModal}/index.html`)
+      child.once('ready-to-show', () => {
+        child.show()
+      })
+    }
   })
 }

@@ -22,6 +22,7 @@ function store (state, emitter) {
     emitter.on('state:key:update', updateKey)
 
     emitter.on('state:ui:block', blockUi)
+    emitter.on('state:ui:focus', updateFocus)
     emitter.on('state:setup:validate', validateSetup)
     emitter.on('state:setup:init', initSetup)
   })
@@ -30,6 +31,7 @@ function store (state, emitter) {
     state.progress = 1
     state.phrase = ''
     state.uri = null
+    state.uifocus = null
     state.key = { }
     state.ui = {
       valid: false,
@@ -70,6 +72,16 @@ function store (state, emitter) {
   function blockUi(block) {
     state.ui.block = block
     emitter.emit(state.events.RENDER)
+  }
+
+  function updateFocus(newFocus, reload) {
+    if (state.uifocus === newFocus) return
+    else {
+      state.uifocus = newFocus
+      if (reload) {
+        emitter.emit(state.events.RENDER)
+      }
+    }
   }
 
   function validateSetup() {
@@ -170,4 +182,11 @@ function store (state, emitter) {
       }
     })
   }
+  ipcRenderer.on("window:event:blur", (event, response) => {
+    emitter.emit('state:ui:focus', 'blur', true)
+  })
+
+  ipcRenderer.on("window:event:focus", (event, response) => {
+    if (state.uifocus !== 'modal') emitter.emit('state:ui:focus', 'general', true)
+  })
 }

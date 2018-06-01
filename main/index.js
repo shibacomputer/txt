@@ -9,7 +9,7 @@ const store = require('./prefs/prefs')
 const winManager = require('electron-window-manager')
 const windows = require('./windows')
 
-const APP_NAME = process.env.npm_package_name
+const APP_NAME = app.getName()
 
 // Setup windows
 function launch() {

@@ -11,17 +11,26 @@ function editorHeader(state, emit) {
     <header class=${ style.header }>
       ${
         toolbar({
-        center: `${state.composer.name? state.composer.name : ``}${state.status.modified? `*`:``}`,
-        right: [
+        left: [
           button({
-            name: 'new',
-            classes: 'c',
-            icon: 'new',
+            name:'ShowLibrary',
+            classes: `${ !state.sidebar.visible && !state.status.fullscreen? style.darwinMargin : '' }`,
+            icon: 'library',
             click: function() {
-              emit('state:composer:new')
+              emit('state:library:toggle')
             }
           })
-        ]
+        ],
+        center: `${state.composer.name? state.composer.name : ``}${state.status.modified? `*`:``}`,
+        right: state.composer.uri? [
+          button({
+            name: 'history',
+            classes: 'c',
+            icon: 'history',
+            click: function() {
+            }
+          })
+        ] : ''
       })
     }
     </header>

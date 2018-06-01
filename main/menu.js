@@ -92,6 +92,18 @@ module.exports = {
               type: 'separator'
             },
             {
+              label: 'Delete from Library',
+              enabled: opts.trash? opts.trash : false,
+              accelerator: 'CmdOrCtrl+Backspace',
+              click: (item, win, event) => {
+                if (!win) return
+                else win.webContents.send('menu:file:trash')
+              }
+            },
+            {
+              type: 'separator'
+            },
+            {
               label: 'Save',
               accelerator: 'CmdOrCtrl+S',
               enabled: opts.save? opts.save : false,
@@ -126,18 +138,6 @@ module.exports = {
               click: (item, win, event) => {
                 if (!win) return
                 else win.webContents.send('menu:file:close')
-              }
-            },
-            {
-              type: 'separator'
-            },
-            {
-              label: 'Move to Trash',
-              enabled: opts.trash? opts.trash : false,
-              accelerator: 'CmdOrCtrl+Backspace',
-              click: (item, win, event) => {
-                if (!win) return
-                else win.webContents.send('menu:file:trash')
               }
             },
             {
@@ -233,6 +233,9 @@ module.exports = {
               click: (item, win, event) => {  win.webContents.send('menu:view:library') }
             },
             {
+              type: 'separator'
+            },
+            {
               label: 'Preview...',
               enabled: opts.preview? opts.preview : false,
               click: (item, win, event) => {
@@ -255,10 +258,16 @@ module.exports = {
         },
         {
           role: 'help',
-          submenu: [{
-            label: 'Report an Issue…',
-            click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
+          submenu: [
+            {
+              label: 'Report an Issue…',
+              click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
+            },
+            {
+              label: 'Get Txt News',
+              click: (item, win, event) => { if (win) win.webContents.send('menu:help:news') }
             }
+
           ]
         }]
         break
@@ -279,13 +288,14 @@ module.exports = {
               require('electron').shell.openExternal('https://txtapp.io/donate')
             }
           },
-          {type: 'separator'},
+          { type: 'separator' },
           {
             label: 'Preferences…',
             accelerator: 'Cmd+,',
             enabled: menu === 'setup'? false : true,
             click: (item, win, event) => {
-              console.log('prefs');
+              if (!win) return
+              else win.webContents.send('menu:about:prefs')
             }
           },
           {type: 'separator'},

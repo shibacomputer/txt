@@ -6,6 +6,7 @@ const style = css`
     background: none;
     color: var(--c);
     padding: 0;
+    margin-top: 5px;
   }
   .button > svg {
     fill: currentColor;

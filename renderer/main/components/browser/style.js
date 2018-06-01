@@ -15,7 +15,12 @@ const style = css`
     max-width: 320px;
     min-width: 240px;
     overflow-y: hidden;
+    transition: transform 100ms ease-in-out;
     width: 25vw;
+  }
+
+  .treeBase, .emptyTreeBase {
+    flex-grow: 1;
   }
 
   .treeBase {
@@ -24,13 +29,75 @@ const style = css`
     overflow-y: scroll;
   }
 
+  .emptyTreeBase {
+    align-items: center;
+    color: var(--c);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .emptyTreeIllustration {
+    margin-bottom: 1rem;
+  }
+  .emptyTreeIllustration > svg {
+    height: 64px;
+    width: 48px;
+  }
+
+  .emptyTreeMessage {
+    font-size: 13px;
+    max-width: 12rem;
+    text-align: center;
+    width: 85%;
+  }
+
+  .emptyTreeActions {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .emptyTreeActions > button {
+    background: none;
+    border: 1px solid currentColor;
+    box-sizing: border-box;
+    color: var(--c)
+    outline: none;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+    flex-grow: 1;
+    padding: 0.55rem 0.45rem 0.45rem 0.45rem;
+    width: 45%;
+  }
+  .emptyTreeActions > button:focus {
+    outline: var(--w);
+  }
+  .emptyTreeActions > button:active {
+    background: var(--c);
+    color: var(--k);
+    outline: var(--w);
+  }
+  .emptyTreeActions > button:first-child {
+    margin-right: 0.5rem;
+  }
+  .emptyTreeSecondaryAction {
+    background: none;
+    border: none;
+    color: var(--b);
+    outline: none;
+    font-family: 'HKG', sans-serif;
+    font-size: 13px;
+  }
+  .emptyTreeSecondaryAction:active {
+    color: var(--w);
+  }
+
   .tree {
     list-style: none;
     margin-left: 0.75rem;
   }
 
   .header {
-    
     width: 100%;
   }
 
@@ -104,7 +171,8 @@ const style = css`
   }
 
   .disabled {
-    display: none;
+    position: absolute;
+    transform: translateX(-100%);
   }
 
   .focus, .focus.active, .focus.modified, .cell.focus:hover, .cell.focus.active:hover {

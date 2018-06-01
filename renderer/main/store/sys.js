@@ -2,7 +2,7 @@ module.exports = store
 
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
-const watch = require('node-watch')
+const chokidar = require('chokidar')
 
 const Mousetrap = require('mousetrap')
 
@@ -38,11 +38,12 @@ function store (state, emitter) {
       // emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
       emitter.on('state:composer:write', write)
-      // emitter.on('state:composer:revert', revert)
-      // emitter.on('state:composer:close', close)
+      emitter.on('state:composer:revert', prepareToRevert)
+      emitter.on('state:composer:close', prepareToClose)
 
       // emitter.on('state:composer:toolbar:report', report)
       
+      emitter.on('state:modal:show', showModal)
       emitter.emit('state:init', value)
     })
   })
@@ -52,13 +53,14 @@ function store (state, emitter) {
    * arguments via the main process, and doesn't take any local arguments.
    * This will only run when there is no state persistence.
    * */
-  function init(value) {
+  async function init(value) {
     state.unlocked = false
     state.prefs = value
     state.uifocus = null
     state.status = {
       modified: false,
       writing: false,
+      reading: false,
       listing: false,
       fullscreen: false,
       renaming: false,
@@ -93,7 +95,13 @@ function store (state, emitter) {
 
     if (state.prefs) {
       emitter.emit('state:key:init')
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+
+      try {
+        await list(state.prefs.app.path, true)
+      } catch (e) {
+        console.log(e)
+      }
+      initWatcher(state.prefs.app.path)
     }
   }
 
@@ -109,11 +117,43 @@ function store (state, emitter) {
   }
 
   function initWatcher(uri) {
+
+    var watcher = chokidar.watch(join(state.prefs.app.path, '/**/*'), {
+      ignored: /(^|[\/\\])\../,
+      persistent: true
+    });
+
+    watcher.on('ready', function () {
+      var watchList = watcher.getWatched()
+      console.log('watch list', watchList)
+    })
+
+    watcher.on('change', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('add', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('addDir', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('unlinkDir', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+
+    watcher.on('unlink', function () {
+      emitter.emit('state:library:list', state.prefs.app.path, true)
+    })
+    /*
     let watcher = watch(uri, { recursive: true, persistent: true })
     watcher.on('change', (event, name) => {
       // @TODO: Make this more granular
       emitter.emit('state:library:list', state.prefs.app.path, true)
     })
+    */
   }
 
   async function list(d, base) {
@@ -128,7 +168,6 @@ function store (state, emitter) {
     if (base) {
       // @TODO: Diff this.
       state.lib = tree
-      initWatcher(state.prefs.app.path)
     }
     else {
       var index = state.sidebar.openDirs.indexOf(d.id)
@@ -142,9 +181,14 @@ function store (state, emitter) {
 
   async function mk() {
     let d = state.status.focus
-    let base = d.uri? d.uri : state.prefs.app.path
-    let index = state.sidebar.openDirs.indexOf(d.id)
-    let uri = join(index === -1? parse(base).dir : base, 'Untitled Folder')
+    let base
+
+    if (d.uri) {
+      let index = state.sidebar.openDirs.indexOf(d.id)
+      base = index === -1? parse(d.uri).dir : d.uri
+    } else base = state.prefs.app.path
+    
+    let uri = join(base, 'New Folder')
     try {
       io.mkdir(uri)
     } catch (e) {
@@ -154,10 +198,11 @@ function store (state, emitter) {
 
   async function write(type) {
     state.writing = true
-    let c = state.composer
     let ciphertext
+    let c = type === 'new'?  '' : state.composer.body
+    
     try {
-      ciphertext = await pgp.encrypt(c.body)
+      ciphertext = await pgp.encrypt(c)
     } catch(e) {
       console.log(e)
       return
@@ -180,47 +225,71 @@ function store (state, emitter) {
       f = state.status.active
       uri = f.uri
     } 
+
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
       console.log(e)
     }
+    if (type !== 'new') state.status.modified = false
     state.writing = false
-    state.status.modified = false
     
     switch (type) {
       case 'new':
         let d = { uri: uri }
-        emitter.emit('state:item:read', d)
+        if (!state.status.active) emitter.emit('state:item:read', d)
       break
 
       case 'next':
+        if (state.status.active) await close()
         emitter.emit('state:item:read', state.status.focus)
       break
+
+      case 'close':
+        await close()
     }
   }
 
   async function read(f) {
-    let ciphertext 
+    state.status.reading = true
+    emitter.emit(state.events.RENDER)
+    let ciphertext
+    let contents = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    emitter.emit('state:composer:update', contents)
+    
     try {
       ciphertext = await io.read(f.uri)
     } catch (e) {
       console.log(e)
     }
+    
     let body
     try {
       body = await pgp.decrypt(ciphertext)
     } catch (e) {
       console.log(e)
     }
-    let contents = {
+
+    contents = {
       id: f.id,
       body: body,
       stale: body,
       uri: f.uri,
       name: parse(f.uri).name
     }
+
     state.status.active = f
+    state.status.reading = false
+    state.menu.close = true
+    state.menu.print = true
+    state.menu.export = true
+    emitter.emit('state:menu:update')
     emitter.emit('state:composer:update', contents)
   }
 
@@ -235,8 +304,8 @@ function store (state, emitter) {
   }
 
   function update(contents) {
-    console.log('updating with, ', contents)
     state.composer = contents
+
     if (state.composer.body !== state.composer.stale) {
       state.status.modified = true
       state.menu.save = true
@@ -267,14 +336,13 @@ function store (state, emitter) {
       console.log(e)
     }
     
-    let contents = {
-      id: state.composer.id,
-      body: state.composer.body,
-      stale: state.composer.stale,
-      uri: newUri,
-      name: parse(f.newUri).name
+    if (state.status.active === f) {
+      state.composer.uri = newUri
+      state.composer.name = parse(state.composer.uri).name
+      state.status.active.uri = state.composer.uri
+      emitter.emit(state.events.RENDER)
     }
-    emitter.emit('state:composer:update', contents)
+    
     state.status.renaming = false
   }
 
@@ -285,15 +353,93 @@ function store (state, emitter) {
       console.log(e)
     }
     if (f.id === state.status.focus.id ) state.status.focus = { }
-    if (f.id === state.status.active.id) {
-      let contents = {
-        id: '',
-        body: '',
-        stale: '',
-        uri: null,
-        name: null
+    if (f.id === state.status.active.id) close()
+    let index = state.sidebar.openDirs.indexOf(f.id)
+    if (index === -1) state.sidebar.openDirs.splice(index, 1)
+  }
+
+  async function close() {
+    let contents = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    emitter.emit('state:composer:update', contents)
+    state.status.modified = false
+    state.status.active = { }
+    state.menu.save = false
+    state.menu.revert = false
+    state.menu.close = false
+    state.menu.export = false
+    state.menu.print = false 
+    state.menu.preview = false
+    state.menu.trashCurrent = false
+    emitter.emit('state:menu:update')
+  }
+
+  function revert() {
+    let contents = {
+      id: state.composer.id,
+      body: state.composer.stale,
+      stale: state.composer.stale,
+      uri: state.composer.uri,
+      name: state.composer.name
+    }
+    emitter.emit('state:menu:update')
+    emitter.emit('state:composer:update', contents)
+  }
+
+  function prepareToRevert() {
+    ipcRenderer.send('dialog:new', {
+      type: 'question',
+      buttons: ['Revert', 'Cancel'],
+      defaultId: 0,
+      cancelId: 1,
+      message: 'Are you sure you want to revert ' + state.composer.name + '?',
+      detail: 'Your changes will be permanently lost if you choose to revert them.'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      switch (res) {
+        case 1:
+          // cancel
+        break
+        default:
+          revert()
+        break
       }
-      emitter.emit('state:composer:update', contents)
+    })
+  }
+
+  function prepareToClose() {
+    if (state.status.modified) {
+      ipcRenderer.send('dialog:new', {
+        type: 'question',
+        buttons: ['Save', 'Cancel', 'Discard changes'],
+        defaultId: 0,
+        cancelId: 1,
+        message: state.composer.name + ' has been modified. Save changes?',
+        detail: 'Your changes will be lost if you choose to discard them.'
+      })
+      ipcRenderer.once('dialog:response', (event, res) => {
+        switch (res) {
+          case 1:
+            // cancel
+          break
+          case 2:
+            // Discard changes
+            close()
+          break
+          default:
+            if (!state.status.wrting) {
+              emitter.emit('state:composer:write', 'close')
+            } else return
+          break
+        }
+      })
+    } else {
+      close()
     }
   }
 
@@ -309,7 +455,7 @@ function store (state, emitter) {
         buttons: ['Save', 'Cancel', 'Discard changes'],
         defaultId: 0,
         cancelId: 1,
-        message: state.composer.title + ' has been modified. Save changes?',
+        message: state.composer.name + ' has been modified. Save changes?',
         detail: 'Your changes will be lost if you choose to discard them.'
       })
       ipcRenderer.once('dialog:response', (event, res) => {
@@ -319,6 +465,7 @@ function store (state, emitter) {
           break
           case 2:
             // Discard changes
+            close()
             read(f)
           break
           default:
@@ -379,9 +526,21 @@ function store (state, emitter) {
     })
   }
 
-  function updateFocus(newFocus) {
+  function updateFocus(newFocus, reload) {
     if (state.uifocus === newFocus) return
-    else state.uifocus = newFocus
+    else {
+      state.uifocus = newFocus
+      if (reload) {
+        emitter.emit(state.events.RENDER)
+      }
+    }
+  }
+
+  function showModal(type) {
+    emitter.emit('state:ui:focus', 'modal', true)
+    window.setTimeout(() => {
+      ipcRenderer.send('modal:new', type)
+    }, 100) 
   }
 
   // Out
@@ -393,40 +552,65 @@ function store (state, emitter) {
     ipcRenderer.send('menu:new', 'main', state.menu)
   }
 
-  // Responses to the menu system
-  ipcRenderer.on('menu:file:new:file', (event, response) => {
-    emitter.emit('state:item:make', 'file')
-  })  
+  ipcRenderer.on("window:event:blur", (event) => {
+    emitter.emit('state:ui:focus', 'blur', true)
+  })
 
-  ipcRenderer.on('menu:file:new:dir', (event, response) => {
+  ipcRenderer.on("window:event:focus", (event) => {
+    if (state.uifocus !== 'modal') emitter.emit('state:ui:focus', 'general', true)
+  })
+
+  ipcRenderer.on("window:event:fullscreen", (event, arg) => {
+    console.log(event, arg)
+    state.status.fullscreen = arg
+    emitter.emit(state.events.RENDER)
+  })
+  ipcRenderer.on('window:event:quit', (event) => {
+    // Close logic here
+  })
+
+  ipcRenderer.on('app:event:quit', (event) => {
+    // App close logic
+  })
+
+  // Responses to the menu system
+  ipcRenderer.on('menu:about:prefs', (event) => {
+    emitter.emit('state:modal:show', 'prefs')
+  })
+
+  ipcRenderer.on('menu:file:new:file', (event) => {
+    emitter.emit('state:item:make', 'file')
+  })
+
+  ipcRenderer.on('menu:file:new:dir', (event) => {
     emitter.emit('state:item:make', 'directory')
   })  
-  ipcRenderer.on('menu:file:new:window', (event, response) => {
+  ipcRenderer.on('menu:file:new:window', (event) => {
     ipcRenderer.send('window:open', 'main')
   })
 
-  ipcRenderer.on('menu:file:save', (event, response) => {
+  ipcRenderer.on('menu:file:save', (event) => {
     emitter.emit('state:composer:write')
   })
-  ipcRenderer.on('menu:file:close', (event, response) => {
+  ipcRenderer.on('menu:file:close', (event) => {
     emitter.emit('state:composer:close')
   })
-  ipcRenderer.on('menu:file:revert', (event, response) => {
+  ipcRenderer.on('menu:file:revert', (event) => {
     emitter.emit('state:composer:revert')
   })
-  ipcRenderer.on('menu:file:rename', (event, response) => {
+  ipcRenderer.on('menu:file:rename', (event) => {
     emitter.emit('state:item:rename')
   })
-  ipcRenderer.on('menu:file:trash', (event, response) => {
+  ipcRenderer.on('menu:file:trash', (event) => {
     emitter.emit('state:item:trash')
   })  
-  ipcRenderer.on('menu:view:library', (event, response) => {
+  ipcRenderer.on('menu:view:library', (event) => {
     emitter.emit('state:library:toggle')
   })
-  ipcRenderer.on('menu:help:support', (event, response) => {
+  ipcRenderer.on('menu:help:support', (event) => {
     emitter.emit('state:toolbar:report')
   })
-  ipcRenderer.on('menu:context:reveal', (event, response) => {
+  ipcRenderer.on('menu:context:reveal', (event) => {
     emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
   })
 

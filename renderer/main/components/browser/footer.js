@@ -17,20 +17,20 @@ function editorFooter(state, emit) {
               name: 'settings',
               classes: 'c',
               icon: 'settings',
-              click: function() { console.log('setting' )}
+              click: function() { emit('state:modal:show', 'prefs') }
            })
          ],
          center: [
           html `
-            <span oncontextmenu=${ showContextMenu }}>
+            <span class="w" oncontextmenu=${ showContextMenu }}>
               ${ libPath }
             </span>`
          ],
          left: [
            button({
-            name: 'lock',
+            name: 'power ',
             classes: 'c',
-            icon: 'lock',
+            icon: 'power',
             click: function() { console.log('lock') }
            })
         ]
@@ -40,6 +40,6 @@ function editorFooter(state, emit) {
   `
   function showContextMenu(e) {
     console.log('hello')
-    emit('state:library:context:display', 'footer')
+    emit('state:library:context:new', 'footer')
   }
 }

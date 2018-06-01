@@ -1,20 +1,20 @@
 const openpgp = require('openpgp')
 const fs = require('fs')
 const path = require('path')
-const util = require('util')
 const keytar = require('keytar')
 const io = require('./io')
 
-const APP_NAME = process.env.npm_package_name
-const APP_VERSION = process.env.npm_package_version
+const APP_NAME = require('electron').remote.app.getName()
+const APP_VERSION = require('electron').remote.app.getVersion()
 const PGP_COMPRESSION = openpgp.enums.compression.zip
 const PGP_BITS = 4096
 const KEY_FILENAME = '.txtkey'
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
-openpgp.config.aead_protect = true
 openpgp.config.use_native = true
-openpgp.config.zero_copy = true
+openpgp.config.checksum_required = true
+openpgp.config.ignore_mdc_error = false
+openpgp.config.integrity_protect = true
 openpgp.config.versionstring = APP_NAME + '.app v' + APP_VERSION
 openpgp.config.commentstring = 'https://txt.app'
 
