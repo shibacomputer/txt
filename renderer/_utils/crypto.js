@@ -12,7 +12,6 @@ const KEY_FILENAME = '.txtkey'
 
 openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.use_native = true
-openpgp.config.zero_copy = true
 openpgp.config.checksum_required = true
 openpgp.config.ignore_mdc_error = false
 openpgp.config.integrity_protect = true
