@@ -9,8 +9,11 @@ const Mousetrap = require('mousetrap')
 const io = require('../../_utils/io')
 const pgp = require('../../_utils/crypto')
 
+const polyglot = require('../../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
 
 function store (state, emitter) {
+  
   init()
 
   emitter.on('DOMContentLoaded', () => {
@@ -394,11 +397,11 @@ function store (state, emitter) {
   function prepareToRevert() {
     ipcRenderer.send('dialog:new', {
       type: 'question',
-      buttons: ['Revert', 'Cancel'],
+      buttons: [ i18n.t('verbs.revert'), i18n.t('verbs.cancel') ],
       defaultId: 0,
       cancelId: 1,
-      message: 'Are you sure you want to revert ' + state.composer.name + '?',
-      detail: 'Your changes will be permanently lost if you choose to revert them.'
+      message: i18n.t('dialogs.revertFile.title', {name: state.composer.name}),
+      detail: i18n.t('dialogs.revertFile.detail')
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       switch (res) {
@@ -416,11 +419,11 @@ function store (state, emitter) {
     if (state.status.modified) {
       ipcRenderer.send('dialog:new', {
         type: 'question',
-        buttons: ['Save', 'Cancel', 'Discard changes'],
+        buttons: [ i18n.t('verbs.save'), i18n.t('verbs.cancel'), i18n.t('verbs.discard') ],
         defaultId: 0,
         cancelId: 1,
-        message: state.composer.name + ' has been modified. Save changes?',
-        detail: 'Your changes will be lost if you choose to discard them.'
+        message: i18n.t('dialogs.modifiedFile.title', {name: state.composer.name}),
+        detail: i18n.t('dialogs.modifiedFile.detail')
       })
       ipcRenderer.once('dialog:response', (event, res) => {
         switch (res) {
@@ -452,11 +455,11 @@ function store (state, emitter) {
     if (state.status.modified) {
       ipcRenderer.send('dialog:new', {
         type: 'question',
-        buttons: ['Save', 'Cancel', 'Discard changes'],
+        buttons: [ i18n.t('verbs.save'), i18n.t('verbs.cancel'), i18n.t('verbs.discard') ],
         defaultId: 0,
         cancelId: 1,
-        message: state.composer.name + ' has been modified. Save changes?',
-        detail: 'Your changes will be lost if you choose to discard them.'
+        message: i18n.t('dialogs.modifiedFile.title', {name: state.composer.name}),
+        detail: i18n.t('dialogs.modifiedFile.detail')
       })
       ipcRenderer.once('dialog:response', (event, res) => {
         switch (res) {
@@ -482,11 +485,11 @@ function store (state, emitter) {
     var focus = state.status.focus.uri
     if (focus) ipcRenderer.send('dialog:new', {
       type: 'question',
-      buttons: ['Move to Trash', 'Cancel'],
+      buttons: [ i18n.t('verbs.trash'), i18n.t('verbs.cancel')],
       defaultId: 0,
       cancelId: 1,
-      message: 'Trash ' + parse(focus).name + '?',
-      detail: 'The item will be moved to your computer\'s trash.'
+      message: i18n.t('dialogs.trashItem.title', { name: parse(focus).name} ),
+      detail: i18n.t('dialogs.trashItem.detail')
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       switch (res) {

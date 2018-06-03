@@ -1,9 +1,11 @@
 const { app, Menu } = require('electron')
-
+const polyglot = require('../renderer/_utils/i18n/i18n')
 const updater = require('./updater')
 
 module.exports = {
   buildMenu: function(menu, opts) {
+    let i18n = polyglot.init(app.getLocale())
+    
     opts? opts = opts : opts = []
 
     switch (menu) {
@@ -41,7 +43,7 @@ module.exports = {
           {
             role: 'help',
             submenu: [{
-              label: 'Report an Issue…',
+              label: i18n.t('applicationBar.help.reportAnIssue'),
               click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
             }
           ]
@@ -54,7 +56,7 @@ module.exports = {
           label: 'File',
           submenu: [
             {
-              label: 'New',
+              label: i18n.t('applicationBar.file.newFile'),
               accelerator: 'CmdOrCtrl+N',
               click: (item, win, event) => {
                 if (!win) return
@@ -62,7 +64,7 @@ module.exports = {
               }
             },
             {
-              label: 'New Folder',
+              label: i18n.t('applicationBar.file.newFolder'),
               accelerator: 'CmdOrCtrl+Shift+N',
               click: (item, win, event) => {
                 if (!win) return
@@ -70,18 +72,18 @@ module.exports = {
               }
             },
             {
-              label: 'New Txt Window',
+              label: i18n.t('applicationBar.file.newWindow'),
               accelerator: 'CmdOrCtrl+Alt+Shift+N',
               click: (item, win, event) => {
                 if (!win) return
                 else win.webContents.send('menu:file:new:window')
               }
-            },            
+            },
             {
               type: 'separator'
             },
             {
-              label: 'Lock',
+              label: i18n.t('applicationBar.file.lock'),
               accelerator: 'Shift+CmdOrCtrl+L',
               click: (item, win, event) => {
                 if (!win) return
@@ -92,7 +94,7 @@ module.exports = {
               type: 'separator'
             },
             {
-              label: 'Delete from Library',
+              label: i18n.t('applicationBar.file.deleteFromLibrary'),
               enabled: opts.trash? opts.trash : false,
               accelerator: 'CmdOrCtrl+Backspace',
               click: (item, win, event) => {
@@ -104,7 +106,7 @@ module.exports = {
               type: 'separator'
             },
             {
-              label: 'Save',
+              label: i18n.t('applicationBar.file.save'),
               accelerator: 'CmdOrCtrl+S',
               enabled: opts.save? opts.save : false,
               click: (item, win, event) => {
@@ -113,7 +115,7 @@ module.exports = {
               }
             },
             {
-              label: 'Revert Changes',
+              label: i18n.t('applicationBar.file.revertChanges'),
               enabled: opts.revert? opts.revert : false,
               click: (item, win, event) => {
                 if (!win) return
@@ -121,7 +123,7 @@ module.exports = {
               }
             },
             {
-              label: 'Rename',
+              label: i18n.t('applicationBar.file.rename'),
               enabled: opts.rename? opts.rename : false,
               click: (item, win, event) => {
                 if (!win) return
@@ -132,7 +134,7 @@ module.exports = {
               type: 'separator'
             },
             {
-              label: 'Close',
+              label: i18n.t('applicationBar.file.close'),
               accelerator: 'CmdOrCtrl+W',
               enabled: opts.close? opts.close : false,
               click: (item, win, event) => {
@@ -144,17 +146,17 @@ module.exports = {
               type: 'separator'
             },
             {
-              label: 'Export',
+              label: i18n.t('applicationBar.file.export'),
               submenu: [
                 {
-                  label: 'to Plain Text…',
+                  label: i18n.t('applicationBar.file.exportItems.exportToPlainText'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
                     if (win) win.webContents.send('menu:file:duplicate')
                   }
                 },
                 {
-                  label: 'to Encrypted File…',
+                  label: i18n.t('applicationBar.file.exportItems.exportToEncryptedFile'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
                     if (win) win.webContents.send('menu:file:duplicate')
@@ -164,7 +166,7 @@ module.exports = {
                   type: 'separator'
                 },
                 {
-                  label: 'to PDF…',
+                  label: i18n.t('applicationBar.file.exportItems.exportToPDF'),
                   enabled: opts.export? opts.export : false,
                   accelerator: 'CmdOrCtrl+Shift+P',
                   click: (item, win, event) => {
@@ -175,7 +177,7 @@ module.exports = {
                   type: 'separator'
                 },
                 {
-                  label: 'to Are.na…',
+                  label: i18n.t('applicationBar.file.exportItems.exportToArena'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
 
@@ -184,7 +186,7 @@ module.exports = {
               ]
             },
             {
-              label: 'Print…',
+              label: i18n.t('applicationBar.file.print'),
               accelerator: 'CmdOrCtrl+P',
               enabled: opts.print? opts.print : false,
               click: (item, win, event) => {
@@ -227,7 +229,7 @@ module.exports = {
           submenu: [
             {
               type: 'checkbox',
-              label: 'Show Library',
+              label: i18n.t('applicationBar.view.showLibrary'),
               accelerator: 'CmdOrCtrl+Shift+L',
               checked: opts.library,
               click: (item, win, event) => {  win.webContents.send('menu:view:library') }
@@ -236,7 +238,7 @@ module.exports = {
               type: 'separator'
             },
             {
-              label: 'Preview...',
+              label: i18n.t('applicationBar.view.preview'),
               enabled: opts.preview? opts.preview : false,
               click: (item, win, event) => {
                 console.log('Preview')
@@ -260,11 +262,11 @@ module.exports = {
           role: 'help',
           submenu: [
             {
-              label: 'Report an Issue…',
+              label: i18n.t('applicationBar.help.reportAnIssue'),
               click: (item, win, event) => { if (win) win.webContents.send('menu:help:support') }
             },
             {
-              label: 'Get Txt News',
+              label: i18n.t('applicationBar.help.getNews', {app_name: 'Txt'}),
               click: (item, win, event) => { if (win) win.webContents.send('menu:help:news') }
             }
 
@@ -279,18 +281,18 @@ module.exports = {
         submenu: [
           {role: 'about'},
           {
-            label: 'Check for Update…',
+            label: i18n.t('applicationBar.others.checkForUpdate'),
             click: updater.checkForUpdates
           },
           {
-            label: 'Donate…',
+            label: i18n.t('applicationBar.others.donate'),
             click: () => {
               require('electron').shell.openExternal('https://txtapp.io/donate')
             }
           },
           { type: 'separator' },
           {
-            label: 'Preferences…',
+            label: i18n.t('applicationBar.others.preferences'),
             accelerator: 'Cmd+,',
             enabled: menu === 'setup'? false : true,
             click: (item, win, event) => {
@@ -312,9 +314,9 @@ module.exports = {
 
     if (process.env.NODE_ENV !== 'production') {
       menu.push({
-        label: 'Debug',
+        label: i18n.t('applicationBar.debug.title'),
         submenu: [{
-          label: 'Show Dev Tools',
+          label: i18n.t('applicationBar.debug.showConsole'),
           accelerator: 'CmdOrCtrl+OptionOrAlt+I',
           click: (item, win, event) => {
             if (win) win.webContents.toggleDevTools()

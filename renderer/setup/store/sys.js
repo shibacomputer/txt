@@ -7,6 +7,9 @@ const { ipcRenderer } = require('electron')
 const io = require('../../_utils/io')
 const pgp = require('../../_utils/crypto')
 
+const polyglot = require('../../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
+
 const KEY_DEFAULT = '.txtkey'
 const APP_ID = 'Txt'
 
@@ -95,11 +98,11 @@ function store (state, emitter) {
         } else {
           ipcRenderer.send('dialog:new', {
             type: 'info',
-            buttons: ['Continue', 'Back', 'Get Help' ],
+            buttons: [ i18n.t('verbs.continue'), i18n.t('verbs.back'), i18n.t('verbs.help') ],
             defaultId: 0,
             cancelId: 1,
-            message: 'Please take a moment to save your passphrase somewhere secure',
-            detail: 'Txt has no \'forgot passphrase\' functionality and your library will be lost if you forget it!'
+            message: i18n.t('dialogs.securePassphrase.title'),
+            detail: i18n.t('dialogs.securePassphrase.detail', { app_name: 'Txt'} )
           })
           ipcRenderer.once('dialog:response', (event, res) => {
             switch (res) {
@@ -149,10 +152,10 @@ function store (state, emitter) {
       else displayErrorBox()
     }
 
-    ipcRenderer.once('app:setup:done', (event, res) => { 
+    ipcRenderer.once('app:setup:done', (event, res) => {
       ipcRenderer.send('window:open', 'main', 'window:close')
     })
-    
+
     ipcRenderer.once('window:open:done', (event, nextEvent, win) => {
       if (nextEvent) ipcRenderer.send(nextEvent, win)
     })
@@ -162,11 +165,11 @@ function store (state, emitter) {
     emitter.emit('state:ui:block', false)
     ipcRenderer.send('dialog:new', {
       type: 'error',
-      buttons: ['Try again', 'Get Help' ],
+      buttons: [ i18n.t('verbs.retry'), i18n.t('verbs.help') ],
       defaultId: 0,
       cancelId: 1,
-      message: 'Wrong passphrase',
-      detail: 'That passphrase didn\'t work – please try again.'
+      message: i18n.t('errors.keyWrongPassphrase.title'),
+      detail: i18n.t('errors.keyWrongPassphrase.detail')
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       switch (res) {

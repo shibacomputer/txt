@@ -1,6 +1,9 @@
 const html = require('choo/html')
 const style = require('./style')
 
+const polyglot = require('../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
+
 module.exports = setupApplication
 
 /**
@@ -26,7 +29,7 @@ function setupApplication(state, emit) {
             <path d="M616.015 186.602V219h-32.353V172.442H578V171h12.941v1.443h-5.662v44.937h29.118v-44.938h-5.661V171H622v1.443h-5.985v14.159zm-27.5 13.448c0-.443.359-.802.802-.802h20.234c.443 0 .802.36.802.802v.016c0 .443-.359.802-.802.802h-20.234a.802.802 0 0 1-.802-.802v-.016zm0 5.941c0-.443.359-.802.802-.802h16.999c.443 0 .802.36.802.802v.016c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.016zm0 5.942c0-.443.359-.803.802-.803h19.425c.443 0 .802.36.802.803v.015c0 .443-.359.802-.802.802h-19.425a.802.802 0 0 1-.802-.802v-.015zm0-17.82c0-.442.359-.802.802-.802h16.999c.443 0 .802.36.802.803v.015c0 .443-.36.802-.802.802h-17a.802.802 0 0 1-.801-.802v-.015zM606.757 171l-6.063 8.033 6.356 8.41h-1.735l-5.513-7.33-5.547 7.33h-1.689l6.345-8.41-6.04-8.033h1.736l5.219 6.94 5.23-6.94h1.701z" transform="translate(-578 -171)" fill="url(#a)" fill-rule="evenodd"/>
           </svg>
           </div>
-          <h1>Get started with Txt</h1>
+          <h1>${ i18n.t('setup.ui.title', {app_name: 'Txt'}) }</h1>
         </header>
         ${ view() }
         ${ nextButton() }
@@ -46,11 +49,11 @@ function setupApplication(state, emit) {
   function setupWorkPath() {
     return html`
       <section class="b ${style.option}">
-        <label for="location">Set library location</label>
+        <label for="location">${ i18n.t('setup.ui.librarySelection.label') }</label>
         <div class=${style.field}>
           <input ${state.ui.block ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
           <div class=${style.location} onclick=${askForUri}>
-            ${state.uri ? state.uri : 'Set a directory...'}
+            ${state.uri ? state.uri : i18n.t('setup.ui.librarySelection.placeholder') }
           </div>
           <button ${state.ui.block ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
             <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
@@ -59,7 +62,7 @@ function setupApplication(state, emit) {
           </button>
         </div>
         <div class="w ${style.tip}">
-          <label class=${style.tip}>Choose a location for your Txt library. If you choose an existing library, Txt will ask for your passphrase.</label>
+          <label class=${style.tip}>${ i18n.t('setup.ui.librarySelection.tip', {app_name: 'Txt'}) }</label>
         </div>
       </section>
     `
@@ -75,8 +78,8 @@ function setupApplication(state, emit) {
   }
 
   function setupPassphrase() {
-    const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
-    const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
+    const inputLabel = state.ui.newKey? i18n.t('setup.ui.passphraseInput.label.newPassphrase') : i18n.t('setup.ui.passphraseInput.label.existingPassphrase')
+    const tip = state.ui.newKey? i18n.t('setup.ui.passphraseInput.tip.newPassphrase') : i18n.t('setup.ui.passphraseInput.tip.existingPassphrase')
     return html`
     <section class="c ${style.option}">
       <label for="passphrase">${inputLabel}</label>
@@ -97,7 +100,7 @@ function setupApplication(state, emit) {
     return html`
       <footer class=${style.footer}>
         <nav>
-          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
+          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>${ i18n.t('setup.buttons.completeSetup') }</button>
         </nav>
       </footer>
     `

@@ -46,6 +46,7 @@
     "mime": "1.6.0",
     "mousetrap": "^1.6.1",
     "nanocomponent": "^6.5.2",
+    "node-polyglot": "^2.2.2",
     "openpgp": "^3.0.8",
     "pell": "^1.0.4",
     "spritesh": "^1.2.1",
