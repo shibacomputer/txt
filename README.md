@@ -90,7 +90,7 @@ who has access to the disk.
 ### Planned for v1.0
 ⬜ Markdown support  
 ⬜ Decentralised software updates  
-✅ i18n Support
+✅ i18n Support  
 ⬜ Localisation (First languages: French/Spanish/German/Japanese)  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
