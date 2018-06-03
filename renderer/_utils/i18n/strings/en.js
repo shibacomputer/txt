@@ -96,6 +96,18 @@ var strings = {
     "securePassphrase": {
       "title": "Please take a moment to save your passphrase somewhere secure.",
       "detail": "%{app_name} has no \'forgot passphrase\' functionality and your library will be lost if you forget it!"
+    },
+    "revertFile": {
+      "title": "Are you sure you want to revert %{name}?",
+      "detail": "Your changes will be permanently lost if you choose to revert them."
+    },
+    "modifiedFile": {
+      "title": "%{name} has been modified. Save changes?",
+      "detail": "Your changes will be lost if you choose to discard them."
+    },
+    "trashItem": {
+      "title": "Trash %{name}?",
+      "detail": "The item will be moved to your computer\'s trash."
     }
   },
   "errors": {
