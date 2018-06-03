@@ -1,5 +1,6 @@
 const html = require('choo/html')
 const style = require('./style')
+const i18n = require('../_utils/i18n/i18n')
 
 module.exports = setupApplication
 
@@ -46,11 +47,11 @@ function setupApplication(state, emit) {
   function setupWorkPath() {
     return html`
       <section class="b ${style.option}">
-        <label for="location">Set library location</label>
+        <label for="location">${ i18n.t('setup.ui.librarySelection.label') }</label>
         <div class=${style.field}>
           <input ${state.ui.block ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
           <div class=${style.location} onclick=${askForUri}>
-            ${state.uri ? state.uri : 'Set a directory...'}
+            ${state.uri ? state.uri : i18n.t('setup.ui.librarySelection.placeholder') }
           </div>
           <button ${state.ui.block ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
             <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
@@ -59,7 +60,7 @@ function setupApplication(state, emit) {
           </button>
         </div>
         <div class="w ${style.tip}">
-          <label class=${style.tip}>Choose a location for your Txt library. If you choose an existing library, Txt will ask for your passphrase.</label>
+          <label class=${style.tip}>${ i18n.t('setup.ui.librarySelection.tip', {app_name: 'Txt'}) }</label>
         </div>
       </section>
     `
@@ -75,8 +76,8 @@ function setupApplication(state, emit) {
   }
 
   function setupPassphrase() {
-    const inputLabel = state.ui.newKey? 'Set your passphrase' : 'Enter library passphrase'
-    const tip = state.ui.newKey? 'Set a long passphrase to secure your library.' : 'Enter your library’s passphrase.'
+    const inputLabel = state.ui.newKey? i18n.t('setup.ui.passphraseInput.label.newPassphrase') : i18n.t('setup.ui.passphraseInput.label.existingPassphrase')
+    const tip = state.ui.newKey? i18n.t('setup.ui.passphraseInput.tip.newPassphrase') : i18n.t('setup.ui.passphraseInput.tip.existingPassphrase')
     return html`
     <section class="c ${style.option}">
       <label for="passphrase">${inputLabel}</label>
@@ -97,7 +98,7 @@ function setupApplication(state, emit) {
     return html`
       <footer class=${style.footer}>
         <nav>
-          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>Complete Setup</button>
+          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>${ i18n.t('setup.buttons.completeSetup') }</button>
         </nav>
       </footer>
     `
