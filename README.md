@@ -86,7 +86,6 @@ who has access to the disk.
 ⬜ Import existing text files  
 ⬜ Export to passphrase encrypted GPG text file  
 ⬜ Light UI theme  
-⬜ Export to unencrypted text file  
 
 ### Planned for v1.0
 ⬜ Markdown support  
@@ -108,7 +107,6 @@ who has access to the disk.
 ⬜ Data management  
 ⬜ Better support for file permission edge cases  
 ⬜ Collaboration / track changes??  
-⬜ Contact list  
 ⬜ 2FA / Yubikey support  
 ⬜ Secure syncing  
 
