@@ -1,9 +1,11 @@
 const { app, Menu } = require('electron')
-const i18n = require('../renderer/_utils/i18n/i18n')
+const polyglot = require('../renderer/_utils/i18n/i18n')
 const updater = require('./updater')
 
 module.exports = {
   buildMenu: function(menu, opts) {
+    let i18n = polyglot.init(app.getLocale())
+    
     opts? opts = opts : opts = []
 
     switch (menu) {

@@ -1,6 +1,8 @@
 const html = require('choo/html')
 const style = require('./style')
-const i18n = require('../_utils/i18n/i18n')
+
+const polyglot = require('../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
 
 module.exports = setupApplication
 

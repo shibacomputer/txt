@@ -6,7 +6,9 @@ const { ipcRenderer } = require('electron')
 
 const io = require('../../_utils/io')
 const pgp = require('../../_utils/crypto')
-const i18n = require('../../_utils/i18n/i18n')
+
+const polyglot = require('../../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
 
 const KEY_DEFAULT = '.txtkey'
 const APP_ID = 'Txt'

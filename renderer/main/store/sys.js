@@ -8,10 +8,12 @@ const Mousetrap = require('mousetrap')
 
 const io = require('../../_utils/io')
 const pgp = require('../../_utils/crypto')
-const i18n = require('../../_utils/i18n/i18n')
 
+const polyglot = require('../../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
 
 function store (state, emitter) {
+  
   init()
 
   emitter.on('DOMContentLoaded', () => {
