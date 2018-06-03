@@ -31,6 +31,7 @@ function store (state, emitter) {
       emitter.on('state:library:select', select)
       emitter.on('state:library:toggle', toggleLibrary)
       emitter.on('state:library:context:new', newContextMenu)
+      emitter.on('state:library:reveal', revealInBrowser)
 
       emitter.on('state:item:rename', startRename)
       emitter.on('state:item:commit', commitRename)
@@ -546,6 +547,10 @@ function store (state, emitter) {
     }, 100) 
   }
 
+  function revealInBrowser(uri) {
+    require('electron').shell.showItemInFolder(uri);
+  }
+
   // Out
   function newContextMenu(type) {
     ipcRenderer.send('menu:context:new', type)
@@ -564,7 +569,6 @@ function store (state, emitter) {
   })
 
   ipcRenderer.on("window:event:fullscreen", (event, arg) => {
-    console.log(event, arg)
     state.status.fullscreen = arg
     emitter.emit(state.events.RENDER)
   })
@@ -614,7 +618,7 @@ function store (state, emitter) {
     emitter.emit('state:toolbar:report')
   })
   ipcRenderer.on('menu:context:reveal', (event) => {
-    emitter.emit('state:contextmenu:reveal', state.status.focus.uri)
+    emitter.emit('state:library:reveal', state.status.focus.uri)
   })
 
   // Keyboard navigation
