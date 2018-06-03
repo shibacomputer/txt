@@ -3,7 +3,7 @@ const Polyglot = require('node-polyglot')
 module.exports = {
   init: function(locale) {
     var polyglot = new Polyglot()
-    console.log(locale)
+    
     let lang
 
     if (locale.indexOf('en') !== -1) lang = 'de'
@@ -14,7 +14,6 @@ module.exports = {
     else if (locale.indexOf('zh') !== -1) lang = 'zh'
     else lang = 'en'
 
-    console.log(lang)
     polyglot.extend(require(`./strings/${lang}.js`))
 
     return polyglot
