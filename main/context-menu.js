@@ -129,13 +129,13 @@ module.exports = {
           {
             label: i18n.t('contextMenu.exportItems.exportToPlainText'),
             click: (item, win, event) => {
-              if (win) win.webContents.send('menu:file:duplicate')
+              if (win) win.webContents.send('menu:file:export', 'plaintext')
             }
           },
           {
             label: i18n.t('contextMenu.exportItems.exportToEncryptedFile'),
             click: (item, win, event) => {
-              if (win) win.webContents.send('menu:file:duplicate')
+              if (win) win.webContents.send('menu:file:export', 'encrypted')
             }
           },
           {
@@ -144,7 +144,7 @@ module.exports = {
           {
             label: i18n.t('contextMenu.exportItems.exportToPDF'),
             click: (item, win, event) => {
-
+              if (win) win.webContents.send('menu:file:export', 'pdf')
             }
           },
           {
@@ -153,7 +153,7 @@ module.exports = {
           {
             label: i18n.t('contextMenu.exportItems.exportToArena'),
             click: (item, win, event) => {
-
+              if (win) win.webContents.send('menu:file:export', 'arena')
             }
           }
         ]

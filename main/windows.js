@@ -187,6 +187,22 @@ function initEvents () {
     }
   })
 
+  ipcMain.on('dialog:new:save', (event, arg) => {
+    let win = BrowserWindow.getFocusedWindow()
+    if(win) {
+      var opts = {
+        title: arg.title,
+        defaultPath: app.getPath('home') + '/' + arg.filename,
+        buttonLabel: arg.buttonLabel,
+        filters: [arg.filter],
+      }
+      dialog.showSaveDialog(win, opts, (response) => {
+        if (response) event.sender.send('dialog:response', response)
+        else event.sender.send('dialog:response', null)
+      })
+    }
+  })
+
   ipcMain.on('window:open', (event, newWin, nextEvent) => {
     let thisWin = winManager.getCurrent()
     if (newWin) {

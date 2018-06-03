@@ -38,6 +38,7 @@ function store (state, emitter) {
       emitter.on('state:item:make', prepareToMake)
       emitter.on('state:item:trash', prepareToTrash)
       emitter.on('state:item:read', prepareToRead)
+      emitter.on('state:item:export', prepareToExport)
       
       // emitter.on('state:composer:new', compose)
       emitter.on('state:composer:update', update)
@@ -129,8 +130,7 @@ function store (state, emitter) {
     });
 
     watcher.on('ready', function () {
-      var watchList = watcher.getWatched()
-      console.log('watch list', watchList)
+      // do stuff
     })
 
     watcher.on('change', function () {
@@ -504,6 +504,54 @@ function store (state, emitter) {
     }) 
   }
 
+  function prepareToExport(type) {
+    emitter.emit('state:ui:focus', 'blur', true)
+    f = state.composer
+    
+    window.setTimeout(() => {
+      switch (type) {
+        case 'plaintext':
+          prepareToExportToDisk(f, state.composer.stale)
+        break
+        case 'encrypted':
+          prepareToEncryptWithPassword(f)
+        break
+        case 'pdf':
+          prepareToExportPDF(f)
+        break
+        case 'arena':
+          prepareToExportArena(f)
+        break
+      }
+    }, 100)
+  }
+
+
+
+  async function prepareToEncryptWithPassword(f) {
+    
+  }
+
+  function prepareToExportToDisk(f, data) {
+    ipcRenderer.send('dialog:new:save', {
+      title: i18n.t('dialogs.exportPlainText.title', {name: f.name}),
+      buttonLabel: i18n.t('verbs.export'),
+      filter: { name: 'Text', extensions: ['txt', 'md'] },
+      filename: f.name + '.txt'
+    })
+    ipcRenderer.once('dialog:response', (event, res) => {
+      if (!res) return
+      exportFile(res, data)
+    })
+  }
+
+  async function exportFile(uri, data) {
+    let status
+    status = await io.exists(uri)
+    if(status.code === 'ENOENT') await io.write(uri, data)
+    emitter.emit('state:ui:focus', 'focus', true)
+  }
+
   function startRename() {
     if (!state.status.focus.id || state.status.renaming) return
     state.status.renaming = true
@@ -573,6 +621,7 @@ function store (state, emitter) {
     state.status.fullscreen = arg
     emitter.emit(state.events.RENDER)
   })
+
   ipcRenderer.on('window:event:quit', (event) => {
     // Close logic here
   })
@@ -593,6 +642,7 @@ function store (state, emitter) {
   ipcRenderer.on('menu:file:new:dir', (event) => {
     emitter.emit('state:item:make', 'directory')
   })  
+
   ipcRenderer.on('menu:file:new:window', (event) => {
     ipcRenderer.send('window:open', 'main')
   })
@@ -600,24 +650,35 @@ function store (state, emitter) {
   ipcRenderer.on('menu:file:save', (event) => {
     emitter.emit('state:composer:write')
   })
+
   ipcRenderer.on('menu:file:close', (event) => {
     emitter.emit('state:composer:close')
   })
+
   ipcRenderer.on('menu:file:revert', (event) => {
     emitter.emit('state:composer:revert')
   })
+
   ipcRenderer.on('menu:file:rename', (event) => {
     emitter.emit('state:item:rename')
   })
+
+  ipcRenderer.on('menu:file:export', (event, arg) => {
+    emitter.emit('state:item:export', arg)
+  })
+
   ipcRenderer.on('menu:file:trash', (event) => {
     emitter.emit('state:item:trash')
   })  
+
   ipcRenderer.on('menu:view:library', (event) => {
     emitter.emit('state:library:toggle')
   })
+
   ipcRenderer.on('menu:help:support', (event) => {
     emitter.emit('state:toolbar:report')
   })
+
   ipcRenderer.on('menu:context:reveal', (event) => {
     emitter.emit('state:library:reveal', state.status.focus.uri)
   })

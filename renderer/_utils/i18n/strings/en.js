@@ -67,7 +67,8 @@ var strings = {
     "continue": "Continue",
     "back": "Back",
     "help": "Get Help",
-    "retry": "Retry"
+    "retry": "Retry",
+    "export": "Export"
   },
   "setup": {
     "ui": {
@@ -108,6 +109,9 @@ var strings = {
     "trashItem": {
       "title": "Trash %{name}?",
       "detail": "The item will be moved to your computer\'s trash."
+    },
+    "exportPlainText": {
+      "title": "Export %{name} as Plain Text"
     }
   },
   "errors": {
