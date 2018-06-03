@@ -6,7 +6,7 @@ module.exports = {
     
     let lang
 
-    if (locale.indexOf('en') !== -1) lang = 'de'
+    if (locale.indexOf('en') !== -1) lang = 'en'
     else if (locale.indexOf('de') !== -1) lang = 'de'
     else if (locale.indexOf('es') !== -1) lang = 'es'
     else if (locale.indexOf('fr') !== -1) lang = 'fr'
