@@ -58,45 +58,46 @@ function store (state, emitter) {
    * This will only run when there is no state persistence.
    * */
   async function init(value) {
-    state.unlocked = false
-    state.prefs = value
-    state.uifocus = null
-    state.status = {
-      modified: false,
-      writing: false,
-      reading: false,
-      listing: false,
-      fullscreen: false,
-      renaming: false,
-      focus: { },
-      active: { }
+    if (!state) {
+      state.unlocked = false
+      state.prefs = value
+      state.uifocus = null
+      state.status = {
+        modified: false,
+        writing: false,
+        reading: false,
+        listing: false,
+        fullscreen: false,
+        renaming: false,
+        focus: { },
+        active: { }
+      }
+      state.composer = {
+        id: '',
+        body: '',
+        stale: '',
+        uri: null,
+        name: null
+      }
+      state.lib = null
+      state.sidebar = {
+        visible: true,
+        openDirs: []
+      }
+      state.menu = {
+        save: false,
+        revert: false,
+        close: false,
+        trash: false,
+        trashCurrent: false,
+        export: false,
+        print: false,
+        preview: false,
+        library: true,
+        rename: false
+      }
+      state.key = { }
     }
-    state.composer = {
-      id: '',
-      body: '',
-      stale: '',
-      uri: null,
-      name: null
-    }
-    state.lib = null
-    state.sidebar = {
-      visible: true,
-      openDirs: []
-    }
-    state.menu = {
-      save: false,
-      revert: false,
-      close: false,
-      trash: false,
-      trashCurrent: false,
-      export: false,
-      print: false,
-      preview: false,
-      library: true,
-      rename: false
-    }
-    state.key = { }
-
     if (state.prefs) {
       emitter.emit('state:key:init')
 
