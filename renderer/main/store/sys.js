@@ -549,7 +549,7 @@ function store (state, emitter) {
   }
 
   function revealInBrowser(uri) {
-    require('electron').shell.showItemInFolder(uri);
+    require('electron').shell.showItemInFolder(uri)
   }
 
   // Out
