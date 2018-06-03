@@ -81,11 +81,11 @@ who has access to the disk.
 ✅ Windows support  
 ✅ Smart window management (smarter than my prototype at least)  
 ✅ GPG Private key encryption  
+⬜ Export to unencrypted text file  
 ⬜ Switch or replace keys  
 ⬜ Import existing text files      
 ⬜ Export to passphrase encrypted GPG text file  
 ⬜ Light UI theme  
-⬜ Export to unencrypted text file  
 
 ### Planned for v1.0
 ⬜ Markdown support  
