@@ -59,7 +59,7 @@ function store (state, emitter) {
    * This will only run when there is no state persistence.
    * */
   async function init(value) {
-    if (!state) {
+    if (!state.lib) {
       state.unlocked = false
       state.prefs = value
       state.uifocus = null
