@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, Menu, Notification } = require('electron')
 
 const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
@@ -210,6 +210,7 @@ function initEvents () {
 
       win.object.on('ready-to-show', () => {
         win.object.show()
+
       })
     }
     event.sender.send('window:open:done', nextEvent, thisWin)
@@ -217,6 +218,19 @@ function initEvents () {
 
   ipcMain.on('window:close', (event, win) => {
     winManager.close(win.name)
+  })
+
+  ipcMain.on('notification:new', (event, arg) => {
+    let notify = new Notification( {
+      title: arg.title,
+      body: arg.body,
+      silent: arg.silent
+    })
+    notify.show()
+
+    notify.on('click', () => {
+      event.sender.send('notification:clicked', arg.next)
+    })
   })
 
   ipcMain.on('modal:new', (event, newModal) => {

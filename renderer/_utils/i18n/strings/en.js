@@ -119,6 +119,12 @@ var strings = {
       "title": "Wrong passphrase",
       "detail": "That passphrase didn\'t work – please try again."
     }
+  },
+  "notifications": {
+    "exportedFile": {
+      "title": "Exported %{filename} as %{type}",
+      "body": "Click to reveal this file on your computer"
+    }
   }
 }
 

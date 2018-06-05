@@ -541,14 +541,18 @@ function store (state, emitter) {
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       if (!res) return
-      exportFile(res, data)
+      exportFile(res, data, 'plaintext')
     })
   }
 
-  async function exportFile(uri, data) {
-    let status
-    status = await io.exists(uri)
-    if(status.code === 'ENOENT') await io.write(uri, data)
+  async function exportFile(uri, data, type) {
+    await io.write(uri, data)
+    ipcRenderer.send('notification:new', {
+      title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name, type:type }),
+      body: i18n.t('notifications.exportedFile.body'),
+      silent: true,
+      next: { event: 'state:library:reveal', args: uri }
+    })
     emitter.emit('state:ui:focus', 'focus', true)
   }
 
@@ -681,6 +685,10 @@ function store (state, emitter) {
 
   ipcRenderer.on('menu:context:reveal', (event) => {
     emitter.emit('state:library:reveal', state.status.focus.uri)
+  })
+
+  ipcRenderer.on('notification:clicked', (event, next) => {
+    emitter.emit(next.event, next.args)
   })
 
   // Keyboard navigation
