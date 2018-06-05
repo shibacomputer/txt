@@ -152,13 +152,6 @@ function store (state, emitter) {
     watcher.on('unlink', function () {
       emitter.emit('state:library:list', state.prefs.app.path, true)
     })
-    /*
-    let watcher = watch(uri, { recursive: true, persistent: true })
-    watcher.on('change', (event, name) => {
-      // @TODO: Make this more granular
-      emitter.emit('state:library:list', state.prefs.app.path, true)
-    })
-    */
   }
 
   async function list(d, base) {
@@ -525,8 +518,6 @@ function store (state, emitter) {
       }
     }, 100)
   }
-
-
 
   async function prepareToEncryptWithPassword(f) {
     
