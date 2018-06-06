@@ -200,7 +200,7 @@ function initEvents () {
   })
 
   ipcMain.on('window:close', (event, win) => {
-    winManager.close(win.name)
+    if(win) winManager.close(win.name)
   })
 
   ipcMain.on('modal:new', (event, newModal) => {
