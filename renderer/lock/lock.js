@@ -1,8 +1,9 @@
 const html = require('choo/html')
-const style = require('./style')
 
-const lock = require('./components/lock')
-const icons = require('../_components/icons')
+const lockInput = require('./components/lockInput')
+
+const polyglot = require('../_utils/i18n/i18n')
+const i18n = polyglot.init(window.navigator.language)
 
 module.exports = lockerModal
 
@@ -10,12 +11,16 @@ module.exports = lockerModal
  * Unlocker modal app.
  */
 
-function lockerModal(state, emit) {
+function lockerModal(state, emit, opts) {
+  opts? opts : opts = {
+    verb: i18n.t('verbs.unlock'),
+    placeholder: i18n.t('lockscreen.default')
+  }
+
   document.title = 'Txt'
   return html`
     <body>
-      ${ lock(state, emit) }
-      ${ icons() }
+      ${ lockInput(state, emit, opts) }
     </body>
   `
 }

@@ -68,7 +68,8 @@ var strings = {
     "back": "Back",
     "help": "Get Help",
     "retry": "Retry",
-    "export": "Export"
+    "export": "Export",
+    "unlock": "Unlock"
   },
   "setup": {
     "ui": {
@@ -125,6 +126,10 @@ var strings = {
       "title": "Exported %{filename} as %{type}",
       "body": "Click to reveal this file on your computer"
     }
+  },
+  "lockscreen": {
+    "default": "Enter your passphrase to continue.",
+    "exportFile": "Enter a passphrase to secure this file."
   }
 }
 
