@@ -97,10 +97,10 @@ who has access to the disk.
 ⬜ Automatic image management  
 
 ### Language Support  
-✅ English (100%)  
-⬜ Deutsch (50%)  
-⬜ Español (0%)  
-⬜ 日本語 (10%)  
+✅ 🇬🇧 English (100%)  
+⬜ 🇩🇪 Deutsch (50%)  
+⬜ 🇪🇸 Español (0%)  
+⬜ 🇯🇵 日本語 (10%)  
 
 ### Big todos
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
