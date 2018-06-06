@@ -81,8 +81,9 @@ who has access to the disk.
 ✅ Windows support  
 ✅ Smart window management (smarter than my prototype at least)  
 ✅ GPG Private key encryption  
+✅ Export to plain text file  
 ⬜ Switch or replace keys  
-⬜ Import existing text files      
+⬜ Import existing text files  
 ⬜ Export to passphrase encrypted GPG text file  
 ⬜ Light UI theme  
 ⬜ Export to unencrypted text file  
@@ -95,11 +96,18 @@ who has access to the disk.
 ⬜ Export to PDF  
 ⬜ Automatic image management  
 
+### Language Support  
+✅ English (100%)  
+⬜ Deutsch (50%)  
+⬜ Español (0%)  
+⬜ 日本語 (10%)  
+
 ### Big todos
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜ Data management  
 ⬜ Better support for file permission edge cases  
 ⬜ Collaboration / track changes??  
+⬜ Contact list  
 ⬜ 2FA / Yubikey support  
 ⬜ Secure syncing  
 
