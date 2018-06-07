@@ -1,6 +1,6 @@
 {
   "name": "Txt",
-  "version": "0.0.0-b1",
+  "version": "1.0.0-preview",
   "description": "A simple, private text editor",
   "main": "main/index.js",
   "scripts": {
