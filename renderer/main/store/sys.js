@@ -236,7 +236,8 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    if (type !== 'new') state.status.modified = false
+    state.status.modified = false 
+    console.log(state.composer)
     state.writing = false
     
     switch (type) {
@@ -252,6 +253,11 @@ function store (state, emitter) {
 
       case 'close':
         await close()
+      break
+
+      default:
+        state.composer.stale = state.composer.body
+      break
     }
   }
 

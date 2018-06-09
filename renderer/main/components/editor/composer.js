@@ -44,6 +44,7 @@ class Composer extends Nanocomponent {
   }
 
   update (contents, emit) {
+    this.contents = contents
     if (this.contents.body != this.contents.stale) this.contents
 
     emit('state:composer:update', contents)
