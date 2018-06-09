@@ -50,7 +50,6 @@ Editor.prototype.createElement = function (state, emit) {
       this.body = contents.body
       this.rendered = turndownService.turndown(html)
 
-      console.log(this.rendered)
       this.emit('state:composer:update', contents)
       
     },
