@@ -315,15 +315,14 @@ function store (state, emitter) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
-      emitter.emit('state:menu:update')
     }
     else {
       state.status.modified = false
       state.menu.save = false
       state.menu.revert = false
-      emitter.emit('state:menu:update')
-      emitter.emit(state.events.RENDER)
     }
+    emitter.emit('state:menu:update')
+    emitter.emit(state.events.RENDER)
   }
 
   async function commitRename(f) {
