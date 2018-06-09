@@ -314,6 +314,8 @@ function store (state, emitter) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
+      emitter.emit('state:menu:update')
+      emitter.emit(state.events.RENDER)
     }
     else {
       state.status.modified = false
