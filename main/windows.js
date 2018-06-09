@@ -233,6 +233,19 @@ function initEvents () {
     })
   })
 
+  ipcMain.on('notification:new', (event, arg) => {
+    let notify = new Notification( {
+      title: arg.title,
+      body: arg.body,
+      silent: arg.silent
+    })
+    notify.show()
+
+    notify.on('click', () => {
+      event.sender.send('notification:clicked', arg.next)
+    })
+  })
+
   ipcMain.on('modal:new', (event, newModal) => {
     let thisWin = winManager.getCurrent()
     let top = thisWin.object
