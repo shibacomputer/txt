@@ -37,13 +37,14 @@ const style = css`
 
   .input {
     border: 1px solid currentcolor;
-    background: none;
+    background: var(--k);
     flex-grow: 1;
     font-size: 12px;
-    padding: 0.75rem 0.5rem 0.75rem 0.5rem;
     font-family: 'Mono', monospace;
     font-weight: normal;
     outline: none;
+    padding: 0.75rem 0.5rem 0.75rem 0.5rem;
+    transition: color 150ms linear, border 150ms linear;
   }
 
   .input::selection {
@@ -55,7 +56,8 @@ const style = css`
   }
 
   .input.error {
-    color: var(--r)
+    color: var(--r);
+    transition: none;
   }
 
   .input.error::placeholder {
@@ -70,14 +72,15 @@ const style = css`
     background: var(--b);
     border: none;
     font-size: 13px;
-    margin-left: 1px;
     outline: var(--w);
     padding: 0 1rem;
+    transition: color 150ms linear, background 150ms linear;
   }
 
   .button.error {
     background: var(--r);
     color: var(--k);
+    transition: none;
   }
 
   .button:active {

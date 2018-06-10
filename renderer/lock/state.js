@@ -1,29 +1,37 @@
-module.exports = state
 const { ipcRenderer } = require('electron')
-const pgp = require('../_utils/crypto')
+const Mousetrap = require('mousetrap')
 
 function state (state, emitter) {
-
   emitter.on('DOMContentLoaded', () => {
 
     emitter.on('state:init', init)
+    emitter.on('state:passphrase:update', update)
     emitter.on('state:passphrase:send', sendToParent)
     emitter.on('state:passphrase:return', receiveFromParent)
-    emitter.on('state:passphrase:toggle', togglePhrase)
+    emitter.on('state:cancel', cancel)
 
+    Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup')
   })
 
   function init (opts) {
-    state.opts = opts
     state.phrase = null
     state.valid = false
     state.error = false
     state.next = ''
-    state.show = false
+    state.show = true
+    state.type = opts.type
+
+    emitter.emit(state.events.RENDER)
   }
 
-  function update() {
-
+  function update(phrase) {
+    if (state.error || state.valid) {
+      state.error = false
+      state.valid = false
+      emitter.emit(state.events.RENDER)
+    }
+    state.phrase = phrase
+    console.log(state.phrase)
   }
 
   function sendToParent() {
@@ -37,8 +45,13 @@ function state (state, emitter) {
 
   }
 
-  function togglePhrase() {
-    state.show = !state.show
-    emitter.emit(state.events.RENDER)
+  function cancel() {
+    window.close()
   }
+
+  ipcRenderer.on('window:modal:init', (event, opts) => {
+    emitter.emit('state:init', opts)
+  })
 }
+
+module.exports = state

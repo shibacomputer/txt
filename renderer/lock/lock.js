@@ -11,11 +11,23 @@ module.exports = lockerModal
  * Unlocker modal app.
  */
 
-function lockerModal(state, emit, opts) {
-  opts? opts : opts = {
-    verb: i18n.t('verbs.unlock'),
-    placeholder: i18n.t('lockscreen.default'),
-    error: i18n.t('lockscreen.error')
+function lockerModal(state, emit) {
+  let opts
+  switch (state.type) {
+    case 'new':
+      opts = {
+        verb: i18n.t('verbs.export'),
+        placeholder: i18n.t('lockscreen.export'),
+        error: i18n.t('lockscreen.encryptionError')
+      }
+    break
+    default:
+      opts = {
+        verb: i18n.t('verbs.unlock'),
+        placeholder: i18n.t('lockscreen.default'),
+        error: i18n.t('lockscreen.passphraseError')
+      }
+    break
   }
 
   document.title = 'Txt'

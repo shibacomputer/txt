@@ -129,8 +129,9 @@ var strings = {
   },
   "lockscreen": {
     "default": "Enter your passphrase to continue.",
-    "exportFile": "Enter a passphrase to secure this file.",
-    "error": "Wrong passphrase. Please try again."
+    "export": "Enter a new passphrase to export this text.",
+    "passphraseError": "Wrong passphrase. Please try again.",
+    "encryptionError": "Something went wrong encryping this text."
   }
 }
 

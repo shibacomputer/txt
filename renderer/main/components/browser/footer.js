@@ -17,7 +17,16 @@ function editorFooter(state, emit) {
               name: 'settings',
               classes: 'c',
               icon: 'settings',
-              click: function() { emit('state:modal:show', 'lock') }
+              click: function() { emit('state:modal:show', {
+                name: 'lock',
+                width: 640,
+                height: 128,
+                opts: {
+                  type: 'new',
+                  oncancel: 'state:modal:cancelled',
+                  oncomplete: 'state:modal:complete'
+                }
+              }) }
            })
          ],
          center: [
