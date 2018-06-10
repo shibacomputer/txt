@@ -1,4 +1,4 @@
-const { app, BrowserWindow, dialog, ipcMain, Menu } = require('electron')
+const { app, BrowserWindow, dialog, ipcMain, Menu, Notification } = require('electron')
 
 const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
@@ -187,6 +187,22 @@ function initEvents () {
     }
   })
 
+  ipcMain.on('dialog:new:save', (event, arg) => {
+    let win = BrowserWindow.getFocusedWindow()
+    if(win) {
+      var opts = {
+        title: arg.title,
+        defaultPath: app.getPath('home') + '/' + arg.filename,
+        buttonLabel: arg.buttonLabel,
+        filters: [arg.filter],
+      }
+      dialog.showSaveDialog(win, opts, (response) => {
+        if (response) event.sender.send('dialog:response', response)
+        else event.sender.send('dialog:response', null)
+      })
+    }
+  })
+
   ipcMain.on('window:open', (event, newWin, nextEvent) => {
     let thisWin = winManager.getCurrent()
     if (newWin) {
@@ -194,6 +210,7 @@ function initEvents () {
 
       win.object.on('ready-to-show', () => {
         win.object.show()
+
       })
     }
     event.sender.send('window:open:done', nextEvent, thisWin)
@@ -203,14 +220,45 @@ function initEvents () {
     if(win) winManager.close(win.name)
   })
 
-  ipcMain.on('modal:new', (event, newModal) => {
+  ipcMain.on('notification:new', (event, arg) => {
+    let notify = new Notification( {
+      title: arg.title,
+      body: arg.body,
+      silent: arg.silent
+    })
+    notify.show()
+
+    notify.on('click', () => {
+      event.sender.send('notification:clicked', arg.next)
+    })
+  })
+
+  ipcMain.on('notification:new', (event, arg) => {
+    let notify = new Notification( {
+      title: arg.title,
+      body: arg.body,
+      silent: arg.silent
+    })
+    notify.show()
+
+    notify.on('click', () => {
+      event.sender.send('notification:clicked', arg.next)
+    })
+  })
+
+  ipcMain.on('modal:new', (event, modal) => {
     let thisWin = winManager.getCurrent()
     let top = thisWin.object
     if (thisWin) {
-      let child = new BrowserWindow( { parent: top, modal: true, show: false} )
-      child.loadURL(`file://${__dirname}/../renderer/${newModal}/index.html`)
+      let child = new BrowserWindow( { parent: top, modal: true, show: false, width: modal.width, height: modal.height } )
+      child.loadURL(`file://${__dirname}/../renderer/${modal.name}/index.html`)
       child.once('ready-to-show', () => {
+        child.webContents.send('window:modal:init', modal.opts)
         child.show()
+        event.sender.send('modal:new:open', modal)
+      })
+      child.on('close', () => {
+        
       })
     }
   })

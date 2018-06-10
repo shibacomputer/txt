@@ -152,14 +152,14 @@ module.exports = {
                   label: i18n.t('applicationBar.file.exportItems.exportToPlainText'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
-                    if (win) win.webContents.send('menu:file:duplicate')
+                    if (win) win.webContents.send('menu:file:export', 'plaintext')
                   }
                 },
                 {
                   label: i18n.t('applicationBar.file.exportItems.exportToEncryptedFile'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
-                    if (win) win.webContents.send('menu:file:duplicate')
+                    if (win) win.webContents.send('menu:file:export', 'encrypted')
                   }
                 },
                 {
@@ -170,7 +170,7 @@ module.exports = {
                   enabled: opts.export? opts.export : false,
                   accelerator: 'CmdOrCtrl+Shift+P',
                   click: (item, win, event) => {
-
+                    if (win) win.webContents.send('menu:file:export', 'pdf')
                   }
                 },
                 {
@@ -180,7 +180,7 @@ module.exports = {
                   label: i18n.t('applicationBar.file.exportItems.exportToArena'),
                   enabled: opts.export? opts.export : false,
                   click: (item, win, event) => {
-
+                    if (win) win.webContents.send('menu:file:export', 'arena')
                   }
                 }
               ]

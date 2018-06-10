@@ -67,7 +67,9 @@ var strings = {
     "continue": "Continue",
     "back": "Back",
     "help": "Get Help",
-    "retry": "Retry"
+    "retry": "Retry",
+    "export": "Export",
+    "unlock": "Unlock"
   },
   "setup": {
     "ui": {
@@ -108,6 +110,9 @@ var strings = {
     "trashItem": {
       "title": "Trash %{name}?",
       "detail": "The item will be moved to your computer\'s trash."
+    },
+    "exportPlainText": {
+      "title": "Export %{name} as Plain Text"
     }
   },
   "errors": {
@@ -115,6 +120,18 @@ var strings = {
       "title": "Wrong passphrase",
       "detail": "That passphrase didn\'t work – please try again."
     }
+  },
+  "notifications": {
+    "exportedFile": {
+      "title": "Exported %{filename} as %{type}",
+      "body": "Click to reveal this file on your computer"
+    }
+  },
+  "lockscreen": {
+    "default": "Enter your passphrase to continue.",
+    "export": "Enter a new passphrase to export this text.",
+    "passphraseError": "Wrong passphrase. Please try again.",
+    "encryptionError": "Something went wrong encryping this text."
   }
 }
 
