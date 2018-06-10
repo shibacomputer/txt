@@ -250,7 +250,7 @@ function initEvents () {
     let thisWin = winManager.getCurrent()
     let top = thisWin.object
     if (thisWin) {
-      let child = new BrowserWindow( { parent: top, modal: true, show: false, width: 512, height: 240 } )
+      let child = new BrowserWindow( { parent: top, modal: true, show: false, width: 640, height: 128 } )
       child.loadURL(`file://${__dirname}/../renderer/${newModal}/index.html`)
       child.once('ready-to-show', () => {
         child.show()
