@@ -14,7 +14,8 @@ module.exports = lockerModal
 function lockerModal(state, emit, opts) {
   opts? opts : opts = {
     verb: i18n.t('verbs.unlock'),
-    placeholder: i18n.t('lockscreen.default')
+    placeholder: i18n.t('lockscreen.default'),
+    error: i18n.t('lockscreen.error')
   }
 
   document.title = 'Txt'
