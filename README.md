@@ -15,21 +15,34 @@ git clone git@github.com:shibacomputer/txt.git txt
 cd txt
 npm run setup
 ```
+
+__On Windows?__ If you don't already the
+[Windows Build Tools](https://github.com/felixrieseberg/windows-build-tools)
+installed, you must run these commands _instead_:  
+```
+git clone git@github.com:shibacomputer/txt.git txt
+cd txt
+npm install -g --production windows-build-tools
+npm run setup
+```
+
 Then, once everything is set up:
 ```
 👉 npm start
 ✨ 📝 🚀!
 ```
 
-__On Windows?__ If you don't already the
-[Windows Build Tools](https://github.com/felixrieseberg/windows-build-tools)
-installed, you must run these commands _instead_:  
-```
-npm install -g --production windows-build-tools
-npm run setup
-```
-
 This will install everything you need to build Txt successfully! 🎉  
+
+## Development
+Txt uses events to create simple patterns for interacting between Electron's `main` and `render` processes. Once I've cleaned up the MVP, I'll write a little more about how this works and what the benefits are. _Todo: write more about the app logic._
+
+If you're hacking on this lil app and you need to reset it, run:
+```
+npm run start:hard
+```
+This will delete your Txt preferences and start again. __(Note: this is macOS specific at this time!)__
+
 
 ## Disclaimer
 
@@ -82,33 +95,38 @@ who has access to the disk.
 ✅ Smart window management (smarter than my prototype at least)  
 ✅ GPG Private key encryption  
 ✅ Export to plain text file  
+✅ i18n Support  
 ⬜ Switch or replace keys  
 ⬜ Import existing text files  
 ⬜ Export to passphrase encrypted GPG text file  
-⬜ Light UI theme  
-
-### Planned for v1.0
-⬜ Markdown support  
-⬜ Decentralised software updates  
-✅ i18n Support  
-⬜ Localisation (First languages: French/Spanish/German/Japanese)  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
+
+### Planned for v1.0
+⬜ Search & Quick Open  
+⬜ Light UI theme  
+⬜ Markdown support  
+⬜ Decentralised software updates  
+⬜ Localisation (First languages: French/Spanish/German/Japanese)  
 ⬜ Automatic image management  
+⬜ In-app CLI  
 
 ### Language Support  
 ✅ 🇬🇧 English (100%)  
 ⬜ 🇩🇪 Deutsch (50%)  
-⬜ 🇪🇸 Español (0%)  
 ⬜ 🇯🇵 日本語 (10%)  
+⬜ 🇫🇷 Français (0%)  
+⬜ 🇪🇸 Español (0%)  
 
 ### Big todos
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜ Data management  
 ⬜ Better support for file permission edge cases  
-⬜ Collaboration / track changes??  
 ⬜ 2FA / Yubikey support  
-⬜ Secure syncing  
+⬜ Biometrics support  
+⬜ Collaboration / track changes??  
+⬜ Filesystem privacy??  
+⬜ Secure syncing??  
 
 ### One day
 ⬜ Go native!
