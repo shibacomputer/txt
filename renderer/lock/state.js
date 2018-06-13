@@ -35,14 +35,10 @@ function state (state, emitter) {
   }
 
   function sendToParent() {
-    state.error = true
-    state.valid = false
-    emitter.emit(state.events.RENDER)
-
-  }
-
-  function receiveFromParent(message) {
-
+    let message = {
+      secret: state.phrase
+    }
+    ipcRenderer.send('window:modal:parent', message)
   }
 
   function cancel() {
