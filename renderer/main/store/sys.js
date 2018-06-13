@@ -95,7 +95,8 @@ function store (state, emitter) {
         print: false,
         preview: false,
         library: true,
-        rename: false
+        rename: false,
+        modalIsOpen: false
       }
       state.key = { }
     }
@@ -314,8 +315,6 @@ function store (state, emitter) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
-      emitter.emit('state:menu:update')
-      emitter.emit(state.events.RENDER)
     }
     else {
       state.status.modified = false
@@ -507,6 +506,8 @@ function store (state, emitter) {
   function prepareToExport(type) {
     emitter.emit('state:ui:focus', 'blur', true)
     f = state.composer
+
+    console.log('helo, ', type)
     
     window.setTimeout(() => {
       switch (type) {
@@ -526,10 +527,6 @@ function store (state, emitter) {
     }, 100)
   }
 
-  async function prepareToEncryptWithPassword(f) {
-    
-  }
-
   function prepareToExportToDisk(f, data) {
     ipcRenderer.send('dialog:new:save', {
       title: i18n.t('dialogs.exportPlainText.title', {name: f.name}),
@@ -543,7 +540,24 @@ function store (state, emitter) {
     })
   }
 
-  async function exportFile(uri, data, type) {
+  async function prepareToEncryptWithPassword(f) {
+    emitter.emit('state:modal:show', {
+      name: 'lock',
+      width: 640,
+      height: 128,
+      opts: {
+        type: 'new',
+        oncancel: 'state:modal:cancelled',
+        oncomplete: 'state:modal:complete'
+      }
+    })
+  }
+
+  async function encryptExport(f, secret) {
+
+  }
+
+  async function exportFile(uri, data, secret, type) {
     await io.write(uri, data)
     ipcRenderer.send('notification:new', {
       title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name, type:type }),
@@ -592,6 +606,7 @@ function store (state, emitter) {
   }
 
   function showModal(type) {
+
     emitter.emit('state:ui:focus', 'modal', true)
     window.setTimeout(() => {
       ipcRenderer.send('modal:new', type)

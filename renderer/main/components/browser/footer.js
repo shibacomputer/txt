@@ -18,11 +18,11 @@ function editorFooter(state, emit) {
               classes: 'c',
               icon: 'settings',
               click: function() { emit('state:modal:show', {
-                name: 'lock',
-                width: 640,
-                height: 128,
+                name: 'prefs',
+                width: 480,
+                height: 512,
                 opts: {
-                  type: 'new',
+                  type: 'prefs',
                   oncancel: 'state:modal:cancelled',
                   oncomplete: 'state:modal:complete'
                 }
