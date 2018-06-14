@@ -25,7 +25,7 @@ function lockInput(state, emit, opts) {
     emit('state:passphrase:update', phrase)
   }
   function verify(e) {
-    emit('state:passphrase:send', false)
+    emit('state:passphrase:send')
   }
 }
 

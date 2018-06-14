@@ -8,6 +8,10 @@ const tree = require('./tree')
 module.exports = browser
 
 function browser(state, emit) {
+  function updateFocus() {
+    emit('state:ui:focus', 'browser')
+  }
+ 
   return html`
     <aside onclick=${updateFocus} class="${ style.browser } ${state.sidebar.visible? '' : style.disabled}" >
       ${ header(state, emit) }
@@ -16,7 +20,4 @@ function browser(state, emit) {
     </aside>
   `
 
-  function updateFocus() {
-    emit('state:ui:focus', 'browser')
-  }
 }

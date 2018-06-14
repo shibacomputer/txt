@@ -13,42 +13,79 @@ const polyglot = require('../../_utils/i18n/i18n')
 const i18n = polyglot.init(window.navigator.language)
 
 function store (state, emitter) {
-  
-  init()
-
+  if (!state.lib) {
+    state.unlocked = false
+    state.prefs = { }
+    state.uifocus = null
+    state.status = {
+      modified: false,
+      writing: false,
+      reading: false,
+      listing: false,
+      fullscreen: false,
+      renaming: false,
+      focus: { },
+      active: { }
+    }
+    state.composer = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    state.lib = null
+    state.sidebar = {
+      visible: true,
+      openDirs: []
+    }
+    state.menu = {
+      save: false,
+      revert: false,
+      close: false,
+      trash: false,
+      trashCurrent: false,
+      export: false,
+      print: false,
+      preview: false,
+      library: true,
+      rename: false,
+      modalIsOpen: false
+    }
+    state.key = { }
+  }
   emitter.on('DOMContentLoaded', () => {
 
-    ipcRenderer.send('pref:get:all')
+    emitter.on('state:init', init)
+
+    emitter.on('state:ui:focus', updateFocus)
+    emitter.on('state:menu:update', updateApplicationMenu)
+
+    emitter.on('state:key:init', initKey)
+
+    emitter.on('state:library:list', list)
+    emitter.on('state:library:select', select)
+    emitter.on('state:library:toggle', toggleLibrary)
+    emitter.on('state:library:context:new', newContextMenu)
+    emitter.on('state:library:reveal', revealInBrowser)
+
+    emitter.on('state:item:rename', startRename)
+    emitter.on('state:item:commit', commitRename)
+    emitter.on('state:item:make', prepareToMake)
+    emitter.on('state:item:trash', prepareToTrash)
+    emitter.on('state:item:read', prepareToRead)
+    emitter.on('state:item:export', prepareToExport)
+    
+    emitter.on('state:composer:update', update)
+    emitter.on('state:composer:write', write)
+    emitter.on('state:composer:revert', prepareToRevert)
+    emitter.on('state:composer:close', prepareToClose)
+    
+    emitter.on('state:modal:show', showModal)
+
+    ipcRenderer.send('pref:get:all')    
     ipcRenderer.once('pref:get:done', (event, key, value) => {
-
-      emitter.on('state:init', init)
-      emitter.on('state:ui:focus', updateFocus)
-      emitter.on('state:menu:update', updateApplicationMenu)
-
-      emitter.on('state:key:init', initKey)
-
-      emitter.on('state:library:list', list)
-      emitter.on('state:library:select', select)
-      emitter.on('state:library:toggle', toggleLibrary)
-      emitter.on('state:library:context:new', newContextMenu)
-      emitter.on('state:library:reveal', revealInBrowser)
-
-      emitter.on('state:item:rename', startRename)
-      emitter.on('state:item:commit', commitRename)
-      emitter.on('state:item:make', prepareToMake)
-      emitter.on('state:item:trash', prepareToTrash)
-      emitter.on('state:item:read', prepareToRead)
-      emitter.on('state:item:export', prepareToExport)
-      
-      // emitter.on('state:composer:new', compose)
-      emitter.on('state:composer:update', update)
-      emitter.on('state:composer:write', write)
-      emitter.on('state:composer:revert', prepareToRevert)
-      emitter.on('state:composer:close', prepareToClose)
-
-      // emitter.on('state:composer:toolbar:report', report)
-      
-      emitter.on('state:modal:show', showModal)
+      state.prefs = value
       emitter.emit('state:init', value)
     })
   })
@@ -59,55 +96,8 @@ function store (state, emitter) {
    * This will only run when there is no state persistence.
    * */
   async function init(value) {
-    if (!state.lib) {
-      state.unlocked = false
-      state.prefs = value
-      state.uifocus = null
-      state.status = {
-        modified: false,
-        writing: false,
-        reading: false,
-        listing: false,
-        fullscreen: false,
-        renaming: false,
-        focus: { },
-        active: { }
-      }
-      state.composer = {
-        id: '',
-        body: '',
-        stale: '',
-        uri: null,
-        name: null
-      }
-      state.lib = null
-      state.sidebar = {
-        visible: true,
-        openDirs: []
-      }
-      state.menu = {
-        save: false,
-        revert: false,
-        close: false,
-        trash: false,
-        trashCurrent: false,
-        export: false,
-        print: false,
-        preview: false,
-        library: true,
-        rename: false,
-        modalIsOpen: false
-      }
-      state.key = { }
-    }
     if (state.prefs) {
       emitter.emit('state:key:init')
-
-      try {
-        await list(state.prefs.app.path, true)
-      } catch (e) {
-        console.log(e)
-      }
       initWatcher(state.prefs.app.path)
     }
   }
@@ -124,7 +114,6 @@ function store (state, emitter) {
   }
 
   function initWatcher(uri) {
-
     var watcher = chokidar.watch(join(state.prefs.app.path, '/**/*'), {
       ignored: /(^|[\/\\])\../,
       persistent: true
@@ -132,26 +121,28 @@ function store (state, emitter) {
 
     watcher.on('ready', function () {
       // do stuff
+      /* TODO: Make this smarter, because right now it's not smart. */
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('change', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('add', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('addDir', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlinkDir', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlink', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      //emitter.emit('state:library:list', state.prefs.app.path, true)
     })
   }
 
@@ -173,7 +164,6 @@ function store (state, emitter) {
       if (index === -1) state.sidebar.openDirs.push(d.id)
       else state.sidebar.openDirs.splice(index, 1)
     }
-    emitter.emit('state:menu:update')
     state.status.listing = false
     emitter.emit(state.events.RENDER) 
   }
@@ -506,8 +496,6 @@ function store (state, emitter) {
   function prepareToExport(type) {
     emitter.emit('state:ui:focus', 'blur', true)
     f = state.composer
-
-    console.log('helo, ', type)
     
     window.setTimeout(() => {
       switch (type) {
@@ -536,7 +524,7 @@ function store (state, emitter) {
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       if (!res) return
-      exportFile(res, data, 'plaintext')
+      exportFile(res, data, null, 'plaintext')
     })
   }
 
@@ -550,6 +538,9 @@ function store (state, emitter) {
         oncancel: 'state:modal:cancelled',
         oncomplete: 'state:modal:complete'
       }
+    })
+    ipcRenderer.on('modal:message', (event, message) => {
+      console.log(event, message)
     })
   }
 

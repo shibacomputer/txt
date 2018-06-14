@@ -248,17 +248,25 @@ function initEvents () {
 
   ipcMain.on('modal:new', (event, modal) => {
     let thisWin = winManager.getCurrent()
-    let top = thisWin.object
+    let parent = thisWin.object
     if (thisWin) {
-      let child = new BrowserWindow( { parent: top, modal: true, show: false, width: modal.width, height: modal.height } )
+      let child = new BrowserWindow( { parent: parent, modal: true, show: false, width: modal.width, height: modal.height } )
       child.loadURL(`file://${__dirname}/../renderer/${modal.name}/index.html`)
       child.once('ready-to-show', () => {
         child.webContents.send('window:modal:init', modal.opts)
         child.show()
+        ipcMain.once('modal:parent:send', (modal, arg) => {
+          event.sender.send('modal:message', arg)
+        })
         event.sender.send('modal:new:open', modal)
       })
-      child.on('close', () => {
-        
+      child.on('closed', () => {
+        event.sender.send('modal:closed', modal)
+        child = null
+      })
+
+      parent.on('sheet-end', () => {
+        ipcMain.removeListener('modal:parent:send', () => { console.log('delete') })
       })
     }
   })

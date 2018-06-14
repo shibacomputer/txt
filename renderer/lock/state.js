@@ -7,11 +7,9 @@ function state (state, emitter) {
     emitter.on('state:init', init)
     emitter.on('state:passphrase:update', update)
     emitter.on('state:passphrase:send', sendToParent)
-    emitter.on('state:passphrase:return', receiveFromParent)
     emitter.on('state:cancel', cancel)
 
-    Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup')
-  })
+    Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup') })
 
   function init (opts) {
     state.phrase = null
@@ -36,9 +34,30 @@ function state (state, emitter) {
 
   function sendToParent() {
     let message = {
-      secret: state.phrase
+      secret: state.phrase,
+      type: state.type
     }
-    ipcRenderer.send('window:modal:parent', message)
+    ipcRenderer.send('modal:parent:send', message)
+    ipcRenderer.once('modal:parent:response', (event, arg) => { 
+
+      /*
+        1.  Check response.
+            - Possible responses: 'Valid / Invalid'
+        2.  What do I do next?
+            - Possible responses: close.
+      */
+      switch (arg.success) {
+        case true:
+          ipcRenderer.send('window:modal:parent:done')
+          window.close()
+        break
+        case false:
+          state.error = true
+          state.valid = false
+          emitter.emit(state.events.RENDER)
+        break
+      }
+    })
   }
 
   function cancel() {
