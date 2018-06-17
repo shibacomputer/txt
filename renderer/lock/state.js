@@ -29,7 +29,6 @@ function state (state, emitter) {
       emitter.emit(state.events.RENDER)
     }
     state.phrase = phrase
-    console.log(state.phrase)
   }
 
   function sendToParent() {
@@ -40,16 +39,12 @@ function state (state, emitter) {
     ipcRenderer.send('modal:parent:send', message)
     ipcRenderer.once('modal:parent:response', (event, arg) => { 
 
-      /*
-        1.  Check response.
-            - Possible responses: 'Valid / Invalid'
-        2.  What do I do next?
-            - Possible responses: close.
-      */
       switch (arg.success) {
         case true:
-          ipcRenderer.send('window:modal:parent:done')
-          window.close()
+          window.setTimeout( () => {
+            ipcRenderer.send('modal:done', { type: state.type, success: true, cancel: false })
+          }, 500)
+          
         break
         case false:
           state.error = true
@@ -58,13 +53,14 @@ function state (state, emitter) {
         break
       }
     })
+
   }
 
   function cancel() {
-    window.close()
+    ipcRenderer.send('modal:done', { type: state.type, success: false, cancel: false })
   }
 
-  ipcRenderer.on('window:modal:init', (event, opts) => {
+  ipcRenderer.on('modal:init', (event, opts) => {
     emitter.emit('state:init', opts)
   })
 }

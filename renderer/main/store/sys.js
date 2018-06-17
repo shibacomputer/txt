@@ -539,9 +539,6 @@ function store (state, emitter) {
         oncomplete: 'state:modal:complete'
       }
     })
-    ipcRenderer.on('modal:message', (event, message) => {
-      console.log(event, message)
-    })
   }
 
   async function encryptExport(f, secret) {
@@ -636,6 +633,29 @@ function store (state, emitter) {
 
   ipcRenderer.on('app:event:quit', (event) => {
     // App close logic
+  })
+
+  ipcRenderer.on('modal:message', (event, message) => {
+    switch (message.type) {
+      case ('new'): 
+        if (message.secret.length > 0) {
+          ipcRenderer.send('modal:parent:response', { success: true })
+        } else {
+          ipcRenderer.send('modal:parent:response', { success: false })
+        }
+      break
+      case ('validate'):
+        console.log('this is validate')
+      break
+      case ('prefs'):
+        // This is a preferences update
+        emitter.emit('state:init')
+      break
+    }
+  })
+
+  ipcRenderer.on('modal:closed', (event, message) => {
+    console.log(message)
   })
 
   // Responses to the menu system
