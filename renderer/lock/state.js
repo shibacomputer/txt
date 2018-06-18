@@ -12,7 +12,7 @@ function state (state, emitter) {
     Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup') })
 
   function init (opts) {
-    state.phrase = null
+    state.phrase = ''
     state.valid = false
     state.error = false
     state.next = ''
