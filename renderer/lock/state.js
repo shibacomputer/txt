@@ -7,14 +7,12 @@ function state (state, emitter) {
     emitter.on('state:init', init)
     emitter.on('state:passphrase:update', update)
     emitter.on('state:passphrase:send', sendToParent)
-    emitter.on('state:passphrase:return', receiveFromParent)
     emitter.on('state:cancel', cancel)
 
-    Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup')
-  })
+    Mousetrap.bind('esc', () => { emitter.emit('state:cancel') }, 'keyup') })
 
   function init (opts) {
-    state.phrase = null
+    state.phrase = ''
     state.valid = false
     state.error = false
     state.next = ''
@@ -31,25 +29,38 @@ function state (state, emitter) {
       emitter.emit(state.events.RENDER)
     }
     state.phrase = phrase
-    console.log(state.phrase)
   }
 
   function sendToParent() {
-    state.error = true
-    state.valid = false
-    emitter.emit(state.events.RENDER)
+    let message = {
+      secret: state.phrase,
+      type: state.type
+    }
+    ipcRenderer.send('modal:parent:send', message)
+    ipcRenderer.once('modal:parent:response', (event, arg) => { 
 
-  }
-
-  function receiveFromParent(message) {
+      switch (arg.success) {
+        case true:
+          window.setTimeout( () => {
+            ipcRenderer.send('modal:done', { type: state.type, success: true, cancel: false })
+          }, 500)
+          
+        break
+        case false:
+          state.error = true
+          state.valid = false
+          emitter.emit(state.events.RENDER)
+        break
+      }
+    })
 
   }
 
   function cancel() {
-    window.close()
+    ipcRenderer.send('modal:done', { type: state.type, success: false, cancel: false })
   }
 
-  ipcRenderer.on('window:modal:init', (event, opts) => {
+  ipcRenderer.on('modal:init', (event, opts) => {
     emitter.emit('state:init', opts)
   })
 }

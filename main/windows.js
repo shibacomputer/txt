@@ -248,18 +248,45 @@ function initEvents () {
 
   ipcMain.on('modal:new', (event, modal) => {
     let thisWin = winManager.getCurrent()
-    let top = thisWin.object
-    if (thisWin) {
-      let child = new BrowserWindow( { parent: top, modal: true, show: false, width: modal.width, height: modal.height } )
-      child.loadURL(`file://${__dirname}/../renderer/${modal.name}/index.html`)
-      child.once('ready-to-show', () => {
-        child.webContents.send('window:modal:init', modal.opts)
-        child.show()
-        event.sender.send('modal:new:open', modal)
+    
+    if (!thisWin) return
+    
+    let parent = thisWin.object
+
+    let child
+
+    if(parent.getChildWindows().length === 0) {
+      child = new BrowserWindow( { 
+        parent: parent, 
+        modal: true, 
+        show: false
       })
-      child.on('close', () => {
-        
+
+      ipcMain.on('modal:parent:send', (modal, arg) => {
+        parent.send('modal:message', arg)
+      })
+
+      ipcMain.on('modal:parent:response', (event, arg) => {
+        child.webContents.send('modal:parent:response', arg)
+      })
+
+      ipcMain.on('modal:done', (event, arg) => {
+        parent.send('modal:closed', modal)
+        child.hide()
       })
     }
+    else {
+      child = parent.getChildWindows()[0]
+    }
+
+    child.loadURL(`file://${__dirname}/../renderer/${modal.name}/index.html`)
+    
+    child.setSize(modal.width, modal.height)
+
+    child.once('ready-to-show', () => {
+      child.webContents.send('modal:init', modal.opts)
+      parent.send('modal:new:open', modal)
+      child.show()
+    })
   })
 }

@@ -13,42 +13,79 @@ const polyglot = require('../../_utils/i18n/i18n')
 const i18n = polyglot.init(window.navigator.language)
 
 function store (state, emitter) {
-  
-  init()
-
+  if (!state.lib) {
+    state.unlocked = false
+    state.prefs = { }
+    state.uifocus = null
+    state.status = {
+      modified: false,
+      writing: false,
+      reading: false,
+      listing: false,
+      fullscreen: false,
+      renaming: false,
+      focus: { },
+      active: { }
+    }
+    state.composer = {
+      id: '',
+      body: '',
+      stale: '',
+      uri: null,
+      name: null
+    }
+    state.lib = null
+    state.sidebar = {
+      visible: true,
+      openDirs: []
+    }
+    state.menu = {
+      save: false,
+      revert: false,
+      close: false,
+      trash: false,
+      trashCurrent: false,
+      export: false,
+      print: false,
+      preview: false,
+      library: true,
+      rename: false,
+      modalIsOpen: false
+    }
+    state.key = { }
+  }
   emitter.on('DOMContentLoaded', () => {
 
-    ipcRenderer.send('pref:get:all')
+    emitter.on('state:init', init)
+
+    emitter.on('state:ui:focus', updateFocus)
+    emitter.on('state:menu:update', updateApplicationMenu)
+
+    emitter.on('state:key:init', initKey)
+
+    emitter.on('state:library:list', list)
+    emitter.on('state:library:select', select)
+    emitter.on('state:library:toggle', toggleLibrary)
+    emitter.on('state:library:context:new', newContextMenu)
+    emitter.on('state:library:reveal', revealInBrowser)
+
+    emitter.on('state:item:rename', startRename)
+    emitter.on('state:item:commit', commitRename)
+    emitter.on('state:item:make', prepareToMake)
+    emitter.on('state:item:trash', prepareToTrash)
+    emitter.on('state:item:read', prepareToRead)
+    emitter.on('state:item:export', prepareToExport)
+    
+    emitter.on('state:composer:update', update)
+    emitter.on('state:composer:write', write)
+    emitter.on('state:composer:revert', prepareToRevert)
+    emitter.on('state:composer:close', prepareToClose)
+    
+    emitter.on('state:modal:show', showModal)
+
+    ipcRenderer.send('pref:get:all')    
     ipcRenderer.once('pref:get:done', (event, key, value) => {
-
-      emitter.on('state:init', init)
-      emitter.on('state:ui:focus', updateFocus)
-      emitter.on('state:menu:update', updateApplicationMenu)
-
-      emitter.on('state:key:init', initKey)
-
-      emitter.on('state:library:list', list)
-      emitter.on('state:library:select', select)
-      emitter.on('state:library:toggle', toggleLibrary)
-      emitter.on('state:library:context:new', newContextMenu)
-      emitter.on('state:library:reveal', revealInBrowser)
-
-      emitter.on('state:item:rename', startRename)
-      emitter.on('state:item:commit', commitRename)
-      emitter.on('state:item:make', prepareToMake)
-      emitter.on('state:item:trash', prepareToTrash)
-      emitter.on('state:item:read', prepareToRead)
-      emitter.on('state:item:export', prepareToExport)
-      
-      // emitter.on('state:composer:new', compose)
-      emitter.on('state:composer:update', update)
-      emitter.on('state:composer:write', write)
-      emitter.on('state:composer:revert', prepareToRevert)
-      emitter.on('state:composer:close', prepareToClose)
-
-      // emitter.on('state:composer:toolbar:report', report)
-      
-      emitter.on('state:modal:show', showModal)
+      state.prefs = value
       emitter.emit('state:init', value)
     })
   })
@@ -59,54 +96,8 @@ function store (state, emitter) {
    * This will only run when there is no state persistence.
    * */
   async function init(value) {
-    if (!state.lib) {
-      state.unlocked = false
-      state.prefs = value
-      state.uifocus = null
-      state.status = {
-        modified: false,
-        writing: false,
-        reading: false,
-        listing: false,
-        fullscreen: false,
-        renaming: false,
-        focus: { },
-        active: { }
-      }
-      state.composer = {
-        id: '',
-        body: '',
-        stale: '',
-        uri: null,
-        name: null
-      }
-      state.lib = null
-      state.sidebar = {
-        visible: true,
-        openDirs: []
-      }
-      state.menu = {
-        save: false,
-        revert: false,
-        close: false,
-        trash: false,
-        trashCurrent: false,
-        export: false,
-        print: false,
-        preview: false,
-        library: true,
-        rename: false
-      }
-      state.key = { }
-    }
     if (state.prefs) {
       emitter.emit('state:key:init')
-
-      try {
-        await list(state.prefs.app.path, true)
-      } catch (e) {
-        console.log(e)
-      }
       initWatcher(state.prefs.app.path)
     }
   }
@@ -123,7 +114,6 @@ function store (state, emitter) {
   }
 
   function initWatcher(uri) {
-
     var watcher = chokidar.watch(join(state.prefs.app.path, '/**/*'), {
       ignored: /(^|[\/\\])\../,
       persistent: true
@@ -131,6 +121,8 @@ function store (state, emitter) {
 
     watcher.on('ready', function () {
       // do stuff
+      /* TODO: Make this smarter, because right now it's not smart. */
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('change', function () {
@@ -172,7 +164,6 @@ function store (state, emitter) {
       if (index === -1) state.sidebar.openDirs.push(d.id)
       else state.sidebar.openDirs.splice(index, 1)
     }
-    emitter.emit('state:menu:update')
     state.status.listing = false
     emitter.emit(state.events.RENDER) 
   }
@@ -194,13 +185,13 @@ function store (state, emitter) {
     }
   }
 
-  async function write(type) {
+  async function write(type, secret, path) {
     state.writing = true
     let ciphertext
     let c = type === 'new'?  '' : state.composer.body
     
     try {
-      ciphertext = await pgp.encrypt(c)
+      ciphertext = await pgp.encrypt(c, (secret? secret : null))
     } catch(e) {
       console.log(e)
       return
@@ -208,29 +199,32 @@ function store (state, emitter) {
     
     let success, uri
     
-    if (type === 'new') {
-      let base
-      if (state.status.focus.uri) {
-        let index = state.sidebar.openDirs.indexOf(state.status.focus.id)
-        base = index === -1 ? parse(state.status.focus.uri).dir : state.status.focus.uri
+    if (!path) {
+      if (type === 'new') {
+        let base
+        if (state.status.focus.uri) {
+          let index = state.sidebar.openDirs.indexOf(state.status.focus.id)
+          base = index === -1 ? parse(state.status.focus.uri).dir : state.status.focus.uri
+        } else {
+          base = state.prefs.app.path
+        }
+        let filename = 'Untitled.gpg'
+        uri = join(base, filename)
+        
       } else {
-        base = state.prefs.app.path
-      }
-      let filename = 'Untitled.gpg'
-      uri = join(base, filename)
-      
-    } else {
-      f = state.status.active
-      uri = f.uri
-    } 
+        f = state.status.active
+        uri = f.uri
+      } 
+    } else uri = path
 
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
       console.log(e)
     }
-    state.status.modified = false 
-    console.log(state.composer)
+
+    if (type !== 'export') state.status.modified = false 
+
     state.writing = false
     
     switch (type) {
@@ -246,6 +240,15 @@ function store (state, emitter) {
 
       case 'close':
         await close()
+      break
+
+      case 'export':
+        ipcRenderer.send('notification:new', {
+          title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name, type:type }),
+          body: i18n.t('notifications.exportedFile.body'),
+          silent: true,
+          next: { event: 'state:library:reveal', args: uri }
+        })        
       break
 
       default:
@@ -314,8 +317,6 @@ function store (state, emitter) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
-      emitter.emit('state:menu:update')
-      emitter.emit(state.events.RENDER)
     }
     else {
       state.status.modified = false
@@ -506,47 +507,75 @@ function store (state, emitter) {
 
   function prepareToExport(type) {
     emitter.emit('state:ui:focus', 'blur', true)
-    f = state.composer
+    let f = state.composer
     
     window.setTimeout(() => {
       switch (type) {
-        case 'plaintext':
-          prepareToExportToDisk(f, state.composer.stale)
+        case 'arena':
+          // prepareToExportArena(f)
         break
         case 'encrypted':
-          prepareToEncryptWithPassword(f)
+          prepareToEncryptWithPassword()
         break
-        case 'pdf':
-          prepareToExportPDF(f)
+        default:
+          prepareToExportToDisk(f, null, type)
         break
-        case 'arena':
-          prepareToExportArena(f)
-        break
+        
       }
     }, 100)
   }
 
-  async function prepareToEncryptWithPassword(f) {
-    
-  }
+  function prepareToExportToDisk(f, secret, type) {
+    let opts
+    switch (type) {
+      case 'plaintext':
+        opts = {
+          name: 'Text',
+          ext: ['txt', 'md']
+        }
+      break
 
-  function prepareToExportToDisk(f, data) {
+      case 'encrypted':
+        opts = {
+          name: 'Encrypted Text',
+          ext: ['gpg']
+        }
+      break
+
+    }
+
     ipcRenderer.send('dialog:new:save', {
       title: i18n.t('dialogs.exportPlainText.title', {name: f.name}),
       buttonLabel: i18n.t('verbs.export'),
-      filter: { name: 'Text', extensions: ['txt', 'md'] },
-      filename: f.name + '.txt'
+      filter: opts,
+      filename: f.name + '.' + opts.ext[0]
     })
     ipcRenderer.once('dialog:response', (event, res) => {
       if (!res) return
-      exportFile(res, data, 'plaintext')
+      exportFile(res, f.body, secret, type)
     })
   }
 
-  async function exportFile(uri, data, type) {
-    await io.write(uri, data)
+  async function prepareToEncryptWithPassword() {
+    emitter.emit('state:modal:show', {
+      name: 'lock',
+      width: 640, 
+      height: 128,
+      opts: {
+        type: 'new',
+        oncancel: 'state:modal:cancelled',
+        oncomplete: 'state:modal:complete'
+      }
+    })
+  }
+
+  async function exportFile(uri, data, secret, type) {
+    if (secret) {
+      data = await pgp.encrypt(data, secret)
+    }
+    await io.write(uri, data, secret)
     ipcRenderer.send('notification:new', {
-      title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name, type:type }),
+      title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name }),
       body: i18n.t('notifications.exportedFile.body'),
       silent: true,
       next: { event: 'state:library:reveal', args: uri }
@@ -630,6 +659,33 @@ function store (state, emitter) {
 
   ipcRenderer.on('app:event:quit', (event) => {
     // App close logic
+  })
+
+  ipcRenderer.on('modal:message', (event, message) => {
+    let f = state.composer
+    switch (message.type) {
+      case ('new'): 
+        if (message.secret.length > 0) {
+          ipcRenderer.send('modal:parent:response', { success: true })
+          window.setTimeout(() => {
+            prepareToExportToDisk(f, message.secret, 'encrypted')
+          }, 1000)
+        } else {
+          ipcRenderer.send('modal:parent:response', { success: false })
+        }
+      break
+      case ('validate'):
+        console.log('this is validate')
+      break
+      case ('prefs'):
+        // This is a preferences update
+        emitter.emit('state:init')
+      break
+    }
+  })
+
+  ipcRenderer.on('modal:closed', (event, message) => {
+    console.log(message)
   })
 
   // Responses to the menu system

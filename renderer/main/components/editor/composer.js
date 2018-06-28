@@ -27,11 +27,9 @@ class Composer extends Nanocomponent {
       element: el,
       actions: ['bold', 'italic', 'heading1', 'heading2', 'olist', 'ulist'],
       onChange: (html) => {
-
         this.contents.body = this.editor.content.innerText
         this.contents.html = html
-        console.log(html)
-        this.emit('state:composer:update', contents)
+        emit('state:composer:update', contents)
       },
       styleWithCSS: true,
       actions: [],
@@ -46,10 +44,7 @@ class Composer extends Nanocomponent {
   update (contents, emit) {
     this.contents = contents
     if (this.contents.body != this.contents.stale) this.contents
-
-    emit('state:composer:update', contents)
     this.editor.content.focus()
-    console.log()
   }
 }
 

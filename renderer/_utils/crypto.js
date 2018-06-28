@@ -67,14 +67,23 @@ module.exports = {
     return key
   },
 
-  encrypt: async function(contents) {
-    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey()
+  encrypt: async function(contents, secret) {
+    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
-    const options = {
-      data: contents,
-      publicKeys: pubKeyObj[0],
-      privateKeys: [privKeyObj],
-      compression: PGP_COMPRESSION
+    let options 
+    if (!secret) {
+      options = {
+        data: contents,
+        publicKeys: pubKeyObj[0],
+        privateKeys: [privKeyObj],
+        compression: PGP_COMPRESSION
+      }
+    } else {
+      options = { 
+        data: contents,
+        compression: PGP_COMPRESSION,
+        passwords: [ secret ]
+      }
     }
 
     let ciphertext
@@ -87,12 +96,22 @@ module.exports = {
     return ciphertext.data
   },
 
-  decrypt: async function(ciphertext) {
-    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey()
+  decrypt: async function(ciphertext, secret) {
+    if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
-    const options = {
-      message: openpgp.message.readArmored(ciphertext),
-      privateKeys: [privKeyObj]
+    let options
+    
+    if (!secret) {
+      options = {
+        message: openpgp.message.readArmored(ciphertext),
+        privateKeys: [privKeyObj]
+      }
+    } else {
+      options = { 
+        data: contents,
+        compression: PGP_COMPRESSION,
+        passwords: [ secret ]
+      }
     }
 
     const decrypted = await openpgp.decrypt(options)

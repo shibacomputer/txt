@@ -96,9 +96,9 @@ who has access to the disk.
 ✅ GPG Private key encryption  
 ✅ Export to plain text file  
 ✅ i18n Support  
+✅ Export to passphrase encrypted GPG text file  
 ⬜ Switch or replace keys  
 ⬜ Import existing text files  
-⬜ Export to passphrase encrypted GPG text file  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
 
