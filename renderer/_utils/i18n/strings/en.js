@@ -123,7 +123,7 @@ var strings = {
   },
   "notifications": {
     "exportedFile": {
-      "title": "Exported %{filename} as %{type}",
+      "title": "Exported %{filename}.",
       "body": "Click to reveal this file on your computer"
     }
   },
