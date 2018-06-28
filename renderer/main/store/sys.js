@@ -570,6 +570,9 @@ function store (state, emitter) {
   }
 
   async function exportFile(uri, data, secret, type) {
+    if (secret) {
+      data = await pgp.encrypt(data, secret)
+    }
     await io.write(uri, data, secret)
     ipcRenderer.send('notification:new', {
       title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name }),
