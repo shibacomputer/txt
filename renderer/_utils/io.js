@@ -5,7 +5,10 @@ const dirToJson = require('dir-to-json')
 const mime = require('mime')
 const trash = require('trash')
 
-mime.define({ 'text/gpg': ['gpg'] })
+mime.define({
+  'text/plain': ['txt'],
+  'text/gpg': ['gpg']
+})
 
 const APP_NAME = require('electron').remote.app.getName()
 const APP_VERSION = require('electron').remote.app.getVersion()

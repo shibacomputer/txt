@@ -43,6 +43,8 @@
     "electron-updater": "^2.21.10",
     "electron-window-manager": "git+https://github.com/shibacomputer/electron-window-manager.git",
     "keytar": "^4.0.5",
+    "loadash": "^1.0.0",
+    "lodash": "^4.17.10",
     "mime": "1.6.0",
     "mousetrap": "^1.6.2",
     "nanocomponent": "^6.5.2",

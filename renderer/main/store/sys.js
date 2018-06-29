@@ -3,6 +3,7 @@ module.exports = store
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
 const chokidar = require('chokidar')
+const _ = require('lodash')
 
 const Mousetrap = require('mousetrap')
 
@@ -158,6 +159,7 @@ function store (state, emitter) {
     if (base) {
       // @TODO: Diff this.
       state.lib = tree
+      checkExisting(tree)
     }
     else {
       var index = state.sidebar.openDirs.indexOf(d.id)
@@ -167,6 +169,7 @@ function store (state, emitter) {
     state.status.listing = false
     emitter.emit(state.events.RENDER) 
   }
+
 
   async function mk() {
     let d = state.status.focus
@@ -541,7 +544,6 @@ function store (state, emitter) {
           ext: ['gpg']
         }
       break
-
     }
 
     ipcRenderer.send('dialog:new:save', {
@@ -619,13 +621,17 @@ function store (state, emitter) {
       }
     }
   }
-
   function showModal(type) {
     emitter.emit('state:ui:focus', 'modal', true)
     window.setTimeout(() => {
       ipcRenderer.send('modal:new', type)
     }, 100) 
   }
+
+  function checkExisting(tree) {
+    console.log({tree})
+  }
+
 
   function revealInBrowser(uri) {
     require('electron').shell.showItemInFolder(uri)
