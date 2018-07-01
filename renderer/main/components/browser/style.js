@@ -10,7 +10,7 @@ const style = css`
     display: flex;
     flex-direction: column;
     font-family: 'HKG', sans-serif;
-    height: calc(100vh - 2px);
+    height: 100vh;
     justify-content: space-between;
     max-width: 320px;
     min-width: 240px;
