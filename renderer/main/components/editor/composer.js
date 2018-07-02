@@ -1,8 +1,6 @@
 const Nanocomponent = require('nanocomponent')
 const html = require('nanohtml')
 const pell = require('pell')
-const TurndownService = require('turndown')
-const turndownService = new TurndownService()
 
 const style = require('./style')
 
