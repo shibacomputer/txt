@@ -190,18 +190,10 @@ function store (state, emitter) {
 
   async function write(type, secret, path) {
     state.writing = true
-    let ciphertext
+    
+    let ciphertext, uri, filename 
     let c = type === 'new'?  '' : state.composer.body
-    
-    try {
-      ciphertext = await pgp.encrypt(c, (secret? secret : null))
-    } catch(e) {
-      console.log(e)
-      return
-    }
-    
-    let success, uri
-    
+
     if (!path) {
       if (type === 'new') {
         let base
@@ -211,15 +203,28 @@ function store (state, emitter) {
         } else {
           base = state.prefs.app.path
         }
-        let filename = 'Untitled.gpg'
+        filename = 'Untitled.gpg'
         uri = join(base, filename)
         
       } else {
         f = state.status.active
+        filename = f.name
         uri = f.uri
       } 
-    } else uri = path
+    } else {
+      uri = path
+      f = state.status.active
+      filename = f.name
+    }
 
+    try {
+      ciphertext = await pgp.encrypt(c, filename, (secret? secret : null))
+    } catch(e) {
+      console.log(e)
+      return
+    }
+    
+    let success
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
