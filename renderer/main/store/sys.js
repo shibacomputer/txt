@@ -102,7 +102,6 @@ function store (state, emitter) {
       initWatcher(state.prefs.app.path)
     }
   }
-
   
   async function initKey() {
     let decrypted
@@ -218,7 +217,7 @@ function store (state, emitter) {
     }
 
     try {
-      ciphertext = await pgp.encrypt(c, filename, (secret? secret : null))
+      ciphertext = await pgp.encrypt(c, filename, (secret? secret : null), false)
     } catch(e) {
       console.log(e)
       return
@@ -577,8 +576,10 @@ function store (state, emitter) {
   }
 
   async function exportFile(uri, data, secret, type) {
+    
+    let filename = parse(uri).name + '.txt'
     if (secret) {
-      data = await pgp.encrypt(data, secret)
+      data = await pgp.encrypt(data, filename, secret, true)
     }
     await io.write(uri, data, secret)
     ipcRenderer.send('notification:new', {
@@ -626,6 +627,7 @@ function store (state, emitter) {
       }
     }
   }
+
   function showModal(type) {
     emitter.emit('state:ui:focus', 'modal', true)
     window.setTimeout(() => {
@@ -634,9 +636,8 @@ function store (state, emitter) {
   }
 
   function checkExisting(tree) {
-    console.log({tree})
+    
   }
-
 
   function revealInBrowser(uri) {
     require('electron').shell.showItemInFolder(uri)

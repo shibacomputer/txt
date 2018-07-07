@@ -67,11 +67,14 @@ module.exports = {
     return key
   },
 
-  encrypt: async function(contents, filename, secret) {
+  encrypt: async function(contents, filename, secret, usePhrase) {
+    usePhrase = usePhrase? usePhrase : false
+
     if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
     let options 
-    if (!secret) {
+  
+    if (!usePhrase) {
       options = {
         data: contents,
         filename: filename,

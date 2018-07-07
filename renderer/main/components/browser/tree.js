@@ -60,7 +60,6 @@ function tree(state, emit) {
     const active = state.status.active
     const text = state.composer
 
-    console.log({ focus })
     if (dir) {
       return html`
         <ul class=${style.tree}>
