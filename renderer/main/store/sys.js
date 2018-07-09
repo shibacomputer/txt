@@ -126,23 +126,23 @@ function store (state, emitter) {
     })
 
     watcher.on('change', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('add', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('addDir', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlinkDir', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlink', function () {
-      emitter.emit('state:library:list', state.prefs.app.path, true)
+      // emitter.emit('state:library:list', state.prefs.app.path, true)
     })
   }
 
@@ -260,6 +260,7 @@ function store (state, emitter) {
 
       default:
         state.composer.stale = state.composer.body
+        emitter.emit(state.events.RENDER)
       break
     }
   }
@@ -320,18 +321,21 @@ function store (state, emitter) {
   function update(contents) {
     state.composer = contents
 
-    if (state.composer.body !== state.composer.stale) {
+    if ((state.composer.body !== state.composer.stale) && !state.status.modified) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
+      emitter.emit(state.events.RENDER)
+      emitter.emit('state:menu:update')
     }
-    else {
+    else if ((state.composer.body === state.composer.stale) && state.status.modified) {
       state.status.modified = false
       state.menu.save = false
       state.menu.revert = false
+      emitter.emit(state.events.RENDER)
+      emitter.emit('state:menu:update')
     }
-    emitter.emit('state:menu:update')
-    emitter.emit(state.events.RENDER)
+    
   }
 
   async function commitRename(f) {
@@ -578,9 +582,11 @@ function store (state, emitter) {
   async function exportFile(uri, data, secret, type) {
     
     let filename = parse(uri).name + '.txt'
+    
     if (secret) {
       data = await pgp.encrypt(data, filename, secret, true)
     }
+
     await io.write(uri, data, secret)
     ipcRenderer.send('notification:new', {
       title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name }),
@@ -636,7 +642,7 @@ function store (state, emitter) {
   }
 
   function checkExisting(tree) {
-    
+    console.log('checking ', tree)
   }
 
   function revealInBrowser(uri) {
