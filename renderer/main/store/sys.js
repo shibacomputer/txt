@@ -126,23 +126,23 @@ function store (state, emitter) {
     })
 
     watcher.on('change', function () {
-      // emitter.emit('state:library:list', state.prefs.app.path, true)
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('add', function () {
-      // emitter.emit('state:library:list', state.prefs.app.path, true)
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('addDir', function () {
-      // emitter.emit('state:library:list', state.prefs.app.path, true)
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlinkDir', function () {
-      // emitter.emit('state:library:list', state.prefs.app.path, true)
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
 
     watcher.on('unlink', function () {
-      // emitter.emit('state:library:list', state.prefs.app.path, true)
+      emitter.emit('state:library:list', state.prefs.app.path, true)
     })
   }
 
@@ -267,7 +267,7 @@ function store (state, emitter) {
 
   async function read(f) {
     state.status.reading = true
-    emitter.emit(state.events.RENDER)
+    state.status.active = { }
     let ciphertext
     let contents = {
       id: '',
@@ -306,6 +306,7 @@ function store (state, emitter) {
     state.menu.export = true
     emitter.emit('state:menu:update')
     emitter.emit('state:composer:update', contents)
+    emitter.emit(state.events.RENDER)
   }
 
   async function select(i, context) {
