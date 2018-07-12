@@ -105,11 +105,11 @@ function setupApplication(state, emit) {
         </nav>
       `
     }
-    
+
     function nextSteps() {
       return html`
         <nav>
-          <button name="save" class="bg-m f" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${state.ui.newKey? nextSteps : completeSetup}>${ state.ui.newKey? i18n.t('setup.buttons.nextSetup') : i18n.t('setup.buttons.completeSetup') }</button>
+          <button name="save" class="bg-m f" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>${ state.ui.newKey? i18n.t('setup.buttons.nextSetup') : i18n.t('setup.buttons.completeSetup') }</button>
         </nav>
       `
     }
