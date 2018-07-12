@@ -23,6 +23,9 @@ function store (state, emitter) {
     emitter.on('state:uri:update', updateUri)
     emitter.on('state:passphrase:update', updatePhrase)
     emitter.on('state:key:update', updateKey)
+    emitter.on('state:ui:update', updateInterface)
+    emitter.on('state:user:update', updateUser)
+    emitter.on('state:email:update', updateEmail)
 
     emitter.on('state:ui:block', blockUi)
     emitter.on('state:ui:focus', updateFocus)
@@ -40,6 +43,10 @@ function store (state, emitter) {
       valid: false,
       newKey: true,
       block: false
+    }
+    state.user = {
+      name: 'Txt User',
+      email: 'anonymous@txtapp.io'
     }
     state.prefs = { }
     ipcRenderer.send('pref:get:all')
@@ -72,6 +79,19 @@ function store (state, emitter) {
     state.ui.newKey = isNewKey
   }
 
+  function updateUser(user) {
+    user.length > 0 ? state.user.name = user.toString() : i18n.t('setup.ui.nameInput.placeholder')
+  }
+
+  function updateEmail(email) {
+    email.length > 0 ? state.user.email = email.toString() : i18n.t('setup.ui.emailInput.placeholder')
+  }
+
+  function updateInterface(i) {
+    state.progress = state.progress + i
+    emitter.emit(state.events.RENDER)
+
+  }
   function blockUi(block) {
     state.ui.block = block
     emitter.emit(state.events.RENDER)

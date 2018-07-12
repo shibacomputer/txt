@@ -15,6 +15,16 @@ const style = css`
     transition: opacity 100ms linear, filter 250ms linear;
   }
 
+  .core {
+    align-items: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
   .unfocused {
     opacity: 0.45;
     filter: grayscale(100%);
@@ -47,6 +57,8 @@ const style = css`
   .view {
     flex-grow: 1;
     margin: 1rem 0;
+    position: absolute;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
   }
 
   .option {
@@ -172,6 +184,24 @@ const style = css`
     animation: anim 1.3s infinite linear;
     transform: translateZ(0);
   }
+
+  .transitionToLeft {
+    filter: grayscale(100%);
+    transform: translateX(-100vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+  }
+
+  .transitionEnd {
+    transform: translateX(0vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+  }
+
+  .hiddenFromRight {
+    filter: grayscale(100%);
+    transform: translateX(100vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+  }
+
 
   @keyframes anim {
     0%,
