@@ -93,8 +93,11 @@ const style = css`
   }
 
   .tree {
+    box-sizing: border-box;
     list-style: none;
     margin-left: 0.75rem;
+    min-width: fit-content;
+    width: 100%;
   }
 
   .header {
