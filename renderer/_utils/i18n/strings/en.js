@@ -91,6 +91,8 @@ var strings = {
       }
     },
     "buttons": {
+      "nextSetup": "Next",
+      "prevSetup": "Go Back",
       "completeSetup": "Complete Setup"
     },
   },

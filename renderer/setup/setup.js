@@ -5,7 +5,6 @@ const polyglot = require('../_utils/i18n/i18n')
 const i18n = polyglot.init(window.navigator.language)
 
 module.exports = setupApplication
-
 /**
  * The Setup Window handles initialisation of a
  * new app install and related functionality setup.
@@ -32,7 +31,7 @@ function setupApplication(state, emit) {
           <h1>${ i18n.t('setup.ui.title', {app_name: 'Txt'}) }</h1>
         </header>
         ${ view() }
-        ${ nextButton() }
+        ${ actions() }
       </main>
     </body>
   `
@@ -96,14 +95,37 @@ function setupApplication(state, emit) {
     }
   }
 
-  function nextButton() {
+  function actions() {
+
+    function completion() {
+      return html`
+        <nav>
+          <button name="prev" class="bg-g b" onclick=${previousSetup}>${ i18n.t('setup.buttons.prevSetup') }</button>
+          <button name="save" class="bg-m f" ${(!state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>${ i18n.t('setup.buttons.completeSetup') }</button>
+        </nav>
+      `
+    }
+    
+    function nextSteps() {
+      return html`
+        <nav>
+          <button name="save" class="bg-m f" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${state.ui.newKey? nextSteps : completeSetup}>${ state.ui.newKey? i18n.t('setup.buttons.nextSetup') : i18n.t('setup.buttons.completeSetup') }</button>
+        </nav>
+      `
+    }
     return html`
       <footer class=${style.footer}>
-        <nav>
-          <button name="save" class="bg-m f button-m" ${(state.ui.valid || state.ui.block) ? 'disabled' : ''} onclick=${completeSetup}>${ i18n.t('setup.buttons.completeSetup') }</button>
-        </nav>
+        ${ state.progress < 3 ? nextSteps() : completion() }
       </footer>
     `
+
+    function nextSetup() {
+      emit('state:setup:next')
+    }
+
+    function previousSetup() {
+      emit('state:setup:prev')
+    }
     function completeSetup() {
       emit('state:setup:validate')
     }

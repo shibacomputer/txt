@@ -84,7 +84,7 @@ module.exports = {
             },
             {
               label: i18n.t('applicationBar.file.lock'),
-              accelerator: 'Shift+CmdOrCtrl+L',
+              accelerator: 'Shift+CmdOrCtrl+Escape',
               click: (item, win, event) => {
                 if (!win) return
                 else win.webContents.send('menu:file:lock')
