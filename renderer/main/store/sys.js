@@ -3,7 +3,6 @@ module.exports = store
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
 const chokidar = require('chokidar')
-const _ = require('lodash')
 
 const Mousetrap = require('mousetrap')
 

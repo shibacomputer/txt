@@ -144,8 +144,8 @@ function store (state, emitter) {
   async function initSetup() {
     var opts = {
       author: {
-        name: state.prefs.author.name,
-        email: state.prefs.author.email
+        name: state.user.name,
+        email: state.user.email
       },
       uri: state.uri
     }
@@ -154,7 +154,7 @@ function store (state, emitter) {
     emitter.emit('state:ui:block', true)
     if (state.ui.newKey) {
       try {
-        result = await pgp.generateKey(state.uri, state.prefs.author, state.phrase)
+        result = await pgp.generateKey(state.uri, opts.author, state.phrase)
       } catch (e) {
         console.log(e)
         ipcRenderer.send('dialog:new:error', e)
@@ -163,7 +163,7 @@ function store (state, emitter) {
       emitter.emit('state:ui:block', false)
     } else {
       try {
-        result = await pgp.getKey(state.uri, state.prefs.author, state.phrase)
+        result = await pgp.getKey(state.uri, opts.author, state.phrase)
       } catch (e) {
         displayErrorBox()
       }
@@ -171,6 +171,8 @@ function store (state, emitter) {
       if (result) ipcRenderer.send('app:setup:init', opts)
       else displayErrorBox()
     }
+
+    ipcRenderer.send('pref:set', opts.author)
 
     ipcRenderer.once('app:setup:done', (event, res) => {
       ipcRenderer.send('window:open', 'main', 'window:close')

@@ -122,8 +122,10 @@ function initEvents () {
     event.sender.send('pref:get:done', arg, res)
   })
 
-  ipcMain.on('pref:set', (event, key, value) => {
-    let res = store.set(key, value)
+  ipcMain.on('pref:set', (event, arg) => {
+    console.log(arg)
+    let res = store.set(arg.key, arg.value)
+    console.log(res)
     event.sender.send('pref:set:done', arg, res)
   })
 
