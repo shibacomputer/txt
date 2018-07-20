@@ -1,8 +1,6 @@
 const Nanocomponent = require('nanocomponent')
 const html = require('nanohtml')
 const pell = require('pell')
-const TurndownService = require('turndown')
-const turndownService = new TurndownService()
 
 const style = require('./style')
 
@@ -37,12 +35,12 @@ class Composer extends Nanocomponent {
         content: 'content'
       }
     })
-    this.editor.content.innerText = this.contents.stale
+    this.editor.content.innerText = this.contents.body === this.contents.stale? this.contents.body : this.contents.stale
     return el 
   }
 
   update (contents, emit) {
-    this.contents = contents
+    if (!this.contents) this.contents = contents
     if (this.contents.body != this.contents.stale) this.contents
     this.editor.content.focus()
   }

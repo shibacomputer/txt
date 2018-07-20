@@ -12,12 +12,21 @@ const style = css`
     justify-content: space-between;
     overflow-y: hidden;
     padding: 1.5rem 1rem;
-    transition: opacity 100ms linear, filter 250ms linear;
+    transition: opacity 100ms linear;
+  }
+
+  .core {
+    align-items: stretch;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
   }
 
   .unfocused {
     opacity: 0.45;
-    filter: grayscale(100%);
   }
 
   .header {
@@ -47,6 +56,8 @@ const style = css`
   .view {
     flex-grow: 1;
     margin: 1rem 0;
+    position: absolute;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 
   .option {
@@ -172,6 +183,22 @@ const style = css`
     animation: anim 1.3s infinite linear;
     transform: translateZ(0);
   }
+
+  .transitionToLeft {
+    transform: translateX(-100vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
+  }
+
+  .transitionEnd {
+    transform: translateX(0vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
+  }
+
+  .hiddenFromRight {
+    transform: translateX(100vw);
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
+  }
+
 
   @keyframes anim {
     0%,

@@ -67,13 +67,17 @@ module.exports = {
     return key
   },
 
-  encrypt: async function(contents, secret) {
+  encrypt: async function(contents, filename, secret, usePhrase) {
+    usePhrase = usePhrase? usePhrase : false
+
     if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
     let options 
-    if (!secret) {
+  
+    if (!usePhrase) {
       options = {
         data: contents,
+        filename: filename,
         publicKeys: pubKeyObj[0],
         privateKeys: [privKeyObj],
         compression: PGP_COMPRESSION
@@ -81,6 +85,7 @@ module.exports = {
     } else {
       options = { 
         data: contents,
+        filename: filename,
         compression: PGP_COMPRESSION,
         passwords: [ secret ]
       }

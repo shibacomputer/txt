@@ -10,7 +10,7 @@ const style = css`
     display: flex;
     flex-direction: column;
     font-family: 'HKG', sans-serif;
-    height: calc(100vh - 2px);
+    height: 100vh;
     justify-content: space-between;
     max-width: 320px;
     min-width: 240px;
@@ -93,8 +93,11 @@ const style = css`
   }
 
   .tree {
+    box-sizing: border-box;
     list-style: none;
     margin-left: 0.75rem;
+    min-width: fit-content;
+    width: 100%;
   }
 
   .header {

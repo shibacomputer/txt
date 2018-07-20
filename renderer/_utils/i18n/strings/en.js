@@ -76,7 +76,7 @@ var strings = {
       "title": "Get Started with %{app_name}",
       "librarySelection": {
         "label": "Set library location",
-        "placeholder": "Set a directory...",
+        "placeholder": "Set a directory…",
         "tip": "Choose a location for your %{app_name} library. If you choose an existing library, %{app_name} will ask for your passphrase.",
       },
       "passphraseInput": {
@@ -88,9 +88,21 @@ var strings = {
           "newPassphrase": "Set a long passphrase to secure your library.",
           "existingPassphrase": "Enter your library passphrase."
         }
+      },
+      "nameInput": {
+        "label": "Name / pseudonym",
+        "placeholder": "Txt User",
+        "tip": "Set an optional name or pseudonym for your Txt key."
+      },
+      "emailInput": {
+        "label": "Email address",
+        "placeholder": "anonymous@txtapp.io",
+        "tip": "Set an optional email address. In future, you may be able to privately share this identity with Txt users."
       }
     },
     "buttons": {
+      "nextSetup": "Next",
+      "prevSetup": "Go Back",
       "completeSetup": "Complete Setup"
     },
   },

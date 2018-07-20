@@ -23,7 +23,7 @@ var style = css`
   .group {
     align-items: center;
     display: flex;
-    flex-basis: 33%;
+    flex-basis: 20%;
     flex-direction: row;
     height: 1.5rem;
   }
@@ -34,12 +34,13 @@ var style = css`
   }
   .center {
     box-sizing: border-box;
-    flex: 1;
+    flex: 1 1 auto;
     font-family: 'HKG', sans-serif;
     font-size: 14px;
     justify-content: center;
-    max-width: 75%;
     text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .label {
     padding: 0 0.25rem;

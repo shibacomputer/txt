@@ -6,7 +6,7 @@ module.exports = tree
 
 function tree(state, emit) {
   if (typeof state.lib === 'undefined') return initEmptyState()
-  else if (state.lib.children.filter(f => (f.mime === "text/gpg" || f.type === "directory")).length > 0) return initTree()
+  else if (state.lib.children.filter(f => (f.extension === ".gpg" || f.type === "directory")).length > 0) return initTree()
   else return(initEmptyState())
 
   function initTree() {
@@ -51,7 +51,7 @@ function tree(state, emit) {
   }
 
   function match(f, target) {
-    if (target.uri === f.uri) return true
+    if (target.id === f.id) return true
     else return false
   }
 
@@ -72,7 +72,7 @@ function tree(state, emit) {
               opts.rename = (match(f, focus) && state.status.renaming) ? true : false
               opts.modified = (match(f, text) && state.status.modified) ? true : false
               if (
-                (f.mime === 'text/gpg' || f.type === 'directory') &&
+                (f.extension === '.gpg' || f.type === 'directory') &&
                 (f.name.slice(0,1) !== '.')
               ) {
                 return html`

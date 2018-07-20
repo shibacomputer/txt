@@ -15,7 +15,7 @@ const style = css`
     flex: 1;
     flex-direction: column;
     font-size: 13px;
-    height: calc(100vh - 2px);
+    height: 100vh;
     justify-content: space-between;
     overflow-y: hidden;
   }

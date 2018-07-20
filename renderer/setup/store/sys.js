@@ -23,6 +23,9 @@ function store (state, emitter) {
     emitter.on('state:uri:update', updateUri)
     emitter.on('state:passphrase:update', updatePhrase)
     emitter.on('state:key:update', updateKey)
+    emitter.on('state:ui:update', updateInterface)
+    emitter.on('state:user:update', updateUser)
+    emitter.on('state:email:update', updateEmail)
 
     emitter.on('state:ui:block', blockUi)
     emitter.on('state:ui:focus', updateFocus)
@@ -40,6 +43,10 @@ function store (state, emitter) {
       valid: false,
       newKey: true,
       block: false
+    }
+    state.author = {
+      name: '',
+      email: ''
     }
     state.prefs = { }
     ipcRenderer.send('pref:get:all')
@@ -72,6 +79,19 @@ function store (state, emitter) {
     state.ui.newKey = isNewKey
   }
 
+  function updateUser(user) {
+    user.length > 0 ? state.author.name = user.toString() : i18n.t('setup.ui.nameInput.placeholder')
+  }
+
+  function updateEmail(email) {
+    email.length > 0 ? state.author.email = email.toString() : i18n.t('setup.ui.emailInput.placeholder')
+  }
+
+  function updateInterface(i) {
+    state.progress = state.progress + i
+    emitter.emit(state.events.RENDER)
+
+  }
   function blockUi(block) {
     state.ui.block = block
     emitter.emit(state.events.RENDER)
@@ -124,8 +144,8 @@ function store (state, emitter) {
   async function initSetup() {
     var opts = {
       author: {
-        name: state.prefs.author.name,
-        email: state.prefs.author.email
+        name: state.author.name,
+        email: state.author.email
       },
       uri: state.uri
     }
@@ -134,7 +154,7 @@ function store (state, emitter) {
     emitter.emit('state:ui:block', true)
     if (state.ui.newKey) {
       try {
-        result = await pgp.generateKey(state.uri, state.prefs.author, state.phrase)
+        result = await pgp.generateKey(state.uri, opts.author, state.phrase)
       } catch (e) {
         console.log(e)
         ipcRenderer.send('dialog:new:error', e)
@@ -143,7 +163,7 @@ function store (state, emitter) {
       emitter.emit('state:ui:block', false)
     } else {
       try {
-        result = await pgp.getKey(state.uri, state.prefs.author, state.phrase)
+        result = await pgp.getKey(state.uri, opts.author, state.phrase)
       } catch (e) {
         displayErrorBox()
       }
@@ -151,6 +171,8 @@ function store (state, emitter) {
       if (result) ipcRenderer.send('app:setup:init', opts)
       else displayErrorBox()
     }
+
+    ipcRenderer.send('pref:set', opts.author)
 
     ipcRenderer.once('app:setup:done', (event, res) => {
       ipcRenderer.send('window:open', 'main', 'window:close')

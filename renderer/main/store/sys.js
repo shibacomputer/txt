@@ -101,7 +101,6 @@ function store (state, emitter) {
       initWatcher(state.prefs.app.path)
     }
   }
-
   
   async function initKey() {
     let decrypted
@@ -158,6 +157,7 @@ function store (state, emitter) {
     if (base) {
       // @TODO: Diff this.
       state.lib = tree
+      checkExisting(tree)
     }
     else {
       var index = state.sidebar.openDirs.indexOf(d.id)
@@ -167,6 +167,7 @@ function store (state, emitter) {
     state.status.listing = false
     emitter.emit(state.events.RENDER) 
   }
+
 
   async function mk() {
     let d = state.status.focus
@@ -187,18 +188,10 @@ function store (state, emitter) {
 
   async function write(type, secret, path) {
     state.writing = true
-    let ciphertext
+    
+    let ciphertext, uri, filename 
     let c = type === 'new'?  '' : state.composer.body
-    
-    try {
-      ciphertext = await pgp.encrypt(c, (secret? secret : null))
-    } catch(e) {
-      console.log(e)
-      return
-    }
-    
-    let success, uri
-    
+
     if (!path) {
       if (type === 'new') {
         let base
@@ -208,15 +201,28 @@ function store (state, emitter) {
         } else {
           base = state.prefs.app.path
         }
-        let filename = 'Untitled.gpg'
+        filename = 'Untitled.gpg'
         uri = join(base, filename)
         
       } else {
         f = state.status.active
+        filename = f.name
         uri = f.uri
       } 
-    } else uri = path
+    } else {
+      uri = path
+      f = state.status.active
+      filename = f.name
+    }
 
+    try {
+      ciphertext = await pgp.encrypt(c, filename, (secret? secret : null), false)
+    } catch(e) {
+      console.log(e)
+      return
+    }
+    
+    let success
     try {
       success = await io.write(uri, ciphertext) 
     } catch (e) {
@@ -253,13 +259,14 @@ function store (state, emitter) {
 
       default:
         state.composer.stale = state.composer.body
+        emitter.emit(state.events.RENDER)
       break
     }
   }
 
   async function read(f) {
     state.status.reading = true
-    emitter.emit(state.events.RENDER)
+    state.status.active = { }
     let ciphertext
     let contents = {
       id: '',
@@ -298,6 +305,7 @@ function store (state, emitter) {
     state.menu.export = true
     emitter.emit('state:menu:update')
     emitter.emit('state:composer:update', contents)
+    emitter.emit(state.events.RENDER)
   }
 
   async function select(i, context) {
@@ -313,18 +321,21 @@ function store (state, emitter) {
   function update(contents) {
     state.composer = contents
 
-    if (state.composer.body !== state.composer.stale) {
+    if ((state.composer.body !== state.composer.stale) && !state.status.modified) {
       state.status.modified = true
       state.menu.save = true
       state.menu.revert = true
+      emitter.emit(state.events.RENDER)
+      emitter.emit('state:menu:update')
     }
-    else {
+    else if ((state.composer.body === state.composer.stale) && state.status.modified) {
       state.status.modified = false
       state.menu.save = false
       state.menu.revert = false
+      emitter.emit(state.events.RENDER)
+      emitter.emit('state:menu:update')
     }
-    emitter.emit('state:menu:update')
-    emitter.emit(state.events.RENDER)
+    
   }
 
   async function commitRename(f) {
@@ -541,7 +552,6 @@ function store (state, emitter) {
           ext: ['gpg']
         }
       break
-
     }
 
     ipcRenderer.send('dialog:new:save', {
@@ -570,9 +580,13 @@ function store (state, emitter) {
   }
 
   async function exportFile(uri, data, secret, type) {
+    
+    let filename = parse(uri).name + '.txt'
+    
     if (secret) {
-      data = await pgp.encrypt(data, secret)
+      data = await pgp.encrypt(data, filename, secret, true)
     }
+
     await io.write(uri, data, secret)
     ipcRenderer.send('notification:new', {
       title: i18n.t('notifications.exportedFile.title', { filename: state.composer.name }),
@@ -625,6 +639,10 @@ function store (state, emitter) {
     window.setTimeout(() => {
       ipcRenderer.send('modal:new', type)
     }, 100) 
+  }
+
+  function checkExisting(tree) {
+    console.log('checking ', tree)
   }
 
   function revealInBrowser(uri) {

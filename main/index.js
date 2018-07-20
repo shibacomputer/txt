@@ -28,7 +28,7 @@ function launch() {
 }
 
 app.on('ready', () => {
-  if (!store.get('author.homedir') || store.get('author.homedir') === app.getPath('home')) store.set('author.homedir', app.getPath('home'))
+  if (!store.get('homedir') || store.get('homedir') === app.getPath('home')) store.set('homedir', app.getPath('home'))
   launch()
 })
 

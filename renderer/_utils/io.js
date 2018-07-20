@@ -1,11 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 const util = require('util')
-const dirToJson = require('dir-to-json')
-const mime = require('mime')
+const dirTree = require('directory-tree')
 const trash = require('trash')
-
-mime.define({ 'text/gpg': ['gpg'] })
 
 const APP_NAME = require('electron').remote.app.getName()
 const APP_VERSION = require('electron').remote.app.getVersion()
@@ -21,7 +18,7 @@ module.exports = {
   ls: async function(uri) {
     let dir
     try {
-      dir = await dirToJson(uri)
+      dir = await dirTree(uri, { normalizePath:true } )
     } catch (e) {
       throw new Error(e)
     }
