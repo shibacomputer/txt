@@ -106,7 +106,7 @@ function setupApplication(state, emit) {
       <section class="b ${style.option}">
         <label for="passphrase">${i18n.t('setup.ui.nameInput.label')}</label>
         <div class=${style.field}>
-          <input id="username" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.nameInput.placeholder')} onkeyup=${updateUser} value=${state.user.name}/>
+          <input id="username" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.nameInput.placeholder')} onkeyup=${updateUser} value=${state.author.name}/>
         </div>
         <div class="w ${style.tip}">
           <label class=${style.tip}>${i18n.t('setup.ui.nameInput.tip')}</label>
@@ -124,7 +124,7 @@ function setupApplication(state, emit) {
     <section class="b ${style.option}">
       <label for="passphrase">${i18n.t('setup.ui.emailInput.label')}</label>
       <div class=${style.field}>
-        <input id="email" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.emailInput.placeholder')} onkeyup=${updateEmail} value=${state.user.email}/>
+        <input id="email" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.emailInput.placeholder')} onkeyup=${updateEmail} value=${state.author.email}/>
       </div>
       <div class="w ${style.tip}">
         <label class=${style.tip}>${i18n.t('setup.ui.emailInput.tip')}</label>

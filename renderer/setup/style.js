@@ -12,7 +12,7 @@ const style = css`
     justify-content: space-between;
     overflow-y: hidden;
     padding: 1.5rem 1rem;
-    transition: opacity 100ms linear, filter 250ms linear;
+    transition: opacity 100ms linear;
   }
 
   .core {
@@ -27,7 +27,6 @@ const style = css`
 
   .unfocused {
     opacity: 0.45;
-    filter: grayscale(100%);
   }
 
   .header {
@@ -58,7 +57,7 @@ const style = css`
     flex-grow: 1;
     margin: 1rem 0;
     position: absolute;
-    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 
   .option {
@@ -186,20 +185,18 @@ const style = css`
   }
 
   .transitionToLeft {
-    filter: grayscale(100%);
     transform: translateX(-100vw);
-    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 
   .transitionEnd {
     transform: translateX(0vw);
-    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 
   .hiddenFromRight {
-    filter: grayscale(100%);
     transform: translateX(100vw);
-    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1), filter 350ms linear;
+    transition: transform 450ms cubic-bezier(0.86, 0, 0.07, 1);
   }
 
 

@@ -1,11 +1,10 @@
 // Edit this file to set your defaults
 
 module.exports = {
+  homedir: '',
   author: {
-    name: "Anonymous",
-    email: "anonymous@txtapp.io",
-    local: true,
-    homedir: ''
+    name: "",
+    email: "",
   },
   app: {
     theme: 'dark',

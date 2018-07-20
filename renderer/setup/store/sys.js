@@ -44,9 +44,9 @@ function store (state, emitter) {
       newKey: true,
       block: false
     }
-    state.user = {
-      name: 'Txt User',
-      email: 'anonymous@txtapp.io'
+    state.author = {
+      name: '',
+      email: ''
     }
     state.prefs = { }
     ipcRenderer.send('pref:get:all')
@@ -80,11 +80,11 @@ function store (state, emitter) {
   }
 
   function updateUser(user) {
-    user.length > 0 ? state.user.name = user.toString() : i18n.t('setup.ui.nameInput.placeholder')
+    user.length > 0 ? state.author.name = user.toString() : i18n.t('setup.ui.nameInput.placeholder')
   }
 
   function updateEmail(email) {
-    email.length > 0 ? state.user.email = email.toString() : i18n.t('setup.ui.emailInput.placeholder')
+    email.length > 0 ? state.author.email = email.toString() : i18n.t('setup.ui.emailInput.placeholder')
   }
 
   function updateInterface(i) {
@@ -144,8 +144,8 @@ function store (state, emitter) {
   async function initSetup() {
     var opts = {
       author: {
-        name: state.user.name,
-        email: state.user.email
+        name: state.author.name,
+        email: state.author.email
       },
       uri: state.uri
     }

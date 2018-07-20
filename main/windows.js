@@ -2,8 +2,6 @@ const { app, BrowserWindow, dialog, ipcMain, Menu, Notification } = require('ele
 
 const winManager = require('electron-window-manager')
 const store = require('./prefs/prefs')
-const defs = require('./defaults')
-const errors = require('./errors')
 const menu = require('./menu')
 const contextMenu = require('./context-menu')
 
@@ -60,8 +58,8 @@ module.exports = {
     })
 
     // Set up live defaults
-    defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
-    console.log(defs.app.path)
+    // defs.app.path = store.get('app.path') ? store.get('app.path') : app.getPath('home')
+    // console.log(defs.app.path)
 
     initEvents()
   },
@@ -124,7 +122,7 @@ function initEvents () {
 
   ipcMain.on('pref:set', (event, arg) => {
     console.log(arg)
-    let res = store.set(arg.key, arg.value)
+    let res = store.set(arg)
     console.log(res)
     event.sender.send('pref:set:done', arg, res)
   })
@@ -132,12 +130,12 @@ function initEvents () {
   ipcMain.on('get:file', (event, arg) => {
     let win = BrowserWindow.getFocusedWindow()
     dialog.showOpenDialog(win, {
-      title: arg.title ? arg.title : defs.dialog.title,
-      defaultPath: arg.path ? arg.path : defs.app.path,
-      buttonLabel: arg.button ? arg.button : defs.dialog.button,
-      filters: arg.filters ? arg.filters : defs.dialog.filters,
+      title: arg.title,
+      defaultPath: arg.path,
+      buttonLabel: arg.button,
+      filters: arg.filters,
       properties: arg.props,
-      message: arg.msg ? arg.msg : defs.dialog.msg
+      message: arg.msg
     }, (f) => {
       if (f) event.sender.send('done:getFile', f)
       else event.sender.send('done:getFile', null)
