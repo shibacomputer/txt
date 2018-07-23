@@ -54,7 +54,7 @@ I can't stress this enough. This needs a lot of work, the code needs a huge clea
 ## Why?
 Txt is an opinionated statement on the relationship between personal work, data management and interaction. In my considerations designing and building this, I'm trying to make sure it's really useful on a day to day basis without any sort of platform lock in. The beta focuses on text entry, but 1.0 will include image embeds, management, document histories and a few other features. We'll see where this goes from there.
 
-Choosing GPG and the filesystem as the app's foundation is deliberate. Rather than build a database, Txt relies solely on the filesystem. Anything you make with Txt can be read and reviewed somewhere else. On computers that are already set up with GPG, your work is accessible at a system level if you add the key to your GPG keychain. There is no import/export library tool, because adding one would be redundant. Everything used is off the shelf.
+Choosing [GPG encryption](https://gnupg.org/) and the filesystem as the app's foundation is deliberate. Rather than build a database, Txt relies solely on the filesystem. Anything you make with Txt can be read and reviewed somewhere else. On computers that are already set up with GPG, your work is accessible at a system level if you add the key to your GPG keychain. There is no import/export library tool, because adding one would be redundant. Everything used is off the shelf.
 
 ### Threat model
 I'll write more on this later, but basically Txt is designed to allow you to store data in untrusted locations, such as a cloud service or on a USB stick.
