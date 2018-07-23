@@ -47,10 +47,9 @@ This will delete your Txt preferences and start again. __(Note: this is macOS sp
 ## Disclaimer
 
 🚫 **DO NOT USE THIS FOR ANYTHING SERIOUS** 🚫  
-🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED AND UNAUDITED** 🚫
+🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED AND UNAUDITED** 🚫  
 
-I can't stress this enough. This needs a lot of work, and it needs others eyes
-on it.
+I can't stress this enough. This needs a lot of work, the code needs a huge cleanup, I need to write tests and it needs other eyes on it.
 
 ## Why?
 It's pretty simple – I don't like the majority of text editors that exist today.
