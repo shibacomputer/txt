@@ -35,7 +35,7 @@ Then, once everything is set up:
 This will install everything you need to build Txt successfully! 🎉  
 
 ## Development
-Txt uses events to create simple patterns for interacting between Electron's `main` and `render` processes. Once I've cleaned up the MVP, I'll write a little more about how this works and what the benefits are. _Todo: write more about the app logic._
+Txt uses events to create simple patterns for interacting between Electron's `main` and `render` processes. Once I've cleaned up the beta, I'll write a little more about how this works and what the benefits are. _Todo: write more about the app logic._
 
 If you're hacking on this lil app and you need to reset it, run:
 ```
@@ -52,35 +52,28 @@ This will delete your Txt preferences and start again. __(Note: this is macOS sp
 I can't stress this enough. This needs a lot of work, the code needs a huge cleanup, I need to write tests and it needs other eyes on it.
 
 ## Why?
-It's pretty simple – I don't like the majority of text editors that exist today.
-I either don't trust them enough to sync between devices, they lack features
-I really want, or they're trustworthy and feature-rich but difficult to use.
+Txt is an opinionated statement on the relationship between personal work, data management and interaction. In my considerations designing and building this, I'm trying to make sure it's really useful on a day to day basis without any sort of platform lock in. The beta focuses on text entry, but 1.0 will include image embeds, management, document histories and a few other features. We'll see where this goes from there.
 
-Txt is an opinionated statement on the relationship between personal work, data
-management and interaction. In my considerations building this, I'm trying to
-make sure it's really useful on a day to day basis without any sort of platform
-lock in. This MVP focuses on text entry, but 1.0 will include image embeds and
-management. We'll see where this goes from there.
-
-Choosing GPG and the filesystem as the app's foundation is deliberate. Rather
-than build a database, it relies on the filesystem. Anything you make with Txt
-can be read and reviewed somewhere else. There is no import/export tool, because
-you don't need one. Everything used is off the shelf.
+Choosing GPG and the filesystem as the app's foundation is deliberate. Rather than build a database, Txt relies solely on the filesystem. Anything you make with Txt can be read and reviewed somewhere else. On computers that are already set up with GPG, your work is accessible at a system level if you add the key to your GPG keychain. There is no import/export library tool, because adding one would be redundant. Everything used is off the shelf.
 
 ### Threat model
-I'll write more on this later, but basically Txt is designed to allow you to
-store data in untrusted locations, such as a cloud service or on a USB stick.
+I'll write more on this later, but basically Txt is designed to allow you to store data in untrusted locations, such as a cloud service or on a USB stick.
 
-The app assumes your currently running host system isn't compromised. In the
-MVP, your passphrase is managed by your OS's keychain. The MVP won't stop you
-from creating a terrible passphrase and using that. This will change. For now,
-the goal is that, provided you take some basic steps to protect yourself (eg,
-taking care of your metadata and choosing a strong passphrase), it should be
-possible to store your work on untrusted infrastructure.
+The app assumes your currently running host system isn't compromised. In the beta, your passphrase is managed by your OS's keychain. The beta won't stop you from creating a terrible passphrase and using that. This will change and as I develop this further I will likely add alternate forms of authentication, eg physical keys or webauthn or something else. For now, the goal is that, provided you take some basic steps to protect yourself (eg, taking care of your metadata and choosing a strong passphrase), it should be possible to store your work on untrusted infrastructure as long as a readable "Last Accessed" property is not something you need protected.
 
-Finally, Txt does not protect anything that isn't stored by your filesystem.
-Your metadata - including the filenames of your work – is available to anyone
-who has access to the disk.
+Finally, Txt does not protect anything that isn't stored by your filesystem. Your metadata - including the filenames of your work – is available to anyone who has access to the disk.
+
+### Connectivity and Consent
+Much like the app's stances on encryption and data portability, Txt will also treat all connection requests, like HTTPS, as a privilege. Txt uses a small [auto-updater](https://github.com/electron/update-electron-app/), served from Txt's website and for beta this is enabled by default. Before 1.0, Txt will allow its operator to completely block all connections. In this case, Txt's interface will explicitly ask for consent from its operator to connect to the internet to look for updates. 
+
+Txt contains no analytics and no logging. Outside of planned export and collaboration functionality, denying all connectivity should result in minimal feature degredation.
+
+### Decentralisation
+There are a number of projects in the works that seek to demonstrate collaborative document editing in a decentralised ecosystem. This is a major feature under consideration for Txt.
+
+In a typical ecosystem, the legal or operational risk is centralised and the responsibility of an organisation through security and governance practices. In almost all p2p collaboration cases, these projects shift this risk onto their users by failing to devise solutions for individual privacy when participating as a node. The assumption that user privacy is an optional extra (and the related dismissal of criticism as paranoia) results in two outcomes: unsafe protocols being used in [unintended situations](https://blog.datproject.org/2017/12/10/dont-ship/) (eg as political tools), or apps and protocols running afoul of legislation simply through their design (eg the GDPR).
+
+In much the same way as Txt respects connectivity as a privilege, communication and identification should be an empowering component to an author's interaction and self identity within a network. Txt will not ship with decentralised collaboration, but work will continue on this problem.
 
 ## Features
 ### Planned for beta
@@ -124,7 +117,9 @@ who has access to the disk.
 ⬜ 2FA / Yubikey support  
 ⬜ Biometrics support  
 ⬜ Collaboration / track changes??  
+⬜ Contact management??  
 ⬜ Filesystem privacy??  
+⬜ TOR support??
 ⬜ Secure syncing??  
 
 ### One day
