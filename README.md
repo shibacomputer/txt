@@ -119,7 +119,7 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 ⬜ Collaboration / track changes??  
 ⬜ Contact management??  
 ⬜ Filesystem privacy??  
-⬜ TOR support??
+⬜ TOR support??  
 ⬜ Secure syncing??  
 
 ### One day
