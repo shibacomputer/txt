@@ -114,12 +114,11 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 ⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
 ⬜ Data management  
 ⬜ Better support for file permission edge cases  
-⬜ 2FA / Yubikey support  
-⬜ Biometrics support  
+⬜ Hardware 2FA / GPG support  
 ⬜ Collaboration / track changes??  
 ⬜ Contact management??  
 ⬜ Filesystem privacy??  
-⬜ TOR support??
+⬜ TOR support??  
 ⬜ Secure syncing??  
 
 ### One day
