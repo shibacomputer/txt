@@ -56,11 +56,11 @@ function setupApplication(state, emit) {
       <section class="b ${style.option}">
         <label for="location">${ i18n.t('setup.ui.librarySelection.label') }</label>
         <div class=${style.field}>
-          <input ${state.ui.block ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
+          <input ${(state.ui.block || state.progress > 2) ? 'disabled' : '' } class="${style.locationOSInput}" onchange=${updateUri} id="location" type="file" webkitdirectory />
           <div class=${style.location} onclick=${askForUri}>
             ${state.uri ? state.uri : i18n.t('setup.ui.librarySelection.placeholder') }
           </div>
-          <button ${state.ui.block ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
+          <button ${(state.ui.block || state.progress > 2) ? 'disabled' : '' } class=${style.locationButton} onclick=${askForUri}>
             <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
               <path d="M16 2H7C5.05.667 4.05 0 4 0H0v12h16V2zM3.5 1l3 2H15v4H1V.998L3.5 1z" fill="currentColor" fill-rule="nonzero"/>
             </svg>
@@ -89,7 +89,7 @@ function setupApplication(state, emit) {
     <section class="c ${style.option}">
       <label for="passphrase">${inputLabel}</label>
       <div class=${style.field}>
-        <input id="passphrase" ${state.ui.block ? 'disabled' : '' } class="c" onkeyup=${updatePassphrase} value=${state.phrase}/>
+        <input id="passphrase" ${(state.ui.block || state.progress > 2) ? 'disabled' : '' } class="c" onkeyup=${updatePassphrase} value=${state.phrase}/>
       </div>
       <div class="w ${style.tip}">
         <label class=${style.tip}>${tip}</label>
@@ -106,7 +106,7 @@ function setupApplication(state, emit) {
       <section class="b ${style.option}">
         <label for="passphrase">${i18n.t('setup.ui.nameInput.label')}</label>
         <div class=${style.field}>
-          <input id="username" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.nameInput.placeholder')} onkeyup=${updateUser} value=${state.author.name}/>
+          <input id="username" ${state.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.nameInput.placeholder')} onkeyup=${updateUser} value=${state.author.name}/>
         </div>
         <div class="w ${style.tip}">
           <label class=${style.tip}>${i18n.t('setup.ui.nameInput.tip')}</label>
@@ -124,12 +124,12 @@ function setupApplication(state, emit) {
     <section class="b ${style.option}">
       <label for="passphrase">${i18n.t('setup.ui.emailInput.label')}</label>
       <div class=${style.field}>
-        <input id="email" ${state.ui.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.emailInput.placeholder')} onkeyup=${updateEmail} value=${state.author.email}/>
+        <input id="email" ${state.progress < 3 ? 'disabled' : ''} class="b" placeholder=${i18n.t('setup.ui.emailInput.placeholder')} onkeyup=${updateEmail} value=${state.author.email}/>
       </div>
       <div class="w ${style.tip}">
         <label class=${style.tip}>${i18n.t('setup.ui.emailInput.tip')}</label>
       </div>
-    </section>    
+    </section>
     `
 
     function updateEmail(e) {
