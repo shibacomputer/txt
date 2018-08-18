@@ -73,6 +73,7 @@ const style = css`
     display: flex;
     flex-direction: row;
   }
+
   .field input {
     border: 1px solid currentcolor;
     background: none;
@@ -82,6 +83,9 @@ const style = css`
     font-family: 'Mono', monospace;
     font-weight: normal;
     outline: none;
+  }
+  .field input::selection {
+    background-color: var(--k);
   }
   .field input:focus {
     background: var(--w);
