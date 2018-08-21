@@ -38,6 +38,7 @@
     "choo-persist": "^3.0.2",
     "csjs-inject": "^1.0.1",
     "directory-tree": "git+https://github.com/shibacomputer/node-directory-tree",
+    "electron-clipboard-extended": "^1.1.1",
     "electron-store": "^2.0.0",
     "electron-updater": "^2.21.10",
     "electron-window-manager": "git+https://github.com/shibacomputer/electron-window-manager.git",

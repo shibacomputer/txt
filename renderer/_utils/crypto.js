@@ -7,16 +7,14 @@ const io = require('./io')
 const APP_NAME = require('electron').remote.app.getName()
 const APP_VERSION = require('electron').remote.app.getVersion()
 const PGP_COMPRESSION = openpgp.enums.compression.zip
+const AEAD_MODE = openpgp.enums.aead.eax
 const PGP_BITS = 4096
 const KEY_FILENAME = '.txtkey'
 
-openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
-openpgp.config.use_native = true
-openpgp.config.checksum_required = true
-openpgp.config.ignore_mdc_error = false
-openpgp.config.integrity_protect = true
+openpgp.initWorker({ path: '../../nodeinsta_modules/openpgp/dist/openpgp.worker.min.js' })
+openpgp.config.aead_mode = AEAD_MODE
 openpgp.config.versionstring = APP_NAME + '.app v' + APP_VERSION
-openpgp.config.commentstring = 'https://txt.app'
+openpgp.config.commentstring = 'https://txtapp.io'
 
 let key, privkey, pubkey, pubKeyObj, privKeyObj, name, email
 
@@ -28,7 +26,7 @@ module.exports = {
     } catch (e) {
       throw new Error(e)
     }
-    
+
     key = JSON.parse(data.toString('utf8'))
     try {
       if (secret) keytar.setPassword(APP_NAME, user.name, secret)
@@ -56,7 +54,7 @@ module.exports = {
       numBits: PGP_BITS,
       passphrase: secret
     }
-    
+
     try {
       key = await openpgp.generateKey(options)
     } catch (e) {
@@ -72,8 +70,8 @@ module.exports = {
 
     if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
-    let options 
-  
+    let options
+
     if (!usePhrase) {
       options = {
         data: contents,
@@ -83,7 +81,7 @@ module.exports = {
         compression: PGP_COMPRESSION
       }
     } else {
-      options = { 
+      options = {
         data: contents,
         filename: filename,
         compression: PGP_COMPRESSION,
@@ -105,14 +103,14 @@ module.exports = {
     if (!privKeyObj.primaryKey.isDecrypted) await decryptKey(secret)
 
     let options
-    
+
     if (!secret) {
       options = {
         message: openpgp.message.readArmored(ciphertext),
         privateKeys: [privKeyObj]
       }
     } else {
-      options = { 
+      options = {
         data: contents,
         compression: PGP_COMPRESSION,
         passwords: [ secret ]
@@ -142,15 +140,15 @@ async function setupKeysForUse (unprocessedKey, phrase) {
   let userId = privKeyObj.users[0].userId.userid
   email = userId.substring(userId.lastIndexOf('<') + 1, userId.lastIndexOf('>'))
   name = userId.substring(0, userId.lastIndexOf(' '))
-  
+
   let isDecrypted
-  
-  try { 
+
+  try {
     isDecrypted = await decryptKey(phrase? phrase : null)
   } catch (e) {
     throw new Error(e)
   }
-  
+
   return isDecrypted
 }
 
@@ -174,5 +172,3 @@ async function decryptKey(phrase) {
   }
   return decryptedKey
 }
-
-

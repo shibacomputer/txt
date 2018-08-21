@@ -20,7 +20,7 @@ class Composer extends Nanocomponent {
     let el = html`
       <div class="composer"></div>
     `
-    
+
     this.editor = pell.init({
       element: el,
       actions: ['bold', 'italic', 'heading1', 'heading2', 'olist', 'ulist'],
@@ -36,7 +36,7 @@ class Composer extends Nanocomponent {
       }
     })
     this.editor.content.innerText = this.contents.body === this.contents.stale? this.contents.body : this.contents.stale
-    return el 
+    return el
   }
 
   update (contents, emit) {

@@ -3,6 +3,7 @@ module.exports = store
 const { ipcRenderer } = require('electron')
 const { join, parse } = require('path')
 const chokidar = require('chokidar')
+const clipboard = require('electron-clipboard-extended')
 
 const Mousetrap = require('mousetrap')
 
@@ -75,15 +76,15 @@ function store (state, emitter) {
     emitter.on('state:item:trash', prepareToTrash)
     emitter.on('state:item:read', prepareToRead)
     emitter.on('state:item:export', prepareToExport)
-    
+
     emitter.on('state:composer:update', update)
     emitter.on('state:composer:write', write)
     emitter.on('state:composer:revert', prepareToRevert)
     emitter.on('state:composer:close', prepareToClose)
-    
+
     emitter.on('state:modal:show', showModal)
 
-    ipcRenderer.send('pref:get:all')    
+    ipcRenderer.send('pref:get:all')
     ipcRenderer.once('pref:get:done', (event, key, value) => {
       state.prefs = value
       emitter.emit('state:init', value)
@@ -98,10 +99,11 @@ function store (state, emitter) {
   async function init(value) {
     if (state.prefs) {
       emitter.emit('state:key:init')
+      clipboard.startWatching()
       initWatcher(state.prefs.app.path)
     }
   }
-  
+
   async function initKey() {
     let decrypted
     try {
@@ -148,8 +150,8 @@ function store (state, emitter) {
   async function list(d, base) {
     state.status.listing = true
     let uri = d.uri? d.uri : d
-    let tree 
-    try { 
+    let tree
+    try {
       tree = await io.ls(uri)
     } catch (e) {
       ipcRenderer.send('dialog:new:error', e)
@@ -165,7 +167,7 @@ function store (state, emitter) {
       else state.sidebar.openDirs.splice(index, 1)
     }
     state.status.listing = false
-    emitter.emit(state.events.RENDER) 
+    emitter.emit(state.events.RENDER)
   }
 
 
@@ -177,7 +179,7 @@ function store (state, emitter) {
       let index = state.sidebar.openDirs.indexOf(d.id)
       base = index === -1? parse(d.uri).dir : d.uri
     } else base = state.prefs.app.path
-    
+
     let uri = join(base, 'New Folder')
     try {
       io.mkdir(uri)
@@ -188,8 +190,8 @@ function store (state, emitter) {
 
   async function write(type, secret, path) {
     state.writing = true
-    
-    let ciphertext, uri, filename 
+
+    let ciphertext, uri, filename
     let c = type === 'new'?  '' : state.composer.body
 
     if (!path) {
@@ -203,12 +205,12 @@ function store (state, emitter) {
         }
         filename = 'Untitled.gpg'
         uri = join(base, filename)
-        
+
       } else {
         f = state.status.active
         filename = f.name
         uri = f.uri
-      } 
+      }
     } else {
       uri = path
       f = state.status.active
@@ -221,18 +223,18 @@ function store (state, emitter) {
       console.log(e)
       return
     }
-    
+
     let success
     try {
-      success = await io.write(uri, ciphertext) 
+      success = await io.write(uri, ciphertext)
     } catch (e) {
       console.log(e)
     }
 
-    if (type !== 'export') state.status.modified = false 
+    if (type !== 'export') state.status.modified = false
 
     state.writing = false
-    
+
     switch (type) {
       case 'new':
         let d = { uri: uri }
@@ -254,7 +256,7 @@ function store (state, emitter) {
           body: i18n.t('notifications.exportedFile.body'),
           silent: true,
           next: { event: 'state:library:reveal', args: uri }
-        })        
+        })
       break
 
       default:
@@ -276,13 +278,13 @@ function store (state, emitter) {
       name: null
     }
     emitter.emit('state:composer:update', contents)
-    
+
     try {
       ciphertext = await io.read(f.uri)
     } catch (e) {
       console.log(e)
     }
-    
+
     let body
     try {
       body = await pgp.decrypt(ciphertext)
@@ -314,7 +316,7 @@ function store (state, emitter) {
       emitter.emit(state.events.RENDER)
       if (context) window.setTimeout(() => {
         emitter.emit('state:library:context:new', i.type)
-      }, 50) 
+      }, 50)
     }
   }
 
@@ -335,7 +337,7 @@ function store (state, emitter) {
       emitter.emit(state.events.RENDER)
       emitter.emit('state:menu:update')
     }
-    
+
   }
 
   async function commitRename(f) {
@@ -352,14 +354,14 @@ function store (state, emitter) {
     } catch (e) {
       console.log(e)
     }
-    
+
     if (state.status.active === f) {
       state.composer.uri = newUri
       state.composer.name = parse(state.composer.uri).name
       state.status.active.uri = state.composer.uri
       emitter.emit(state.events.RENDER)
     }
-    
+
     state.status.renaming = false
   }
 
@@ -390,7 +392,7 @@ function store (state, emitter) {
     state.menu.revert = false
     state.menu.close = false
     state.menu.export = false
-    state.menu.print = false 
+    state.menu.print = false
     state.menu.preview = false
     state.menu.trashCurrent = false
     emitter.emit('state:menu:update')
@@ -464,7 +466,7 @@ function store (state, emitter) {
     if (type === 'file') write('new')
     else mk()
   }
- 
+
   function prepareToRead(f) {
     if (state.status.modified) {
       ipcRenderer.send('dialog:new', {
@@ -513,13 +515,13 @@ function store (state, emitter) {
         default:
           trash(state.status.focus)
       }
-    }) 
+    })
   }
 
   function prepareToExport(type) {
     emitter.emit('state:ui:focus', 'blur', true)
     let f = state.composer
-    
+
     window.setTimeout(() => {
       switch (type) {
         case 'arena':
@@ -531,7 +533,7 @@ function store (state, emitter) {
         default:
           prepareToExportToDisk(f, null, type)
         break
-        
+
       }
     }, 100)
   }
@@ -569,7 +571,7 @@ function store (state, emitter) {
   async function prepareToEncryptWithPassword() {
     emitter.emit('state:modal:show', {
       name: 'lock',
-      width: 640, 
+      width: 640,
       height: 128,
       opts: {
         type: 'new',
@@ -580,9 +582,9 @@ function store (state, emitter) {
   }
 
   async function exportFile(uri, data, secret, type) {
-    
+
     let filename = parse(uri).name + '.txt'
-    
+
     if (secret) {
       data = await pgp.encrypt(data, filename, secret, true)
     }
@@ -638,7 +640,7 @@ function store (state, emitter) {
     emitter.emit('state:ui:focus', 'modal', true)
     window.setTimeout(() => {
       ipcRenderer.send('modal:new', type)
-    }, 100) 
+    }, 100)
   }
 
   function checkExisting(tree) {
@@ -682,7 +684,7 @@ function store (state, emitter) {
   ipcRenderer.on('modal:message', (event, message) => {
     let f = state.composer
     switch (message.type) {
-      case ('new'): 
+      case ('new'):
         if (message.secret.length > 0) {
           ipcRenderer.send('modal:parent:response', { success: true })
           window.setTimeout(() => {
@@ -717,7 +719,7 @@ function store (state, emitter) {
 
   ipcRenderer.on('menu:file:new:dir', (event) => {
     emitter.emit('state:item:make', 'directory')
-  })  
+  })
 
   ipcRenderer.on('menu:file:new:window', (event) => {
     ipcRenderer.send('window:open', 'main')
@@ -745,7 +747,7 @@ function store (state, emitter) {
 
   ipcRenderer.on('menu:file:trash', (event) => {
     emitter.emit('state:item:trash')
-  })  
+  })
 
   ipcRenderer.on('menu:view:library', (event) => {
     emitter.emit('state:library:toggle')
