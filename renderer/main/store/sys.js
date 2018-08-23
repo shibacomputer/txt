@@ -1,9 +1,9 @@
 module.exports = store
 
-const { ipcRenderer } = require('electron')
+const { ipcRenderer, clipboard } = require('electron')
 const { join, parse } = require('path')
 const chokidar = require('chokidar')
-const clipboard = require('electron-clipboard-extended')
+const clipwatch = require('electron-clipboard-extended')
 
 const Mousetrap = require('mousetrap')
 
@@ -99,7 +99,7 @@ function store (state, emitter) {
   async function init(value) {
     if (state.prefs) {
       emitter.emit('state:key:init')
-      clipboard.startWatching()
+      initClipboardWatcher()
       initWatcher(state.prefs.app.path)
     }
   }
@@ -112,6 +112,14 @@ function store (state, emitter) {
       console.log(e)
     }
     state.unlocked = decrypted
+  }
+
+  function initClipboardWatcher() {
+    clipwatch.startWatching()
+
+    clipwatch.on('text-changed', () => {
+      clipboard.writeText(clipboard.readText())
+    })
   }
 
   function initWatcher(uri) {
