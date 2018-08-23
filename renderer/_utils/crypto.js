@@ -11,7 +11,7 @@ const AEAD_MODE = openpgp.enums.aead.eax
 const PGP_BITS = 4096
 const KEY_FILENAME = '.txtkey'
 
-openpgp.initWorker({ path: '../../nodeinsta_modules/openpgp/dist/openpgp.worker.min.js' })
+openpgp.initWorker({ path: '../../node_modules/openpgp/dist/openpgp.worker.min.js' })
 openpgp.config.aead_mode = AEAD_MODE
 openpgp.config.versionstring = APP_NAME + '.app v' + APP_VERSION
 openpgp.config.commentstring = 'https://txtapp.io'
