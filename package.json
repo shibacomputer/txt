@@ -1,0 +1,55 @@
+{
+  "name": "txt",
+  "version": "1.0.0",
+  "description": "a smol private text editor",
+  "main": "app/main/.parcel/main.js",
+  "scripts": {
+    "electron:start": "nodemon --watch app/main/.parcel --exec \"electron .\"",
+    "main:watch": "parcel watch app/main/main.js --out-dir app/main/.parcel --out-file main --target electron",
+    "main:build": "parcel build app/main/main.js --out-dir app/main/.parcel --out-file main --target electron",
+    "parcel:watch": "run-p -r main:watch renderer:watch",
+    "rebuild": "electron-rebuild -f -w keytar",
+    "renderer:watch": "parcel app/renderer/index.html --port 9008 --out-dir app/renderer/.parcel/development",
+    "start": "cp ./node_modules/openpgp/dist/openpgp.worker.min.js ./app/main/utils/openpgp.worker.min.js && run-s main:build watch",
+    "watch": "run-p -r parcel:watch electron:start",
+    "report": "electronegativity -i ./app --output electronegativity-report.csv -r"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/shibacomputer/txt.git"
+  },
+  "author": "Cade <cade@shiba.computer>",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@doyensec/electronegativity": "^1.3.0",
+    "choo-devtools": "^2.5.1",
+    "electron": "^5.0.2",
+    "electron-rebuild": "^1.8.5",
+    "nodemon": "^1.18.10",
+    "npm-run-all": "^4.1.5",
+    "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "app-root-path": "^2.1.0",
+    "choo-persist": "^3.0.2",
+    "codemirror": "^5.47.0",
+    "compass": "^0.1.1",
+    "csjs-inject": "^1.0.1",
+    "electron-is-dev": "^1.0.1",
+    "electron-store": "^2.0.0",
+    "fs-extra": "^7.0.1",
+    "keytar": "^4.4.1",
+    "lodash.get": "^4.4.2",
+    "markdown-it": "^8.4.2",
+    "moment": "^2.24.0",
+    "monoapp": "^3.0.0",
+    "monoapp-react": "^1.1.2",
+    "node-polyglot": "^2.3.0",
+    "openpgp": "^4.5.3",
+    "react": "^16.8.3",
+    "react-codemirror2": "^6.0.0",
+    "regenerator-runtime": "^0.13.2",
+    "underscore": "^1.9.1"
+  }
+}

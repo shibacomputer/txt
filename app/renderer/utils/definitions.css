@@ -1,0 +1,85 @@
+/**
+  * Defs
+  * Declare all CSS variables and common classes here.
+  */
+@font-face {  font-family: 'Mono';
+              font-weight: bold;
+              font-style: normal;
+              src: url('../assets/fonts/mplus-1m-medium.ttf') format('truetype') }
+
+@font-face {  font-family: 'Mono';
+              font-weight: normal;
+              font-style: normal;
+              src: url('../assets/fonts/mplus-1m-light.ttf') format('truetype') }
+
+:root {
+  /* Grid unit */
+  --u: 16px;
+
+  /* Colours */
+  --c:      #27FF98;
+  --m:      #F427FF;
+  --y:      #FCFF00;
+  --k:      #0D1317;
+  --w:      #C6E2ED;
+  --g:      #5A5A5A;
+  --b:      #00D7FF;
+  --f:      #FFFFFF;
+  --r:      #ff0000;
+  --s:      #20272C;
+
+  --myc:   linear-gradient(45deg, #FB4FFF 0%, #FFD710 50%, #27FF98 100%);
+  --bck:   linear-gradient(45deg, #00D7FF 0%, #27FF98 51%, #000000 100%);
+
+  --base: #0E1419;
+  --border: #232323;
+  --text: #E7F8FF;
+  --textalt: #B3B3B3;
+  --text-bold: #FFFFFF;
+  --button-primary: #1D262E;
+  --selection: #6D6540;
+  --selection-unfocused: #444444;
+  --positive: #27FF98;
+  --comment: #FFFA8C;
+  --deletion: #FF2DA8;
+  --addition: #37FFA0;
+  --substitute: #00B5FF;
+}
+
+.b-myc, .b-bck, .b-b {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  border-radius: 6px;
+}
+.b-myc::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--myc);
+  content: '';
+  z-index: -1;
+}
+
+.b-bck::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--bck);
+  content: '';
+  z-index: -1;
+}
+
+.b-b::after {
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: -20px;
+  right: -20px;
+  background: var(--g);
+  content: '';
+  z-index: -1;
+}

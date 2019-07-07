@@ -1,0 +1,128 @@
+/* BASICS */
+.box {
+  background: var(--base);
+  height: calc(100vh - 3.75rem - 1.75rem);
+  overflow: scroll;
+}
+
+.CodeMirror {
+  /* Set height, width, borders, and global font properties here */
+  background: var(--base);
+  color: var(--text);
+  direction: ltr;
+  font-family: 'Mono', monospace;
+  font-size: 14px;
+  height: auto;
+  line-height: 1.75;
+  min-height: calc(100vh - 3.75rem - 1.75rem);
+  margin: 0 auto;
+  max-width: 48rem;
+  overflow: visible;
+}
+
+/* PADDING */
+.CodeMirror-lines {
+  padding: 2rem 0;
+}
+
+.CodeMirror pre {
+  padding: 0 2rem;
+}
+
+.CodeMirror-gutters, .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
+  display: none;
+}
+
+/* CURSOR */
+
+.CodeMirror-cursor {
+  border-left: 7px solid var(--text);
+}
+
+@-moz-keyframes blink {
+  0% {}
+  50% { background-color: transparent; }
+  100% {}
+}
+@-webkit-keyframes blink {
+  0% {}
+  50% { background-color: transparent; }
+  100% {}
+}
+@keyframes blink {
+  0% {}
+  50% { background-color: transparent }
+  100% {}
+}
+
+/* Shown when moving in bi-directional text */
+.CodeMirror div.CodeMirror-secondarycursor {
+  border-left: 7px solid var(--textalt);
+}
+
+.CodeMirror-rulers {
+  display: none;
+}
+.CodeMirror-ruler {
+  display: none;
+}
+
+/* DEFAULT THEME */
+.cm-s-dark .cm-header {color: var(--white);}
+.cm-s-dark .cm-quote {color: var(--textalt);}
+.cm-negative {color: var(--deletion);}
+.cm-positive {color: var(--addition);}
+.cm-header, .cm-strong {font-weight: bold;}
+.cm-em {font-style: italic;}
+.cm-link {text-decoration: underline;}
+.cm-strikethrough {text-decoration: line-through;}
+
+.cm-s-dark .cm-keyword {color: var(--text);}
+.cm-s-dark .cm-atom {color: var(--text);}
+.cm-s-dark .cm-def {color: var(--text);}
+.cm-s-dark .cm-variable,
+.cm-s-dark .cm-punctuation,
+.cm-s-dark .cm-property,
+.cm-s-dark .cm-operator {color: var(--text);}
+.cm-s-dark .cm-variable-2 {color: var(--text);}
+.cm-s-dark .cm-variable-3, .cm-s-default .cm-type {color: var(--text);}
+.cm-s-dark .cm-comment {color: var(--comment);}
+.cm-s-dark .cm-string {color: var(--text-bold);}
+.cm-s-dark .cm-string-2 {color: var(--text);}
+.cm-s-dark .cm-meta {color: var(--text);}
+.cm-s-dark .cm-qualifier {color: var(--textalt);}
+.cm-s-dark .cm-builtin {color: var(--textalt);}
+.cm-s-dark .cm-bracket {color: var(--textalt);}
+.cm-s-dark .cm-tag {color: var(--textalt);}
+.cm-s-dark .cm-attribute {color: var(--textalt);}
+.cm-s-dark .cm-hr {color: #999;}
+.cm-s-dark .cm-link {color: var(--textalt); text-decoration: underline; }
+
+.CodeMirror-composing { border-bottom: none; }
+
+/* STOP */
+
+/* The rest of this file contains styles related to the mechanics of
+   the editor. You probably shouldn't touch them. */
+
+.CodeMirror {
+  position: relative;
+  overflow: hidden;
+}
+
+.CodeMirror-scroll {
+  overflow: scroll !important; /* Things will break if this is overridden */
+  /* 30px is the magic margin used to hide the element's real scrollbars */
+  /* See overflow: hidden in .CodeMirror */
+  margin-bottom: -30px; margin-right: -30px;
+  padding-bottom: 30px;
+  height: 100%;
+  outline: none; /* Prevent dragging from highlighting the element */
+  position: relative;
+}
+
+.CodeMirror-selected { background: var(--selection-unfocused); }
+.CodeMirror-focused .CodeMirror-selected { background: var(--selection  ); }
+.CodeMirror-crosshair { cursor: crosshair; }
+
+.CodeMirror-line::selection, .CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection { background: var(--text-bold); color:var(--base) }
