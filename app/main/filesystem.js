@@ -95,6 +95,7 @@ async function write(obj) {
   let data
   let uri = path.normalize(obj.opts.uri)
 
+  if (!obj.opts.ext) obj.opts.ext = path.extname(uri)
   if (obj.opts.ext === '.gpg' ) {
     try {
       data = await pgp.encrypt({
