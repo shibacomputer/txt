@@ -14,10 +14,8 @@ export default function doc (state, emitter) {
     ipcRenderer.on('doc:close', closeDocument)
 
     emitter.on('doc:update', (doc) => {
-      let thisDoc = state.doc
       state.doc.words = wordCount(doc.contents)
       state.doc.contents = doc.contents
-      state.doc = {...state.doc, doc }
 
       updateContext()
     })
@@ -260,7 +258,6 @@ export default function doc (state, emitter) {
 
     let windowTitle = hasChanges ? state.doc.title + ' – Edited' : state.doc.title
     ipcRenderer.send('window:title', windowTitle)
-    emitter.emit('render')
   }
 
   async function checkRequirements(reqs) {
