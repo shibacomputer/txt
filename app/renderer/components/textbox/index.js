@@ -39,10 +39,7 @@ class Textbox extends Component {
     return (
       <section className="box">
         <CodeMirror
-          value= {doc.contents}
-          onLoad= {(editor) => {
-            editor.setSpellCheck(true)
-          }}
+          value= {doc.contents} 
           onBeforeChange={(editor, data, value) => {
             this.handleChange(editor, data, value)
           }}
