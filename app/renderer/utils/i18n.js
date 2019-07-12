@@ -21,7 +21,7 @@ const withI18nContext = withContext({
     phrases: strings[locale],
   })
 
-  console.log(locale)
+  
   const translate = polyglot.t.bind(polyglot)
 
   return { locale, translate }
