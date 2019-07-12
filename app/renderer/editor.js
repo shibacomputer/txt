@@ -2,6 +2,9 @@ import React from 'react'
 import Appbar from './components/appbar'
 import Textbox from './components/textbox'
 import Toolbar from './components/toolbar'
+
+// import I18n from './utils/i18n'
+
 import './utils/definitions.css'
 
 const editor = (state, emit) => (

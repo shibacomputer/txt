@@ -1,6 +1,6 @@
 module.exports = {
   en: {
-    'applicationBar': {
+    'systemMenu': {
       'file': 'File',
       'edit': 'Edit',
       'view': 'View',
@@ -57,7 +57,12 @@ module.exports = {
       'untitledDocument': 'Untitled',
       'edited': 'Edited',
       'encryptedText': 'Encrypted Text Document',
-      'authorProfile': 'Author Profile'
+      'authorProfile': 'Author Profile',
+      'words': 'Words',
+      'date': 'Date',
+      'author': 'Author',
+      'collaborators': 'Collaborators',
+      'document': 'Doc'
     },
     'dialogs': {
       'revertFile': {
@@ -76,7 +81,7 @@ module.exports = {
         'title': '%{msg}',
         'detail': 'More help might be available online.'
       }
-    }
+    },
   },
   de: {
 

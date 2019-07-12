@@ -4,10 +4,10 @@ export function buildMenu(t, type, opts) {
 
   opts? opts = opts : opts = []
   let menu = [ {
-    label: t.t('applicationBar.file'),
+    label: t.t('systemMenu.file'),
     submenu: [
       {
-        label: t.t('applicationBar.fileMenu.new'),
+        label: t.t('systemMenu.fileMenu.new'),
         accelerator: 'CmdOrCtrl+N',
         click: (item, win, event) => {
           if (!win) win = windows.init()
@@ -18,7 +18,7 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.open'),
+        label: t.t('systemMenu.fileMenu.open'),
         accelerator: 'CmdOrCtrl+O',
         click: (item, win, event) => {
           if (!win) return
@@ -29,7 +29,7 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.save'),
+        label: t.t('systemMenu.fileMenu.save'),
         accelerator: 'CmdOrCtrl+S',
         enabled: opts.editorHasChanges? opts.editorHasChanges : false,
         click: (item, win, event) => {
@@ -38,7 +38,7 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
-        label: t.t('applicationBar.fileMenu.saveAs'),
+        label: t.t('systemMenu.fileMenu.saveAs'),
         accelerator: 'CmdOrCtrl+Shift+S',
         click: (item, win, event) => {
           if (!win) return
@@ -46,7 +46,7 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
-        label: t.t('applicationBar.fileMenu.revert'),
+        label: t.t('systemMenu.fileMenu.revert'),
         enabled: true,
         click: (item, win, event) => {
           if (!win) return
@@ -57,7 +57,7 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.close'),
+        label: t.t('systemMenu.fileMenu.close'),
         accelerator: 'CmdOrCtrl+W',
         enabled: opts.canClose? opts.canClose : false,
         click: (item, win, event) => {
@@ -71,7 +71,7 @@ export function buildMenu(t, type, opts) {
     ]
   },
   {
-    label: t.t('applicationBar.edit'),
+    label: t.t('systemMenu.edit'),
     submenu: [
       {
         role: 'undo'
@@ -97,7 +97,7 @@ export function buildMenu(t, type, opts) {
     ]
   },
   {
-    label: t.t('applicationBar.view'),
+    label: t.t('systemMenu.view'),
     submenu: [
       {
         role: 'togglefullscreen'
@@ -114,7 +114,7 @@ export function buildMenu(t, type, opts) {
     role: 'help',
     submenu: [
       {
-        label: t.t('applicationBar.helpMenu.support'),
+        label: t.t('systemMenu.helpMenu.support'),
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('event:menu')
@@ -130,19 +130,19 @@ export function buildMenu(t, type, opts) {
         {role: 'about'},
         {type: 'separator'},
         {
-          label: t.t('applicationBar.appMenu.donate'),
+          label: t.t('systemMenu.appMenu.donate'),
           click: () => {
             require('electron').shell.openExternal('https://txtapp.io/donate')
           }
         },
         {
-          label: t.t('applicationBar.appMenu.checkForUpdates'),
+          label: t.t('systemMenu.appMenu.checkForUpdates'),
           click: () => { console.log('Checking...')
           }
         },
         {type: 'separator'},
         {
-          label: t.t('applicationBar.appMenu.preferences'),
+          label: t.t('systemMenu.appMenu.preferences'),
           accelerator: 'Cmd+,',
           click: (item, win, event) => {
             if (!win) return
@@ -170,9 +170,9 @@ export function buildMenu(t, type, opts) {
 
   if (process.env.NODE_ENV !== 'production') {
     menu.push({
-      label: t.t('applicationBar.debug'),
+      label: t.t('systemMenu.debug'),
       submenu: [{
-        label: t.t('applicationBar.debugMenu.showTools'),
+        label: t.t('systemMenu.debugMenu.showTools'),
         accelerator: 'CmdOrCtrl+OptionOrAlt+I',
         click: (item, win, event) => {
           if (win) win.webContents.toggleDevTools()

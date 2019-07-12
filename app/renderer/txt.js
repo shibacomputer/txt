@@ -6,8 +6,6 @@ import devTools from 'choo-devtools'
 import persist from 'choo-persist'
 
 import core from './data/core'
-
-import events from './data/events'
 import context from './data/context'
 import doc from './data/doc'
 import prefs from './data/prefs'
@@ -22,7 +20,6 @@ app.use(withReact)
 app.use(devTools()) // TODO Make this import in line with devDependencies
 
 app.use(core)
-app.use(events)
 app.use(context)
 app.use(doc)
 app.use(prefs)
