@@ -31,7 +31,7 @@ module.exports = {
         'clearAll': 'Clear All',
         'trackChanges': 'Track Changes',
         'acceptChanges': 'Accept Changes',
-        'rejectChanges': 'Reject Changes'
+        'rejectChanges': 'Reject Changes',
       },
       'helpMenu': {
         'support': 'Get Support…',

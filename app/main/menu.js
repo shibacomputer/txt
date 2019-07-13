@@ -55,7 +55,7 @@ export function buildMenu(t, type, opts) {
       },
       {
         label: t.t('systemMenu.fileMenu.revert'),
-        enabled: true,
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('doc:revert')
@@ -174,7 +174,7 @@ export function buildMenu(t, type, opts) {
         role: 'selectall'
       },
       {
-        label: t.t('systemMenu.editMenu.clearAlll'),
+        label: t.t('systemMenu.editMenu.clearAll'),
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('doc:clear')
@@ -184,13 +184,28 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('systemMenu.editmenu.trackChanges'),
+        type: 'checkbox',
+        label: t.t('systemMenu.editMenu.trackChanges'),
         accelerator: 'CmdOrCtrl+Shift+T',
         click: (item, win, event) => {
           if (!win) return
-          else win.webContents.send('doc:close')
+          else win.webContents.send('')
         }
-      }
+      },
+      {
+        label: t.t('systemMenu.editMenu.acceptChanges'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
+      {
+        label: t.t('systemMenu.editMenu.rejectChanges'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
     ]
   },
   {

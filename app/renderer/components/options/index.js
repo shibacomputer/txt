@@ -145,10 +145,6 @@ class Options extends Component {
                 <Button type='primary' label='Dark' />
                 <Button type='light' label='Light' />
               </div>
-
-              <div className= { style.set }>
-                <Checkbox defaultChecked={ appearanceBorder } label='Show border' onChange={ this.handleBorderCheck }/>
-              </div>
             </main>
           </section>
 
