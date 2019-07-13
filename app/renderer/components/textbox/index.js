@@ -28,9 +28,6 @@ class Textbox extends Component {
   }
 
   handleChange(editor, data, value) {
-    let newState = this.state
-    newState.doc.body = value
-    this.setState(newState)
     this.emit('doc:update', {contents: value})
   }
 
@@ -39,7 +36,7 @@ class Textbox extends Component {
     return (
       <section className="box">
         <CodeMirror
-          value= {doc.contents} 
+          value= {doc.contents}
           onBeforeChange={(editor, data, value) => {
             this.handleChange(editor, data, value)
           }}

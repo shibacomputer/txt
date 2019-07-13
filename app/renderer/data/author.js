@@ -109,6 +109,8 @@ export default function author (state, emitter) {
         .catch((e) => {
           console.log(e)
         })
+      } else {
+        emitter.emit('author:init', author? author : keyResult.author, key)
       }
     })
     .catch((e) => {
@@ -127,6 +129,7 @@ export default function author (state, emitter) {
         }
 
         ipcRenderer.send('author:save', newIdentity.keychainName, JSON.stringify(key))
+        emitter.emit('context:update', { working: true })
         resolve({ key: key, author: newIdentity })
       }).catch((e) => {s
         reject()
