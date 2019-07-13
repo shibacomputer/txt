@@ -61,6 +61,7 @@ export default function doc (state, emitter) {
               emitter.emit('context:update', { working: true })
               saveDocument()
               .then( () => {
+                resetDocument({ title: readUri.fn })
                 load(readUri)
                 .then(updateContext())
                 return
@@ -71,7 +72,7 @@ export default function doc (state, emitter) {
                 updateContext()
               })
             } else if (changeAction.valueOf() === 1) {
-              resetDocument()
+              resetDocument({ title: readUri.fn })
               load(readUri)
               .then(updateContext())
               return
@@ -80,6 +81,7 @@ export default function doc (state, emitter) {
             }
           })
         } else {
+          resetDocument({ title: readUri.fn })
           emitter.emit('context:update', { working: true })
           load(readUri)
           .then(updateContext())
@@ -198,7 +200,7 @@ export default function doc (state, emitter) {
 
   }
 
-  async function resetDocument() {
+  async function resetDocument(tempDoc = { }) {
     state.doc = {
       contents: '',
       contributors: [],
@@ -207,7 +209,7 @@ export default function doc (state, emitter) {
       lastUpdated: null,
       uri: null,
       staleContents: '',
-      title: 'Untitled',
+      title: tempDoc.title || 'Untitled',
       words: 0
     }
     updateContext()
