@@ -57,6 +57,61 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
+        label: t.t('systemMenu.fileMenu.preview'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:preview')
+        }
+      },
+      {
+        label: t.t('systemMenu.fileMenu.print'),
+        accelerator: 'CmdOrCtrl+P',
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:print')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.fileMenu.export'),
+        submenu: [
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToEncryptedFile'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'encrypted')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPdf'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'pdf')
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToArena'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:post', 'arena')
+            }
+          },
+        ]
+      },
+      {
+        type: 'separator'
+      },
+      {
         label: t.t('systemMenu.fileMenu.close'),
         accelerator: 'CmdOrCtrl+W',
         enabled: opts.canClose? opts.canClose : false,

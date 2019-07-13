@@ -14,8 +14,14 @@ module.exports = {
         'saveAs': 'Save As…',
         'close': 'Close',
         'revert': 'Revert',
+        'preview': 'Preview…',
         'print': 'Print…',
         'export': 'Export…',
+        'exportMenu': {
+          'exportToEncryptedFile': 'Export to Encrypted File',
+          'exportToPdf': 'Export to PDF',
+          'exportToArena': 'Export to Are.na'
+        }
       },
       'editMenu': {
         'settings': 'Settings…',
