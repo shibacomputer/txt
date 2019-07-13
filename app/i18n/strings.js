@@ -9,6 +9,7 @@ module.exports = {
       'debug': 'Debug',
       'fileMenu': {
         'new': 'New',
+        'newWindow': 'New Window',
         'open': 'Open…',
         'save': 'Save',
         'saveAs': 'Save As…',
@@ -16,15 +17,21 @@ module.exports = {
         'revert': 'Revert',
         'preview': 'Preview…',
         'print': 'Print…',
-        'export': 'Export…',
+        'send': 'Send To…',
+        'export': 'Export To…',
         'exportMenu': {
-          'exportToEncryptedFile': 'Export to Encrypted File',
-          'exportToPdf': 'Export to PDF',
-          'exportToArena': 'Export to Are.na'
+          'exportToEncryptedFile': 'Encrypted Text',
+          'exportToPlainText': 'Plain Text',
+          'exportToPdf': 'PDF',
+          'exportToArena': 'Are.na'
         }
       },
       'editMenu': {
         'settings': 'Settings…',
+        'clearAll': 'Clear All',
+        'trackChanges': 'Track Changes',
+        'acceptChanges': 'Accept Changes',
+        'rejectChanges': 'Reject Changes'
       },
       'helpMenu': {
         'support': 'Get Support…',

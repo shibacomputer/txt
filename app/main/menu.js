@@ -15,6 +15,14 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
+        label: t.t('systemMenu.fileMenu.newWindow'),
+        accelerator: 'CmdOrCtrl+Shift+N',
+        click: (item, win, event) => {
+          if (!win) win = windows.init()
+          win.webContents.send('newWindow')
+        }
+      },
+      {
         type: 'separator'
       },
       {
@@ -77,6 +85,14 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
+        label: t.t('systemMenu.fileMenu.send'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('pub:send')
+        }
+      },
+      {
         label: t.t('systemMenu.fileMenu.export'),
         submenu: [
           {
@@ -85,6 +101,14 @@ export function buildMenu(t, type, opts) {
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:export', 'encrypted')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPlainText'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'text')
             }
           },
           {
@@ -148,15 +172,35 @@ export function buildMenu(t, type, opts) {
       },
       {
         role: 'selectall'
+      },
+      {
+        label: t.t('systemMenu.editMenu.clearAlll'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:clear')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.editmenu.trackChanges'),
+        accelerator: 'CmdOrCtrl+Shift+T',
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:close')
+        }
       }
     ]
   },
   {
     label: t.t('systemMenu.view'),
     submenu: [
-      {
-        role: 'togglefullscreen'
-      }
+      { role: 'resetzoom' },
+      { role: 'zoomin' },
+      { role: 'zoomout' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
     ]
   },
   {
