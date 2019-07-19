@@ -1,13 +1,13 @@
-const { app } = require('electron')
+const { app, shell } = require('electron')
 const windows = require('./windows')
 export function buildMenu(t, type, opts) {
 
   opts? opts = opts : opts = []
   let menu = [ {
-    label: t.t('applicationBar.file'),
+    label: t.t('systemMenu.file'),
     submenu: [
       {
-        label: t.t('applicationBar.fileMenu.new'),
+        label: t.t('systemMenu.fileMenu.new'),
         accelerator: 'CmdOrCtrl+N',
         click: (item, win, event) => {
           if (!win) win = windows.init()
@@ -15,10 +15,17 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
+        label: t.t('systemMenu.fileMenu.newWindow'),
+        accelerator: 'CmdOrCtrl+Shift+N',
+        click: (item, win, event) => {
+          let newWin = windows.init()
+        }
+      },
+      {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.open'),
+        label: t.t('systemMenu.fileMenu.open'),
         accelerator: 'CmdOrCtrl+O',
         click: (item, win, event) => {
           if (!win) return
@@ -29,7 +36,7 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.save'),
+        label: t.t('systemMenu.fileMenu.save'),
         accelerator: 'CmdOrCtrl+S',
         enabled: opts.editorHasChanges? opts.editorHasChanges : false,
         click: (item, win, event) => {
@@ -38,7 +45,7 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
-        label: t.t('applicationBar.fileMenu.saveAs'),
+        label: t.t('systemMenu.fileMenu.saveAs'),
         accelerator: 'CmdOrCtrl+Shift+S',
         click: (item, win, event) => {
           if (!win) return
@@ -46,8 +53,8 @@ export function buildMenu(t, type, opts) {
         }
       },
       {
-        label: t.t('applicationBar.fileMenu.revert'),
-        enabled: true,
+        label: t.t('systemMenu.fileMenu.revert'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('doc:revert')
@@ -57,7 +64,78 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-        label: t.t('applicationBar.fileMenu.close'),
+        label: t.t('systemMenu.fileMenu.preview'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:preview')
+        }
+      },
+      {
+        label: t.t('systemMenu.fileMenu.print'),
+        accelerator: 'CmdOrCtrl+P',
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:print')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.fileMenu.send'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('pub:send')
+        }
+      },
+      {
+        label: t.t('systemMenu.fileMenu.export'),
+        submenu: [
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToEncryptedFile'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'encrypted')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPlainText'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'text')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPdf'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', 'pdf')
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToArena'),
+            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:post', 'arena')
+            }
+          },
+        ]
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.fileMenu.close'),
         accelerator: 'CmdOrCtrl+W',
         enabled: opts.canClose? opts.canClose : false,
         click: (item, win, event) => {
@@ -71,7 +149,7 @@ export function buildMenu(t, type, opts) {
     ]
   },
   {
-    label: t.t('applicationBar.edit'),
+    label: t.t('systemMenu.edit'),
     submenu: [
       {
         role: 'undo'
@@ -93,31 +171,66 @@ export function buildMenu(t, type, opts) {
       },
       {
         role: 'selectall'
-      }
+      },
+      {
+        label: t.t('systemMenu.editMenu.clearAll'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:clear')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        type: 'checkbox',
+        label: t.t('systemMenu.editMenu.trackChanges'),
+        accelerator: 'CmdOrCtrl+Shift+T',
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
+      {
+        label: t.t('systemMenu.editMenu.acceptChanges'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
+      {
+        label: t.t('systemMenu.editMenu.rejectChanges'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
     ]
   },
   {
-    label: t.t('applicationBar.view'),
+    label: t.t('systemMenu.view'),
     submenu: [
-      {
-        role: 'togglefullscreen'
-      }
+      { role: 'resetzoom' },
+      { role: 'zoomin' },
+      { role: 'zoomout' },
+      { type: 'separator' },
+      { role: 'togglefullscreen' }
     ]
   },
   {
     role: 'window',
-    submenu: [{
-      role: 'minimize'
-    }]
+    submenu: [
+      { role: 'minimize' },
+    ]
   },
   {
     role: 'help',
     submenu: [
       {
-        label: t.t('applicationBar.helpMenu.support'),
+        label: t.t('systemMenu.helpMenu.support'),
         click: (item, win, event) => {
           if (!win) return
-          else win.webContents.send('event:menu')
+          else shell.openExternal('https://txt.shiba.computer/support')
         }
       },
     ]
@@ -130,19 +243,19 @@ export function buildMenu(t, type, opts) {
         {role: 'about'},
         {type: 'separator'},
         {
-          label: t.t('applicationBar.appMenu.donate'),
+          label: t.t('systemMenu.appMenu.donate'),
           click: () => {
-            require('electron').shell.openExternal('https://txtapp.io/donate')
+            shell.openExternal('https://txt.shiba.computer/donate')
           }
         },
         {
-          label: t.t('applicationBar.appMenu.checkForUpdates'),
+          label: t.t('systemMenu.appMenu.checkForUpdates'),
           click: () => { console.log('Checking...')
           }
         },
         {type: 'separator'},
         {
-          label: t.t('applicationBar.appMenu.preferences'),
+          label: t.t('systemMenu.appMenu.preferences'),
           accelerator: 'Cmd+,',
           click: (item, win, event) => {
             if (!win) return
@@ -170,9 +283,9 @@ export function buildMenu(t, type, opts) {
 
   if (process.env.NODE_ENV !== 'production') {
     menu.push({
-      label: t.t('applicationBar.debug'),
+      label: t.t('systemMenu.debug'),
       submenu: [{
-        label: t.t('applicationBar.debugMenu.showTools'),
+        label: t.t('systemMenu.debugMenu.showTools'),
         accelerator: 'CmdOrCtrl+OptionOrAlt+I',
         click: (item, win, event) => {
           if (win) win.webContents.toggleDevTools()

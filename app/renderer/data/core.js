@@ -25,8 +25,25 @@ export default function core (state, emitter) {
       emitter.emit(response.action, response.payload)
     })
 
+    ipcRenderer.on('modal:close', (e, response) => {
+      console.log('hello')
+    })
+
     emitter.on('close', () => {
       window.close()
+    })
+
+    ipcRenderer.on('blur', (e) => {
+
+    })
+
+    ipcRenderer.on('modal:close', (e) => {
+      emitter.emit('prefs:read')
+      emitter.emit('author:import')
+    })
+
+    ipcRenderer.on('focus', (e) => {
+      emitter.emit('prefs:read')
     })
   })
 }

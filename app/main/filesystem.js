@@ -13,8 +13,8 @@ export function init() {
     })
   })
   ipcMain.on('fs:write', (e, obj) => {
-    write(obj).then((notify) => {
-      e.sender.send('fs:write', notify)
+    write(obj).then((file) => {
+      e.sender.send('fs:write', file)
     }).catch( (err) => {
       throw e
     })
@@ -115,9 +115,12 @@ async function write(obj) {
   } catch (e) {
     throw e
   }
-  return obj.opts.notify ? {
+
+  return {
     notify: obj.opts.notify,
     fn: obj.opts.fn + '' + obj.opts.ext,
-    uri: obj.opts.uri
-  } : false
+    ext: obj.opts.ext,
+    uri: obj.opts.uri,
+    uriParsed: path.parse(uri)
+  }
 }

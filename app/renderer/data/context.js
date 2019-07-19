@@ -1,6 +1,7 @@
 const ipcRenderer = window.require('electron').ipcRenderer
 
 export default function context (state, emitter) {
+
   state.context = {
     authorExists: false,
     authorIsNew: false,
@@ -13,6 +14,7 @@ export default function context (state, emitter) {
     editorHasContent: false,
     hasDialog: false,
     isLocked: false,
+    locale: getLocale(navigator.language),
     passphraseValidated: false,
     preferencesHaveChanges: false,
     working: false
@@ -29,4 +31,12 @@ export default function context (state, emitter) {
     })
 
   })
+
+  function getLocale(locale) {
+    let lang
+    if (locale.indexOf('en') !== -1) return 'en'
+    else if (locale.indexOf('de') !== -1) return 'de'
+    else if (locale.indexOf('fr') !== -1) return 'fr'
+    else return 'en'
+  }
 }

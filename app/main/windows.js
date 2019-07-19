@@ -28,16 +28,24 @@ export function makeWindow(opts, source, parent) {
   let win = new BrowserWindow(opts.window)
   let target = source? url + '#' + source : url
 
-  // if (isDev) { win.webContents.openDevTools() }
-
   win.loadURL(target)
 
   win.on('close', () => {
-
   })
 
   win.on('closed', () => {
+    // Add logic for closing documents here.
+    if(parent) {
+      parent.webContents.send('modal:close')
+    }
+  })
 
+  win.on('blur', () => {
+    win.webContents.send('blur')
+  })
+
+  win.on('focus', () => {
+    win.webContents.send('focus')
   })
 
   return win

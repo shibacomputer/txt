@@ -1,5 +1,4 @@
 import React from 'react'
-// import Textarea from 'react-textarea-autosize'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import 'codemirror/addon/selection/mark-selection'
 
@@ -29,9 +28,6 @@ class Textbox extends Component {
   }
 
   handleChange(editor, data, value) {
-    let newState = this.state
-    newState.doc.body = value
-    this.setState(newState)
     this.emit('doc:update', {contents: value})
   }
 
@@ -45,26 +41,16 @@ class Textbox extends Component {
             this.handleChange(editor, data, value)
           }}
           options={{
-            mode: 'markdown',
-            theme: prefs.hasTheme,
+            disableSpellcheck: false,
             lineWrapping: true,
             lineNumbers: false,
+            mode: 'markdown',
+            theme: prefs.hasTheme,
             styleSelectedText: true
           }
         }
         />
       </section>
-        // <Textarea
-        //   className={style.area}
-        //   id='editor'
-        //   onBlur={this.handleFocus}
-        //   onChange={this.handleChange}
-        //   onFocus={this.handleFocus}
-        //   spellCheck={ true }
-        //   value={doc.contents}
-        //   disabled={ context.hasDialog }
-        // />
-
     )
   }
 }

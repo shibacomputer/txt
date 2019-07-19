@@ -17,6 +17,7 @@ export function init(t) {
   ipcMain.on('modal:close', (e, sender) => {
     let win = BrowserWindow.getFocusedWindow()
     if (win) {
+      e.sender.send('modal:hide', response)
       win.hide()
     } else return
   })

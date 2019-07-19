@@ -23,8 +23,4 @@ export function init() {
   ipcMain.on('prefs:write', (e, newPrefs) => {
     store.set(newPrefs)
   })
-
-  ipcMain.on('bridge', (e, nextEvent, data) => {
-    BrowserWindow.getFocusedWindow().getParentWindow().webContents.send(nextEvent, data)
-  })
 }

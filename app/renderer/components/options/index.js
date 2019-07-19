@@ -76,6 +76,7 @@ class Options extends Component {
       this.emit('author:new', newAuthor)
     }
   }
+
   handleAuthorValidatePassphrase(e) {
     if (this.state.passPhrase) {
       let validatingAuthor = {
@@ -84,7 +85,6 @@ class Options extends Component {
       }
       this.emit('author:validate', validatingAuthor)
     }
-
   }
 
   handleDeleteAuthor(e) {
@@ -144,10 +144,6 @@ class Options extends Component {
               <div className={ style.set }>
                 <Button type='primary' label='Dark' />
                 <Button type='light' label='Light' />
-              </div>
-
-              <div className= { style.set }>
-                <Checkbox defaultChecked={ appearanceBorder } label='Show border' onChange={ this.handleBorderCheck }/>
               </div>
             </main>
           </section>
@@ -239,6 +235,7 @@ class Options extends Component {
           <Button
             type='positive'
             label='Done'
+            disabled={ !authorExists }
             onClick={ this.handleModalDone } />
         </footer>
       </div>

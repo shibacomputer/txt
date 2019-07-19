@@ -61,6 +61,7 @@ export default function doc (state, emitter) {
               emitter.emit('context:update', { working: true })
               saveDocument()
               .then( () => {
+                resetDocument({ title: readUri.fn })
                 load(readUri)
                 .then(updateContext())
                 return
@@ -71,7 +72,7 @@ export default function doc (state, emitter) {
                 updateContext()
               })
             } else if (changeAction.valueOf() === 1) {
-              resetDocument()
+              resetDocument({ title: readUri.fn })
               load(readUri)
               .then(updateContext())
               return
@@ -80,6 +81,7 @@ export default function doc (state, emitter) {
             }
           })
         } else {
+          resetDocument({ title: readUri.fn })
           emitter.emit('context:update', { working: true })
           load(readUri)
           .then(updateContext())
@@ -140,7 +142,7 @@ export default function doc (state, emitter) {
       payload.opts.fn = state.doc.title
 
       save(payload)
-      .then(() => {
+      .then((file) => {
         let date = new Date
         state.doc.lastUpdated = date
         state.doc.staleContents = state.doc.contents
@@ -159,12 +161,15 @@ export default function doc (state, emitter) {
         payload.opts.fn = writeUri.fn
 
         save(payload)
-        .then(() => {
+        .then((file) => {
           let date = new Date
           state.doc.lastUpdated = date
+          state.doc.created = date
           state.doc.staleContents = state.doc.contents
-          state.doc.uri = payload.opts.uri
+          state.doc.uri = file.uri
           state.doc.title = payload.opts.fn
+          state.doc.uriParsed = file.uriParsed
+          state.doc.ext = file.ext
 
           updateContext()
           return
@@ -175,9 +180,13 @@ export default function doc (state, emitter) {
       })
   }
   async function save(payload) {
-    ipcRenderer.send('fs:write', payload)
-    ipcRenderer.once('fs:write', (response) => {
-      emitter.emit('context:update', { working: false })
+    return new Promise ((resolve) => {
+
+      ipcRenderer.send('fs:write', payload)
+      ipcRenderer.once('fs:write', (e, file) => {
+        emitter.emit('context:update', { working: false })
+        resolve(file)
+      })
     })
   }
 
@@ -198,7 +207,7 @@ export default function doc (state, emitter) {
 
   }
 
-  async function resetDocument() {
+  async function resetDocument(tempDoc = { }) {
     state.doc = {
       contents: '',
       contributors: [],
@@ -206,8 +215,9 @@ export default function doc (state, emitter) {
       id: 0,
       lastUpdated: null,
       uri: null,
+      uriParsed: null,
       staleContents: '',
-      title: 'Untitled',
+      title: tempDoc.title || 'Untitled',
       words: 0
     }
     updateContext()

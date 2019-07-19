@@ -1,6 +1,6 @@
 module.exports = {
   en: {
-    'applicationBar': {
+    'systemMenu': {
       'file': 'File',
       'edit': 'Edit',
       'view': 'View',
@@ -9,16 +9,29 @@ module.exports = {
       'debug': 'Debug',
       'fileMenu': {
         'new': 'New',
+        'newWindow': 'New Window',
         'open': 'Open…',
         'save': 'Save',
         'saveAs': 'Save As…',
         'close': 'Close',
         'revert': 'Revert',
+        'preview': 'Preview…',
         'print': 'Print…',
-        'export': 'Export…',
+        'send': 'Send To…',
+        'export': 'Export To…',
+        'exportMenu': {
+          'exportToEncryptedFile': 'Encrypted Text',
+          'exportToPlainText': 'Plain Text',
+          'exportToPdf': 'PDF',
+          'exportToArena': 'Are.na'
+        }
       },
       'editMenu': {
         'settings': 'Settings…',
+        'clearAll': 'Clear All',
+        'trackChanges': 'Track Changes',
+        'acceptChanges': 'Accept Changes',
+        'rejectChanges': 'Reject Changes',
       },
       'helpMenu': {
         'support': 'Get Support…',
@@ -57,7 +70,12 @@ module.exports = {
       'untitledDocument': 'Untitled',
       'edited': 'Edited',
       'encryptedText': 'Encrypted Text Document',
-      'authorProfile': 'Author Profile'
+      'authorProfile': 'Author Profile',
+      'words': 'Words',
+      'date': 'Date',
+      'author': 'Author',
+      'collaborators': 'Collaborators',
+      'document': 'Doc'
     },
     'dialogs': {
       'revertFile': {
@@ -76,7 +94,7 @@ module.exports = {
         'title': '%{msg}',
         'detail': 'More help might be available online.'
       }
-    }
+    },
   },
   de: {
 
