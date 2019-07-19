@@ -90,27 +90,28 @@ export default function author (state, emitter) {
       ipcRenderer.once('fs:read', (e, file) => {
         emitter.emit('context:update', { working: true })
         let key = JSON.parse(file.data)
+        let author = { }
         setup(author, key)
       })
     })
   }
 
-  function setup(author = null, key = null) {
+  function setup(newAuthor = null, key = null) {
     if (!key) return
     setupKey(key)
     .then((keyResult) => {
-      author.keychainName = keyResult.author.keychainName
-      if(author.secret) {
-        setupAuthor(author? author : keyResult.userid)
+      newAuthor.keychainName = keyResult.author.keychainName
+      if(newAuthor.secret) {
+        setupAuthor(newAuthor? newAuthor : keyResult.userid)
         .then(() => {
-          author.secret = null
-          emitter.emit('author:init', author? author : keyResult.author, key)
+          newAuthor.secret = null
+          emitter.emit('author:init', newAuthor? newAuthor : keyResult.author, key)
         })
         .catch((e) => {
           console.log(e)
         })
       } else {
-        emitter.emit('author:init', author? author : keyResult.author, key)
+        emitter.emit('author:init', newAuthor, key)
       }
     })
     .catch((e) => {
@@ -123,15 +124,14 @@ export default function author (state, emitter) {
       if (!key) reject()
       parse(key)
       .then((parsedKey) => {
+        emitter.emit('context:update', { working: true })
         let newIdentity = {
           name: parsedKey.privkey.users[0].userId.userid,
           keychainName: parsedKey.privkey.users[0].userId.userid.concat('@txt')
         }
-
         ipcRenderer.send('author:save', newIdentity.keychainName, JSON.stringify(key))
-        emitter.emit('context:update', { working: true })
         resolve({ key: key, author: newIdentity })
-      }).catch((e) => {s
+      }).catch((e) => {
         reject()
       })
     })
@@ -208,7 +208,7 @@ export default function author (state, emitter) {
 
         ipcRenderer.send('fs:write', payload)
         ipcRenderer.once('fs:write', (e, notification) => {
-          if(notification) {
+          if(notification.notify) {
             let exportNotification = new Notification('Exported ' + notification.fn, {
               body: 'Click to reveal on disk…'
             })

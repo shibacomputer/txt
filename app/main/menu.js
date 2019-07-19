@@ -1,4 +1,4 @@
-const { app } = require('electron')
+const { app, shell } = require('electron')
 const windows = require('./windows')
 export function buildMenu(t, type, opts) {
 
@@ -18,8 +18,7 @@ export function buildMenu(t, type, opts) {
         label: t.t('systemMenu.fileMenu.newWindow'),
         accelerator: 'CmdOrCtrl+Shift+N',
         click: (item, win, event) => {
-          if (!win) win = windows.init()
-          win.webContents.send('newWindow')
+          let newWin = windows.init()
         }
       },
       {
@@ -220,9 +219,9 @@ export function buildMenu(t, type, opts) {
   },
   {
     role: 'window',
-    submenu: [{
-      role: 'minimize'
-    }]
+    submenu: [
+      { role: 'minimize' },
+    ]
   },
   {
     role: 'help',
@@ -231,7 +230,7 @@ export function buildMenu(t, type, opts) {
         label: t.t('systemMenu.helpMenu.support'),
         click: (item, win, event) => {
           if (!win) return
-          else win.webContents.send('event:menu')
+          else shell.openExternal('https://txt.shiba.computer/support')
         }
       },
     ]
@@ -246,7 +245,7 @@ export function buildMenu(t, type, opts) {
         {
           label: t.t('systemMenu.appMenu.donate'),
           click: () => {
-            require('electron').shell.openExternal('https://txtapp.io/donate')
+            shell.openExternal('https://txt.shiba.computer/donate')
           }
         },
         {

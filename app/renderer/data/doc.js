@@ -142,7 +142,7 @@ export default function doc (state, emitter) {
       payload.opts.fn = state.doc.title
 
       save(payload)
-      .then(() => {
+      .then((file) => {
         let date = new Date
         state.doc.lastUpdated = date
         state.doc.staleContents = state.doc.contents
@@ -161,12 +161,15 @@ export default function doc (state, emitter) {
         payload.opts.fn = writeUri.fn
 
         save(payload)
-        .then(() => {
+        .then((file) => {
           let date = new Date
           state.doc.lastUpdated = date
+          state.doc.created = date
           state.doc.staleContents = state.doc.contents
-          state.doc.uri = payload.opts.uri
+          state.doc.uri = file.uri
           state.doc.title = payload.opts.fn
+          state.doc.uriParsed = file.uriParsed
+          state.doc.ext = file.ext
 
           updateContext()
           return
@@ -177,9 +180,13 @@ export default function doc (state, emitter) {
       })
   }
   async function save(payload) {
-    ipcRenderer.send('fs:write', payload)
-    ipcRenderer.once('fs:write', (response) => {
-      emitter.emit('context:update', { working: false })
+    return new Promise ((resolve) => {
+
+      ipcRenderer.send('fs:write', payload)
+      ipcRenderer.once('fs:write', (e, file) => {
+        emitter.emit('context:update', { working: false })
+        resolve(file)
+      })
     })
   }
 
@@ -208,6 +215,7 @@ export default function doc (state, emitter) {
       id: 0,
       lastUpdated: null,
       uri: null,
+      uriParsed: null,
       staleContents: '',
       title: tempDoc.title || 'Untitled',
       words: 0

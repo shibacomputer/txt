@@ -76,6 +76,7 @@ class Options extends Component {
       this.emit('author:new', newAuthor)
     }
   }
+  
   handleAuthorValidatePassphrase(e) {
     if (this.state.passPhrase) {
       let validatingAuthor = {
@@ -84,7 +85,6 @@ class Options extends Component {
       }
       this.emit('author:validate', validatingAuthor)
     }
-
   }
 
   handleDeleteAuthor(e) {
