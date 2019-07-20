@@ -12,7 +12,7 @@ class Button extends Component {
     const {type, label, className, disabled, onClick} = this.props
     return (
       <button
-        className={ `${ className } ${ style.base } ${ style[type] }` }
+        className={ `${ className? classname : '' } ${ disabled? style.disabled : '' } ${ style.base } ${ style[type] }` }
         disabled={ disabled }
         name={ label }
         onClick={ onClick }

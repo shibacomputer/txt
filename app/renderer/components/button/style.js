@@ -8,9 +8,11 @@ const style = css`
     outline: none;
     padding: 0.3rem 0.75rem;
   }
+
   .base:active {
     opacity: 0.85;
   }
+
   .primary {
     background: var(--button-primary);
     border: 1px solid var(--border);
@@ -49,6 +51,13 @@ const style = css`
     color: var(--base);
     background: var(--positive);
     border: 1px solid var(--border);
+  }
+
+  .disabled {
+    border: 1px solid var(--border) !important;
+    background: none !important;
+    color: var(--text) !important;
+    opacity: 0.25 !important;
   }
 
 `

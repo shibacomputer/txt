@@ -221,7 +221,7 @@ class Options extends Component {
               </React.Fragment>
             ) }
               <div className={ style.set }>
-                <span className={ style.tip }>Your author file encrypts your work, and also helps you collaborate with others. Learn more…</span>
+                <span className={ style.tip }>Your author file encrypts your work, and also helps you collaborate with others. <br />Learn more…</span>
               </div>
             </main>
           </section>
