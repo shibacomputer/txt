@@ -96,7 +96,7 @@ export function buildMenu(t, type, opts) {
         submenu: [
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToEncryptedFile'),
-            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            enabled: opts.editorHasContent? opts.editorHasContent : false,
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:export', 'encrypted')
@@ -104,7 +104,7 @@ export function buildMenu(t, type, opts) {
           },
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToPlainText'),
-            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            enabled: opts.editorHasContent? opts.editorHasContent : false,
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:export', 'text')
@@ -112,7 +112,7 @@ export function buildMenu(t, type, opts) {
           },
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToPdf'),
-            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            enabled: opts.editorHasContent? opts.editorHasContent : false,
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:export', 'pdf')
@@ -123,7 +123,7 @@ export function buildMenu(t, type, opts) {
           },
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToArena'),
-            enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+            enabled: opts.editorHasContent? opts.editorHasContent : false,
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:post', 'arena')
