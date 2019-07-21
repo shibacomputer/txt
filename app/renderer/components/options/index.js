@@ -197,7 +197,7 @@ class Options extends Component {
                   Found: { keychainName.replace('@txt','') }
                 </div>
                 <div className={ style.set }>
-                  <Textfield placeholder='Passphrase' type="password" onChange={ this.handlePassphraseChange } />
+                  <Textfield placeholder='Passphrase' type='password' onChange={ this.handlePassphraseChange } />
                 </div>
                 <div className={ style.set }>
                   <Button type='secondary' label='Abort' onClick={ this.handleCancelCreateAuthor } />
@@ -212,7 +212,7 @@ class Options extends Component {
                   <Textfield placeholder='Name or psuedonym' onChange={ this.handleAuthorChange }/>
                 </div>
                 <div className={ style.set }>
-                  <Textfield placeholder='Passphrase' onChange={ this.handlePassphraseChange } />
+                  <Textfield placeholder='Passphrase' type='password' onChange={ this.handlePassphraseChange } />
                 </div>
                 <div className={ style.set }>
                   <Button type='secondary' label='Back' onClick={ this.handleCancelCreateAuthor } />
