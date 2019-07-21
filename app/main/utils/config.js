@@ -4,7 +4,7 @@ export function dialog(name, opts, t) {
     case 'needsAuthor':
       return {
         type: 'warning',
-        buttons: [ t.t('verbs.completeSetup'), t.t('verbs.back') ],
+        buttons: [ t.t('verbs.completeSetup'), t.t('verbs.cancel') ],
         defaultId: 0,
         cancelId: 1,
         message: t.t('dialogs.needsAuthor.title'),
