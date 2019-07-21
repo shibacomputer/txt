@@ -186,7 +186,23 @@ export default function doc (state, emitter) {
     }
   }
   async function save(payload) {
+    return new Promise ((resolve) => {
 
+      ipcRenderer.send('fs:write', payload)
+      ipcRenderer.once('fs:write', (e, file) => {
+        emitter.emit('context:update', { working: false })
+        resolve(file)
+
+        if(file.notify) {
+          let exportNotification = new Notification('Exported ' + file.fn, {
+            body: 'Click to reveal on disk…'
+          })
+
+          exportNotification.onclick = () => {
+            ipcRenderer.send('find', file.uri)
+          }
+        }
+      })
     })
   }
 
