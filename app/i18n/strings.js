@@ -64,7 +64,8 @@ module.exports = {
       'print': 'Print',
       'deleteForever': 'Delete Forever',
       'saveAndDeleteForever': 'Export & Delete',
-      "import": "Import"
+      'import': 'Import',
+      'completeSetup': 'Complete Setup'
     },
     'nouns': {
       'untitledDocument': 'Untitled',
@@ -93,6 +94,10 @@ module.exports = {
       'error': {
         'title': '%{msg}',
         'detail': 'More help might be available online.'
+      },
+      'needsAuthor': {
+        'title': 'Open Preferences and complete setup?',
+        'detail': 'Before you can open and save files, Txt needs additional setup.'
       }
     },
   },
