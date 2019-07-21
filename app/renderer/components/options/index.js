@@ -174,7 +174,7 @@ class Options extends Component {
                 <div className={ style.set }>None set</div>
                 <div className={ style.set }>
                   <Button type='primary' label='New' onClick={ this.handleNewAuthor }/>
-                  <Button type='primary' label='Link…' onClick={ this.handleLinkAuthor } />
+                  <Button type='primary' label='Import…' onClick={ this.handleLinkAuthor } />
                 </div>
               </React.Fragment>
 
@@ -197,11 +197,11 @@ class Options extends Component {
                   Found: { keychainName.replace('@txt','') }
                 </div>
                 <div className={ style.set }>
-                  <Textfield placeholder='Passphrase' onChange={ this.handlePassphraseChange } />
+                  <Textfield placeholder='Passphrase' type="password" onChange={ this.handlePassphraseChange } />
                 </div>
                 <div className={ style.set }>
-                  <Button type='secondary' label='Cancel' onClick={ this.handleCancelCreateAuthor } />
-                  <Button type='primary' label='Link' onClick={ this.handleAuthorValidatePassphrase }/>
+                  <Button type='secondary' label='Abort' onClick={ this.handleCancelCreateAuthor } />
+                  <Button type='positive' label='Done' onClick={ this.handleAuthorValidatePassphrase }/>
                 </div>
               </React.Fragment>
             )}
@@ -221,7 +221,7 @@ class Options extends Component {
               </React.Fragment>
             ) }
               <div className={ style.set }>
-                <span className={ style.tip }>Your author file encrypts your work, and also helps you collaborate with others. <br />Learn more…</span>
+                <span className={ style.tip }>Create or import an author to encrypt your work. You can also use this profile to let others securely share files with you.</span>
               </div>
             </main>
           </section>

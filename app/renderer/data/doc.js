@@ -124,6 +124,10 @@ export default function doc (state, emitter) {
   }
 
   async function saveDocument(sender, asNew = false, data = state.doc.contents, enc = 'utf8') {
+    if (!state.context.authorExists) {
+      abortSave()
+      return
+    }
 
     let payload = {
       author: state.author.name,
@@ -255,6 +259,21 @@ export default function doc (state, emitter) {
     wc = wc.split(' ').length
     return new Intl.NumberFormat('en-US').format(wc)
     // TODO: Internationalisation
+  }
+
+  function abortSave() {
+    showModal('needsAuthor')
+    .then((changeAction) => {
+      if (changeAction.valueOf() === 0) {
+        ipcRenderer.send('modal:show', 'prefs', {
+          payload: {
+            resource: 'prefs'
+          }
+        })
+      } else {
+        return
+      }
+    })
   }
 
   function updateContext() {

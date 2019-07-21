@@ -9,10 +9,10 @@ class Textfield extends Component {
   }
 
   render () {
-    const { value, placeholder, valid, passphrase, enabled, onChange } = this.props
+    const { value, placeholder, valid, passphrase, enabled, onChange, type='text' } = this.props
 
     return (
-      <input className={ `${ style.input }` } placeholder={ placeholder } onChange={ onChange } />
+      <input className={ `${ style.input }` } placeholder={ placeholder } onChange={ onChange } type={ type }/>
     )
   }
 }

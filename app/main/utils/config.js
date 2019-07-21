@@ -1,6 +1,17 @@
 // TODO: Internationalisation
 export function dialog(name, opts, t) {
   switch (name) {
+    case 'needsAuthor':
+      return {
+        type: 'warning',
+        buttons: [ t.t('verbs.completeSetup'), t.t('verbs.back') ],
+        defaultId: 0,
+        cancelId: 1,
+        message: t.t('dialogs.needsAuthor.title'),
+        detail: t.t('dialogs.needsAuthor.detail'),
+        modal: 'message'
+      }
+    break
     case 'willRevert':
       return {
         type: 'question',
