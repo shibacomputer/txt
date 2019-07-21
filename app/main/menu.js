@@ -96,10 +96,11 @@ export function buildMenu(t, type, opts) {
         submenu: [
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToEncryptedFile'),
-            enabled: opts.editorHasContent? opts.editorHasContent : false,
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
             click: (item, win, event) => {
               if (!win) return
-              else win.webContents.send('doc:export', 'encrypted')
+              else win.webContents.send('doc:export', '.gpg')
             }
           },
           {
@@ -107,15 +108,16 @@ export function buildMenu(t, type, opts) {
             enabled: opts.editorHasContent? opts.editorHasContent : false,
             click: (item, win, event) => {
               if (!win) return
-              else win.webContents.send('doc:export', 'text')
+              else win.webContents.send('doc:export', '.txt')
             }
           },
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToPdf'),
-            enabled: opts.editorHasContent? opts.editorHasContent : false,
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
             click: (item, win, event) => {
               if (!win) return
-              else win.webContents.send('doc:export', 'pdf')
+              else win.webContents.send('doc:export', '.pdf')
             }
           },
           {
@@ -123,7 +125,8 @@ export function buildMenu(t, type, opts) {
           },
           {
             label: t.t('systemMenu.fileMenu.exportMenu.exportToArena'),
-            enabled: opts.editorHasContent? opts.editorHasContent : false,
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
             click: (item, win, event) => {
               if (!win) return
               else win.webContents.send('doc:post', 'arena')
@@ -184,6 +187,7 @@ export function buildMenu(t, type, opts) {
       },
       {
         type: 'checkbox',
+        enabled: false,
         label: t.t('systemMenu.editMenu.trackChanges'),
         accelerator: 'CmdOrCtrl+Shift+T',
         click: (item, win, event) => {
@@ -193,6 +197,7 @@ export function buildMenu(t, type, opts) {
       },
       {
         label: t.t('systemMenu.editMenu.acceptChanges'),
+        enabled: false,
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('')
@@ -200,6 +205,7 @@ export function buildMenu(t, type, opts) {
       },
       {
         label: t.t('systemMenu.editMenu.rejectChanges'),
+        enabled: false,
         click: (item, win, event) => {
           if (!win) return
           else win.webContents.send('')

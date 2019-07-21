@@ -193,13 +193,13 @@ export default function doc (state, emitter) {
         emitter.emit('context:update', { working: false })
         resolve(file)
 
-        if(notification.notify) {
-          let exportNotification = new Notification('Exported ' + notification.fn, {
+        if(file.notify) {
+          let exportNotification = new Notification('Exported ' + file.fn, {
             body: 'Click to reveal on disk…'
           })
 
           exportNotification.onclick = () => {
-            ipcRenderer.send('find', notification.uri)
+            ipcRenderer.send('find', file.uri)
           }
         }
       })
