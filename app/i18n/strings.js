@@ -97,7 +97,7 @@ module.exports = {
       },
       'needsAuthor': {
         'title': 'Open Preferences and complete setup?',
-        'detail': 'Txt can save and open files once this is complete.'
+        'detail': 'Before you can open and save files, Txt needs additional setup.'
       }
     },
   },
