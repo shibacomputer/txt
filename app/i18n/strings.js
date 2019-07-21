@@ -71,12 +71,7 @@ module.exports = {
       'untitledDocument': 'Untitled',
       'edited': 'Edited',
       'encryptedText': 'Encrypted Text Document',
-      'authorProfile': 'Author Profile',
-      'words': 'Words',
-      'date': 'Date',
-      'author': 'Author',
-      'collaborators': 'Collaborators',
-      'document': 'Doc'
+
     },
     'dialogs': {
       'revertFile': {

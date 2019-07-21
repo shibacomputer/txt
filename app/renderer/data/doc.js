@@ -156,7 +156,8 @@ export default function doc (state, emitter) {
         updateContext()
         return
       })
-    } else await getWriteUri()
+    } else {
+      await getWriteUri()
       .then((writeUri) => {
         if (!writeUri) return
 
@@ -182,15 +183,10 @@ export default function doc (state, emitter) {
       .catch((err) => {
 
       })
+    }
   }
   async function save(payload) {
-    return new Promise ((resolve) => {
 
-      ipcRenderer.send('fs:write', payload)
-      ipcRenderer.once('fs:write', (e, file) => {
-        emitter.emit('context:update', { working: false })
-        resolve(file)
-      })
     })
   }
 
@@ -207,8 +203,31 @@ export default function doc (state, emitter) {
     })
   }
 
-  async function exportDocument() {
+  async function exportDocument(sender, asType = '.txt', data = state.doc.contents, enc = 'utf8') {
+    let payload = {
+      data: data,
+      opts: {
+        enc: enc,
+        ext: asType,
+        fn: state.doc.title,
+        notify: true
+      }
+    }
 
+    let options = {
+      name: payload.opts.fn,
+      ext: payload.opts.ext
+    }
+
+    getWriteUri(options)
+    .then((writeUri) => {
+      if (!writeUri) return
+
+      payload.opts.uri = writeUri.uri
+      payload.opts.fn = writeUri.fn
+
+      save(payload)
+    })
   }
 
   async function resetDocument(tempDoc = { }) {
@@ -309,7 +328,7 @@ export default function doc (state, emitter) {
     })
   }
 
-  async function getWriteUri(options) {
+  async function getWriteUri(options = { name: state.doc.name, ext: '.gpg' }) {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('modal:show', 'saveNew', options)
       ipcRenderer.once('modal:show', (e, response) => {

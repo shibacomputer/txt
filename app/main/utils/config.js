@@ -75,15 +75,19 @@ export function dialog(name, opts, t) {
     break
 
     case 'saveNew':
+      let filetype = { }
+      if (opts.ext === '.txt') filetype = { name: t.t('nouns.plainText'), extensions: ['txt'] }
+      else if (opts.ext === '.pdf') filetype = { name: t.t('nouns.pdfDocument'), extensions: ['pdf'] }
+      else if (opts.ext === '.gpg') filetype = { name: t.t('nouns.encryptedText'), extensions: ['gpg'] }
+
       return {
-        title: t.t('verbs.save'),
-        buttonLabel: t.t('verbs.save'),
-        filters: [
-          { name: t.t('nouns.encryptedText'), extensions: ['gpg'] }
-        ],
-        filename: '.gpg',
+        title: opts.export? t.t('verbs.export') : t.t('verbs.save'),
+        buttonLabel: opts.export? t.t('verbs.export') : t.t('verbs.save'),
+        filters: [ filetype ],
+        defaultPath: opts.name? opts.name + opts.ext : t.t('nouns.untitledDocument') + opts.ext,
         modal: 'save'
       }
+    break
 
     case 'open':
       return {

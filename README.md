@@ -1,7 +1,7 @@
 ![Txt Logo](icon.png)
 # Txt.app
 
-Txt is a cute little word processor that keeps your work safe with
+Txt is a little word processor that keeps your work safe with
 [well-documented encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).  
 It is very nearly in Alpha!
 
