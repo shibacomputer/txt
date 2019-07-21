@@ -64,7 +64,81 @@ export function buildMenu(t, type, opts) {
         type: 'separator'
       },
       {
-
+        label: t.t('systemMenu.fileMenu.preview'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:preview')
+        }
+      },
+      {
+        label: t.t('systemMenu.fileMenu.print'),
+        accelerator: 'CmdOrCtrl+P',
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:print')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.fileMenu.send'),
+        enabled: opts.editorHasChanges? opts.editorHasChanges : false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('pub:send')
+        }
+      },
+      {
+        label: t.t('systemMenu.fileMenu.export'),
+        submenu: [
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToEncryptedFile'),
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', '.gpg')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPlainText'),
+            enabled: opts.editorHasContent? opts.editorHasContent : false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', '.txt')
+            }
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToPdf'),
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:export', '.pdf')
+            }
+          },
+          {
+            type: 'separator'
+          },
+          {
+            label: t.t('systemMenu.fileMenu.exportMenu.exportToArena'),
+            // enabled: opts.editorHasContent? opts.editorHasContent : false,
+            enabled: false,
+            click: (item, win, event) => {
+              if (!win) return
+              else win.webContents.send('doc:post', 'arena')
+            }
+          },
+        ]
+      },
+      {
+        type: 'separator'
+      },
+      {
+        label: t.t('systemMenu.fileMenu.close'),
         accelerator: 'CmdOrCtrl+W',
         enabled: opts.canClose? opts.canClose : false,
         click: (item, win, event) => {
@@ -100,7 +174,43 @@ export function buildMenu(t, type, opts) {
       },
       {
         role: 'selectall'
-
+      },
+      {
+        label: t.t('systemMenu.editMenu.clearAll'),
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('doc:clear')
+        }
+      },
+      {
+        type: 'separator'
+      },
+      {
+        type: 'checkbox',
+        enabled: false,
+        label: t.t('systemMenu.editMenu.trackChanges'),
+        accelerator: 'CmdOrCtrl+Shift+T',
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
+      {
+        label: t.t('systemMenu.editMenu.acceptChanges'),
+        enabled: false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
+      {
+        label: t.t('systemMenu.editMenu.rejectChanges'),
+        enabled: false,
+        click: (item, win, event) => {
+          if (!win) return
+          else win.webContents.send('')
+        }
+      },
     ]
   },
   {
