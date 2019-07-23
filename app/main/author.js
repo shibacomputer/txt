@@ -72,6 +72,7 @@ export function init() {
     pgp.unlock(key, secret).then((result) => {
       e.sender.send('author:unlock', result)
     }).catch((e) => {
+      console.log('hello')
       throw (e)
     })
   })
