@@ -113,8 +113,16 @@ export async function parse(key) {
 
 export async function unlock(privateKey, secret) {
   let unlockedKey = (await openpgp.key.readArmored(privateKey)).keys[0]
-  await unlockedKey.decrypt(secret).catch((e) => {
+  try {
+    unlockedKey.decrypt(secret)
+    .then(() => {
+      return unlockedKey
+    })
+    .catch((e) => {
+      throw e
+    })
+  } catch(e) {
     throw e
-  })
-  return unlockedKey
+  }
+  
 }
