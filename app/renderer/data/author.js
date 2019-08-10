@@ -148,7 +148,10 @@ export default function author (state, emitter) {
       })
     })
     .catch((e) => {
-      console.log(e)
+      emitter.emit('context:update', { passphraseHasError: true })
+      setTimeout(() => {
+        emitter.emit('context:update', { passphraseHasError: false })
+      }, 2000)
     })
   }
 

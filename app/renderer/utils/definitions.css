@@ -83,3 +83,35 @@
   content: '';
   z-index: -1;
 }
+
+
+@keyframes headShake {
+  0% {
+    transform: translateX(0);
+  }
+
+  6.5% {
+    transform: translateX(-10%) rotateY(-9deg);
+  }
+
+  18.5% {
+    transform: translateX(9%) rotateY(7deg);
+  }
+
+  31.5% {
+    transform: translateX(-5%) rotateY(-5deg);
+  }
+
+  43.5% {
+    transform: translateX(1%) rotateY(3deg);
+  }
+
+  50% {
+    transform: translateX(0);
+  }
+}
+
+.headShake {
+  animation-timing-function: ease-in-out;
+  animation: headShake 1s;
+}

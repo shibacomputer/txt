@@ -3,7 +3,7 @@ import css from 'csjs-inject'
 const style = css`
   .input {
     background: var(--button-primary);
-    border: 0;
+    border: 1px solid rgba(0,0,0,0);
     color: var(--text);
     font-family: "Mono";
     font-size: 0.8125rem;
@@ -18,6 +18,17 @@ const style = css`
   .input-valid {
     outline-color: var(--c);
   }
+
+  .error {
+    border: 1px solid var(--deletion);
+    color: var(--deletion);
+    outline-color: var(--deletion);
+  }
+
+  .error::placeholder {
+    color: var(--deletion);
+  }
+
 `
 
 export default style
