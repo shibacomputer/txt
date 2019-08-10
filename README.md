@@ -66,17 +66,16 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 ✅ Export to plain text file  
 ✅ i18n Support  
 ✅ Export to passphrase encrypted GPG text file  
-⬜ Contact management  
-⬜ Collaboration / track changes  
-⬜ Windows support  
+⬜ Light UI theme  
 ⬜ Switch or replace keys  
 ⬜ Import existing text files  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
 
 ### Planned for v1.0
-⬜ Search & Quick Open  
-⬜ Light UI theme  
+⬜ Contact management  
+⬜ Collaboration / track changes  
+⬜ Windows support  
 ⬜ Markdown support  
 ⬜ Decentralised software updates  
 ⬜ Localisation (First languages: French/Spanish/German/Japanese)  
