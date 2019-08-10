@@ -148,7 +148,10 @@ export default function author (state, emitter) {
       })
     })
     .catch((e) => {
-      console.log(e)
+      emitter.emit('context:update', { passphraseHasError: true })
+      setTimeout(() => {
+        emitter.emit('context:update', { passphraseHasError: false })
+      }, 2000)
     })
   }
 
@@ -163,7 +166,7 @@ export default function author (state, emitter) {
   async function testKey(secret, key) {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('author:unlock', key, secret)
-      ipcRenderer.once('author:unlock', (result) => {
+      ipcRenderer.once('author:unlock', (e, result) => {
         result? resolve() : reject()
       })
     })

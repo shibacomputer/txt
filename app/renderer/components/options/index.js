@@ -93,17 +93,12 @@ class Options extends Component {
   }
 
   handlePassphraseChange(e) {
-    let newState = this.state
     this.state.passPhrase = e.target.value
-
-    this.setState(newState)
   }
 
   handleAuthorChange(e) {
     let newState = this.state
     this.state.author = e.target.value
-
-    this.setState(newState)
   }
 
   handleBorderCheck(e) {
@@ -126,7 +121,8 @@ class Options extends Component {
         appearanceBorder = this.global.prefs.hasBorder,
         updates = this.global.prefs.allowUpdates,
         rememberPassphrase = this.global.prefs.usesKeychain,
-        passphraseValidated = this.global.prefs.passphraseValidated,
+        passphraseHasError = this.global.context.passphraseHasError,
+        passphraseValidated = this.global.context.passphraseValidated,
         authorExists = this.global.context.authorExists,
         showNewAuthor = this.global.context.authorIsNew,
         showLinkAuthor = this.global.context.authorIsLinking,
@@ -197,7 +193,7 @@ class Options extends Component {
                   Found: { keychainName.replace('@txt','') }
                 </div>
                 <div className={ style.set }>
-                  <Textfield placeholder='Passphrase' type='password' onChange={ this.handlePassphraseChange } />
+                  <Textfield placeholder={ passphraseHasError? 'Bad Passphrase, Try Again' : 'Passphrase' } type='password' onChange={ this.handlePassphraseChange } error={ passphraseHasError } />
                 </div>
                 <div className={ style.set }>
                   <Button type='secondary' label='Abort' onClick={ this.handleCancelCreateAuthor } />
@@ -221,7 +217,28 @@ class Options extends Component {
               </React.Fragment>
             ) }
               <div className={ style.set }>
-                <span className={ style.tip }>Create or import an author to encrypt your work. You can also use this profile to let others securely share files with you.</span>
+                <span className={ style.tip }>
+                { !authorExists && !showNewAuthor && !showLinkAuthor && (
+                  <React.Fragment>
+                    Create or import an author to encrypt your work. You can also use this profile to let others securely share files with you.
+                  </React.Fragment>
+                ) }
+                { showNewAuthor && (
+                  <React.Fragment>
+                    Create or import an author to encrypt your work. You can also use this profile to let others securely share files with you.
+                  </React.Fragment>
+                ) }
+                { showLinkAuthor && (
+                  <React.Fragment>
+                    Enter your passphrase to import this author and encrypt your work.
+                  </React.Fragment>
+                ) }
+                { authorExists && (
+                  <React.Fragment>
+                    This author encrypts your work and allows you to share encrypted work with others.
+                  </React.Fragment>
+                ) }
+                </span>
               </div>
             </main>
           </section>

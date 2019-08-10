@@ -15,6 +15,7 @@ export default function context (state, emitter) {
     hasDialog: false,
     isLocked: false,
     locale: getLocale(navigator.language),
+    passphraseHasError: false,
     passphraseValidated: false,
     preferencesHaveChanges: false,
     working: false

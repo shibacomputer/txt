@@ -50,6 +50,10 @@ export default function doc (state, emitter) {
     })
   }
   async function loadDocument(sender) {
+    if (!state.context.authorExists) {
+      abortSave()
+      return
+    }
     getReadUri()
     .then((readUri) => {
       checkRequirements({ editorHasChanges: true } )
@@ -185,9 +189,9 @@ export default function doc (state, emitter) {
       })
     }
   }
+
   async function save(payload) {
     return new Promise ((resolve) => {
-
       ipcRenderer.send('fs:write', payload)
       ipcRenderer.once('fs:write', (e, file) => {
         emitter.emit('context:update', { working: false })

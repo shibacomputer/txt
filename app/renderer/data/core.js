@@ -45,5 +45,9 @@ export default function core (state, emitter) {
     ipcRenderer.on('focus', (e) => {
       emitter.emit('prefs:read')
     })
+
+    ipcRenderer.on('error', (e, err) => {
+      console.log('error: ', err)
+    })
   })
 }

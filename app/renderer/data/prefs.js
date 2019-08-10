@@ -27,6 +27,7 @@ export default function prefs (state, emitter) {
     emitter.on('prefs:write', writePreferences)
 
     ipcRenderer.on('prefs:show', (e) => {
+      if (state.context.hasDialog) return
       ipcRenderer.send('modal:show', 'prefs', {
         payload: {
           resource: 'prefs'

@@ -265,14 +265,7 @@ export function buildMenu(t, type, opts) {
           accelerator: 'Cmd+,',
           click: (item, win, event) => {
             if (!win) return
-            else {
-              let opts = {
-                shouldPrepend: true,
-                shouldStart: true
-              }
-
-              win.webContents.send('prefs:show')
-            }
+            else win.webContents.send('prefs:show')
           }
         },
         {type: 'separator'},

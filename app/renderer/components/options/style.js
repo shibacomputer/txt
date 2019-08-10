@@ -42,9 +42,11 @@ const style = css`
     justify-content: flex-start;
     margin-left: 0.5rem;
   }
+  
   .right > *:last-child {
     margin-bottom: 0;
   }
+
   .set {
     display: flex;
     flex-wrap: wrap;
@@ -55,6 +57,7 @@ const style = css`
   .set > * {
     margin-right: 0.5rem;
   }
+
   .label {
     color: var(--text);
     font-weight: bold;
