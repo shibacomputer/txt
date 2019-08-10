@@ -73,10 +73,8 @@ export async function init() {
     try {
       result = await pgp.unlock(key, secret)
     } catch (e) {
-      console.log('hello', e.message)
-      throw e
+      e.sender.send('error', e)
     }
     e.sender.send('author:unlock', result)
-    console.log(result)
   })
 }
