@@ -163,7 +163,8 @@ export default function author (state, emitter) {
   async function testKey(secret, key) {
     return new Promise((resolve, reject) => {
       ipcRenderer.send('author:unlock', key, secret)
-      ipcRenderer.once('author:unlock', (result) => {
+      ipcRenderer.once('author:unlock', (e, result) => {
+        console.log('Result! ', result)
         result? resolve() : reject()
       })
     })
