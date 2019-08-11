@@ -4,7 +4,7 @@
   "description": "a smol private text editor",
   "main": "build/main/main.js",
   "scripts": {
-    "clean": "rm -rf .cache/, build/, app/main/.parcel, app/renderer/.parcel, dist/",
+    "clean": "rm -rf .cache/ build/ app/main/.parcel app/renderer/.parcel dist/",
     "dist": "npm run clean && npm run main:build && npm run renderer:build && npm run dist:mac",
     "electron:start": "nodemon --watch app/main/.parcel --exec \"electron .\"",
     "main:build": "parcel build app/main/main.js --out-dir build/main/ --out-file main --target electron",
@@ -60,9 +60,13 @@
     "regenerator-runtime": "^0.13.3",
     "underscore": "^1.9.1"
   },
-
+  "homepage": "./",
   "build": {
     "appId": "shiba.computer.txt",
+    "productName": "Txt",
+    "mac": {
+      "darkModeSupport": true
+    },
     "files": [
       "build/main/main.js",
       "build/renderer/**/*"
