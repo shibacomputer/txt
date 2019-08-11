@@ -7,7 +7,7 @@ const config = require('./utils/config')
 
 const devPath = 'http://localhost:9008/'
 const prodPath = format({
-  pathname: resolve('app/renderer/.parcel/production/'),
+  pathname: resolve('build/renderer/index.html'),
   protocol: 'file:',
   slashes: true
 })
