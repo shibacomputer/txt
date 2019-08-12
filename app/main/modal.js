@@ -30,32 +30,29 @@ function create(e, win, cfg, obj) {
 
     case 'open':
       dialog.showOpenDialog(win, cfg, (response) => {
+        if (!response || response.length === 0) return
+        let pathParsed = path.parse(response[0])
 
-        if (response) {
-          let pathParsed = path.parse(response[0])
-
-          let newOpts = {
-            uri: response[0],
-            fn: pathParsed.name,
-            ext: pathParsed.ext
-          }
-          e.sender.send('modal:show', newOpts)
-        } else e.sender.send('modal:show', null)
+        let newOpts = {
+          uri: response[0],
+          fn: pathParsed.name,
+          ext: pathParsed.ext
+        }
+        e.sender.send('modal:show', newOpts)
       })
     break
 
     case 'save':
       dialog.showSaveDialog(win, cfg, (response) => {
-        if (response) {
-          let pathParsed = path.parse(response)
+        if (!response) return
+        let pathParsed = path.parse(response)
 
-          let newOpts = {
-            uri: response,
-            fn: pathParsed.name,
-            ext: pathParsed.ext
-          }
-          e.sender.send('modal:show', newOpts)
-        } else e.sender.send('modal:show', null)
+        let newOpts = {
+          uri: response,
+          fn: pathParsed.name,
+          ext: pathParsed.ext
+        }
+        e.sender.send('modal:show', newOpts)
       })
     break
 

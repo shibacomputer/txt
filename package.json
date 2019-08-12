@@ -64,13 +64,40 @@
   "build": {
     "appId": "shiba.computer.txt",
     "productName": "Txt",
+    "publish": [ {
+      "provider": "generic",
+      "url": "http://txtapp.io/releases/${os}",
+      "channel": "latest"
+    } ],
     "mac": {
-      "darkModeSupport": true
+      "darkModeSupport": true,
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 128,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "directories": {
+      "buildResources": "assets"
     },
     "files": [
       "build/main/main.js",
       "build/renderer/**/*"
     ]
   }
-
 }
