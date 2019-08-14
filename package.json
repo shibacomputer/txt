@@ -1,25 +1,26 @@
 {
   "name": "txt",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "description": "a smol private text editor",
   "main": "build/main/main.js",
   "scripts": {
     "clean": "rm -rf .cache/ build/ app/main/.parcel app/renderer/.parcel dist/",
     "dist": "npm run clean && npm run main:build && npm run renderer:build && npm run dist:mac",
+    "dist:linux": "electron-builder -l",
+    "dist:mac": "electron-builder -m",
+    "dist:win": "electron-builder -w",
     "electron:start": "nodemon --watch app/main/.parcel --exec \"electron .\"",
     "main:build": "parcel build app/main/main.js --out-dir build/main/ --out-file main --target electron",
     "main:watch": "parcel watch app/main/main.js --out-dir app/main/.parcel --out-file main --target electron",
     "parcel:watch": "run-p -r main:watch renderer:watch",
+    "postinstall": "electron-builder install-app-deps",
     "rebuild": "electron-rebuild -f -w keytar",
     "renderer:build": "parcel build app/renderer/index.html --out-dir build/renderer/ --public-url ./",
     "renderer:watch": "parcel app/renderer/index.html --port 9008 --out-dir app/renderer/.parcel/development",
-    "start": "cp ./node_modules/openpgp/dist/openpgp.worker.min.js ./app/main/utils/openpgp.worker.min.js && run-s main:build watch",
-    "watch": "run-p -r parcel:watch electron:start",
     "report": "electronegativity -i ./app --output electronegativity-report.csv -r",
-    "postinstall": "electron-builder install-app-deps",
-    "dist:linux": "electron-builder -l",
-    "dist:mac": "electron-builder -m",
-    "dist:win": "electron-builder -w"
+    "release": "bump && npm run dist",
+    "start": "cp ./node_modules/openpgp/dist/openpgp.worker.min.js ./app/main/utils/openpgp.worker.min.js && run-s main:build watch",
+    "watch": "run-p -r parcel:watch electron:start"
   },
   "repository": {
     "type": "git",
@@ -64,11 +65,13 @@
   "build": {
     "appId": "shiba.computer.txt",
     "productName": "Txt",
-    "publish": [ {
-      "provider": "generic",
-      "url": "http://txtapp.io/releases/${os}",
-      "channel": "latest"
-    } ],
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://txtapp.io/releases/${os}",
+        "channel": "latest"
+      }
+    ],
     "mac": {
       "darkModeSupport": true,
       "category": "public.app-category.productivity",
