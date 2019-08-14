@@ -2,8 +2,9 @@
 node_modules
 .cache
 .parcel
+dist/
+build/
 openpgp.worker.min.js
 *.csv
 *.log
 logs
-
