@@ -20,11 +20,17 @@ const style = css`
   }
 
   .primary:hover {
-    color: white;
+    color: var(--text-bold);
   }
 
   .primary:focus {
     border: 1px solid var(--text);
+  }
+
+  .dark {
+    background: #0D1317;
+    border: 1px solid #232323;
+    color: #E7F8FF;
   }
 
   .light {
@@ -50,7 +56,7 @@ const style = css`
   .positive {
     color: var(--base);
     background: var(--positive);
-    border: 1px solid var(--border);
+    border: 1px solid var(--positive);
   }
 
   .disabled {

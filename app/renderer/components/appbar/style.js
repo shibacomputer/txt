@@ -54,7 +54,7 @@ const style = css`
   }
 
   .hasChanges {
-    color: var(--c);
+    color: var(--positive);
   }
 
   .edited {

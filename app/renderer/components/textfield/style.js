@@ -16,7 +16,7 @@ const style = css`
   }
 
   .input-valid {
-    outline-color: var(--c);
+    outline-color: var(--positive);
   }
 
   .error {

@@ -1,5 +1,6 @@
 import React from 'react'
 import { Component } from 'monoapp-react'
+import { setTheme } from '../../utils/themes'
 
 import Button from '../button'
 import Checkbox from '../checkbox'
@@ -25,6 +26,9 @@ class Options extends Component {
 
     this.handleUpdatesCheck = this.handleUpdatesCheck.bind(this)
     this.handleBorderCheck = this.handleBorderCheck.bind(this)
+
+    this.handleDarkThemeChange = this.handleDarkThemeChange.bind(this)
+    this.handleLightThemeChange = this.handleLightThemeChange.bind(this)
 
     this.handlePassphraseCheck = this.handlePassphraseCheck.bind(this)
   }
@@ -113,6 +117,14 @@ class Options extends Component {
     this.emit('prefs:update', { allowUpdates: e.target.checked })
   }
 
+  handleDarkThemeChange(e) {
+    this.emit('prefs:update', { hasTheme: 'dark' })
+  }
+
+  handleLightThemeChange(e) {
+    this.emit('prefs:update', { hasTheme: 'light' })
+  }
+
   render () {
     this.emit('context:update', { hasDialog: true })
 
@@ -138,8 +150,8 @@ class Options extends Component {
             </aside>
             <main className={ style.right }>
               <div className={ style.set }>
-                <Button type='primary' label='Dark' />
-                <Button type='light' label='Light' />
+                <Button type='primary' label='Dark' onClick={ this.handleDarkThemeChange } />
+                <Button type='light' label='Light' onClick={ this.handleLightThemeChange } />
               </div>
             </main>
           </section>

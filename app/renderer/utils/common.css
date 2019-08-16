@@ -30,7 +30,7 @@ html {
   -webkit-touch-callout: none;
   -webkit-user-drag: none;
   cursor: default;
-  background: var(--k);
+  background: var(--background);
 }
 
 body {
@@ -38,7 +38,7 @@ body {
   margin: 0;
   -ms-overflow-style: scrollbar;
   -webkit-app-region: drag;
-  background: var(--k);
+  background: var(--background);
   overflow: hidden;
   width: 100vw;
   height: 100vh;

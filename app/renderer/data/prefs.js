@@ -1,4 +1,5 @@
 const ipcRenderer = window.require('electron').ipcRenderer
+import { setTheme } from '../utils/themes'
 
 export default function prefs (state, emitter) {
 
@@ -41,6 +42,7 @@ export default function prefs (state, emitter) {
   function initialisePreferences(preferences = {}) {
     state.prefs = preferences
     state.proposedPrefs = state.prefs
+    setTheme(state.prefs.hasTheme)
     emitter.emit('context:update', { preferencesHaveChanges: false })
   }
 
@@ -54,6 +56,7 @@ export default function prefs (state, emitter) {
   function writePreferences() {
     ipcRenderer.send('prefs:write', state.proposedPrefs)
     ipcRenderer.once('prefs:write', (e) => {
+      setTheme(state.proposedPrefs.hasTheme)
       emitter.emit('context:update', { preferencesHaveChanges: false })
     })
   }
@@ -61,6 +64,7 @@ export default function prefs (state, emitter) {
   function loadPreferences(newPreferences) {
     state.prefs = newPreferences
     state.proposedPrefs = state.prefs // You want to compare these two
+    setTheme(state.prefs.hasTheme)
     emitter.emit('context:update', { preferencesHaveChanges: false })
   }
 
@@ -68,6 +72,9 @@ export default function prefs (state, emitter) {
     let hasChanges = false
     for (const key of Object.keys(obj)) {
       state.proposedPrefs[key] = obj[key]
+      if (state.proposedPrefs[key] === 'hasTheme') {
+        setTheme(obj[key].value)
+      }
       if (state.prefs[key].value != obj[key].value) {
         hasChanges = true
       }
