@@ -1,6 +1,11 @@
 import css from 'csjs-inject'
 
 const style = css`
+  .box {
+    background: var(--base);
+    height: calc(100vh - 3.75rem - 1.75rem);
+    overflow: scroll;
+  }
   .area {
     background: none;
     border: none;
@@ -14,7 +19,6 @@ const style = css`
     max-width: 48rem;
     margin: 0 auto;
     outline: none;
-    overflow: hidden;
     padding: 2rem;
     resize: none;
     width: 100vw;

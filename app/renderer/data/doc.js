@@ -16,6 +16,8 @@ export default function doc (state, emitter) {
     emitter.on('doc:update', (doc) => {
       state.doc.words = wordCount(doc.contents)
       state.doc.contents = doc.contents
+      state.doc.selectStart = doc.selectStart
+      state.doc.selectEnd = doc.selectEnd
 
       updateContext()
     })

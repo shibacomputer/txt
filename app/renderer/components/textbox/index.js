@@ -1,12 +1,14 @@
 import React from 'react'
-import { Controlled as CodeMirror } from 'react-codemirror2'
-import 'codemirror/addon/selection/mark-selection'
+// import { Controlled as CodeMirror } from 'react-codemirror2'
+// import 'codemirror/addon/selection/mark-selection'
 
-require('codemirror/mode/markdown/markdown')
+// require('codemirror/mode/markdown/markdown')
 
 import { Component } from 'monoapp-react'
-import 'codemirror/lib/codemirror.css'
-import './style.css'
+import style from './style'
+
+// import 'codemirror/lib/codemirror.css'
+// import './style.css'
 
 class Textbox extends Component {
   constructor (props) {
@@ -18,6 +20,14 @@ class Textbox extends Component {
 
   }
 
+  componentDidMount() {
+    this.ref.focus()
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.ref.setSelectionRange(this.state.doc.selectStart, this.state.doc.selectEnd) // Fix this later
+  }
+
   handleFocus(e) {
     let newState = this.state
     let focus = e.type === 'focus' ? true : false
@@ -27,15 +37,29 @@ class Textbox extends Component {
     this.emit('context:update', [{editorHasFocus: focus}])
   }
 
-  handleChange(editor, data, value) {
-    this.emit('doc:update', {contents: value})
+  handleChange(event) {
+    let value = event.target.value
+    this.emit('doc:update', {
+      contents: value,
+      selectStart: this.ref.selectionStart,
+      selectEnd: this.ref.selectionEnd
+    })
   }
 
   render () {
     const {doc, context, prefs} = this.props
     return (
-      <section className="box">
-        <CodeMirror
+      <section className={ style.box }>
+        <textarea 
+          className={ style.area } 
+          onChange={ this.handleChange }
+          ref={ref => {
+            this.ref = ref
+          }}
+          value={ doc.contents }
+        ></textarea>
+
+        {/* <CodeMirror
           value= {doc.contents}
           onBeforeChange={(editor, data, value) => {
             this.handleChange(editor, data, value)
@@ -49,7 +73,7 @@ class Textbox extends Component {
             styleSelectedText: true
           }
         }
-        />
+        /> */}
       </section>
     )
   }
