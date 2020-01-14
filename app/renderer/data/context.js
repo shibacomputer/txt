@@ -18,6 +18,7 @@ export default function context (state, emitter) {
     passphraseHasError: false,
     passphraseValidated: false,
     preferencesHaveChanges: false,
+    trackingChanges: false,
     working: false
   }
 

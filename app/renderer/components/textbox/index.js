@@ -29,16 +29,15 @@ class Textbox extends Component {
   }
 
   handleFocus(e) {
-    let newState = this.state
-    let focus = e.type === 'focus' ? true : false
-    newState.context.editorHasFocus = focus
-
-    this.setState(newState)
-    this.emit('context:update', [{editorHasFocus: focus}])
+    this.emit('context:update', [{editorHasFocus: true}])
+  }
+  
+  handleBlur(e) {
+    this.emit('context:update', [{editorHasFocus: false}])
   }
 
-  handleChange(event) {
-    let value = event.target.value
+  handleChange(e) {
+    let value = e.target.value
     this.emit('doc:update', {
       contents: value,
       selectStart: this.ref.selectionStart,
@@ -53,6 +52,7 @@ class Textbox extends Component {
         <textarea 
           className={ style.area } 
           onChange={ this.handleChange }
+          onFocus={ this.handleFocus }
           ref={ref => {
             this.ref = ref
           }}

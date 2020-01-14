@@ -1,6 +1,30 @@
 const ipcRenderer = window.require('electron').ipcRenderer
 const _ = require('underscore')
 
+const symbols = {
+  addition: {
+    start: '{++',
+    end: '++}'
+  },
+  deletion: {
+    start: '{--',
+    end: '--}'
+  },
+  comment: {
+    start: '{>>',
+    end: '<<}'
+  },
+  substitute: {
+    start: '{~~',
+    middle: '->',
+    end: '~~}'
+  },
+  highlight: {
+    start: '{==',
+    end: '==}'
+  }
+}
+
 export default function doc (state, emitter) {
   resetDocument()
 
@@ -13,15 +37,29 @@ export default function doc (state, emitter) {
     ipcRenderer.on('doc:export', exportDocument)
     ipcRenderer.on('doc:close', closeDocument)
 
+    // Changes tracking
+    ipcRenderer.on('doc:changes:track', startOrStopTrackingChanges)
     emitter.on('doc:update', (doc) => {
       state.doc.words = wordCount(doc.contents)
-      state.doc.contents = doc.contents
       state.doc.selectStart = doc.selectStart
       state.doc.selectEnd = doc.selectEnd
 
+      state.doc.contents = processContents(doc.contents, state.doc.contents, state.context.trackingChanges)
       updateContext()
     })
+
+    function processContents(contents, staleContents, trackingChanges) {
+      if (!trackingChanges) return contents
+
+      const diff = (diffMe, diffBy) => diffMe.split(diffBy).join('')
+
+      console.log('DIFF! ', diff(contents, staleContents))
+
+      return contents
+
+    }
   })
+
   async function newDocument() {
     checkRequirements({ editorHasChanges: true } )
     .then((satisfied) => {
@@ -262,6 +300,7 @@ export default function doc (state, emitter) {
       uri: null,
       uriParsed: null,
       staleContents: '',
+      trackingChanges: false,
       title: tempDoc.title || 'Untitled',
       words: 0
     }
@@ -328,6 +367,10 @@ export default function doc (state, emitter) {
 
     let windowTitle = hasChanges ? state.doc.title + ' – Edited' : state.doc.title
     ipcRenderer.send('window:title', windowTitle)
+  }
+
+  function startOrStopTrackingChanges(sender, flag) {
+    emitter.emit('context:update', { trackingChanges: flag })
   }
 
   async function checkRequirements(reqs) {

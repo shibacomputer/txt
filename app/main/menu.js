@@ -187,12 +187,12 @@ export function buildMenu(t, type, opts) {
       },
       {
         type: 'checkbox',
-        enabled: false,
+        enabled: opts.editorHasContent ? opts.editorHasContent : false,
         label: t.t('systemMenu.editMenu.trackChanges'),
         accelerator: 'CmdOrCtrl+Shift+T',
         click: (item, win, event) => {
           if (!win) return
-          else win.webContents.send('')
+          else win.webContents.send('doc:changes:track', item.checked)
         }
       },
       {
