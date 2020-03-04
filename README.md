@@ -28,6 +28,9 @@ Txt uses events to create simple patterns for interacting between Electron's `ma
 🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED AND UNAUDITED** 🚫  
 I can't stress this enough. This needs a lot of work, the code needs a huge cleanup, I need to write tests and it needs other eyes on it.
 
+## License
+Txt is licensed undder the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
+
 ## Why make this?
 Txt is an opinionated statement on the relationship between personal work, data management and interaction. At time of writing, Txt is the only word processor that offers simple collaboration, document versioning and contact management implemented as such that it can run off of 1 or more USB sticks, or on public infrastructure, whilst offering the same UX on any system - including a live Tails install. In my considerations designing and building this, I'm trying to make sure it's really useful on a day to day basis without any sort of platform lock in. So long as you have access to the key, all Txt documents can be retreived without the app.
 
