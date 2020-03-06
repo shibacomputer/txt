@@ -27,6 +27,10 @@ This will install everything you need to build Txt successfully! 🎉
 I can't stress this enough. This needs a lot of work, the code needs a huge cleanup, I need to write tests and it needs other eyes on it.
 
 ## Why make this?
+One day, I got sick of using [Day One](https://dayoneapp.com) as a journal. For me, intertwining my text output with an external subscription service didn't feel right. Instead, I wanted something with a small set of features, that ran locally and that I could trust. I started drawing up some designs, and a year or so later, here we are.
+
+And as it turns out, many people think the idea of working with small, encrypted text files very compelling. 
+
 Txt is an opinionated statement on the relationship between personal work, data management and interaction. At time of writing, Txt is the only word processor that offers simple collaboration, document versioning and contact management implemented as such that it can run off of 1 or more USB sticks, or on public infrastructure, whilst offering the same UX on any system - including a live Tails install. In my considerations designing and building this, I'm trying to make sure it's really useful on a day to day basis without any sort of platform lock in. So long as you have access to the key, all Txt documents can be retreived without the app.
 
 The beta focuses on text entry, but 1.0 will include image embeds, management, document histories and a few other features. We'll see where this goes from there.
