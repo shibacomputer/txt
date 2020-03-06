@@ -5,7 +5,7 @@ Txt is a little word processor that keeps your work safe with
 [well-documented encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).  
 It is very nearly in Alpha!
 
-https://shiba.computer
+https://newdesigncongress.org
 
 ![Txt Screenshot](screenshot.jpg)
 
@@ -22,15 +22,9 @@ cd txt
 
 This will install everything you need to build Txt successfully! 🎉  
 
-## Development
-Txt uses events to create simple patterns for interacting between Electron's `main` and `render` processes. Once I've cleaned up the beta, I'll write a little more about how this works and what the benefits are.
-
 ## Disclaimer
 🚫 **THIS IS A HUGE WORK IN PROGRESS AND IS UNTESTED AND UNAUDITED** 🚫  
 I can't stress this enough. This needs a lot of work, the code needs a huge cleanup, I need to write tests and it needs other eyes on it.
-
-## License
-Txt is licensed undder the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
 
 ## Why make this?
 Txt is an opinionated statement on the relationship between personal work, data management and interaction. At time of writing, Txt is the only word processor that offers simple collaboration, document versioning and contact management implemented as such that it can run off of 1 or more USB sticks, or on public infrastructure, whilst offering the same UX on any system - including a live Tails install. In my considerations designing and building this, I'm trying to make sure it's really useful on a day to day basis without any sort of platform lock in. So long as you have access to the key, all Txt documents can be retreived without the app.
@@ -38,6 +32,15 @@ Txt is an opinionated statement on the relationship between personal work, data 
 The beta focuses on text entry, but 1.0 will include image embeds, management, document histories and a few other features. We'll see where this goes from there.
 
 Choosing [GPG encryption](https://gnupg.org/) and the filesystem as the app's foundation is deliberate. Rather than build a database, Txt relies solely on the filesystem. Anything you make with Txt can be read and reviewed somewhere else. On computers that are already set up with GPG, your work is accessible at a system level if you add the key to your GPG keychain. There is no import/export library tool, because adding one would be redundant. Everything used is off the shelf.
+
+## Contributing
+I am very grateful for both design and development contributions, as well as bug reports and feature requests! If you'd like to contribute to Txt's development specifically, please take a look at the [issues list](https://github.com/shibacomputer/txt/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) for issues tagged with "Help Wanted".
+
+## License
+Txt is licensed undder the [GPLv3](https://www.gnu.org/licenses/gpl-3.0.html).
+
+## Development
+Txt uses events to create simple patterns for interacting between Electron's `main` and `render` processes. Once I've cleaned up the beta, I'll write a little more about how this works and what the benefits are.
 
 ### Threat model
 I'll write more on this later, but basically Txt is designed to allow you to store data in untrusted locations, such as a cloud service or on a USB stick.
@@ -72,15 +75,16 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 ✅ Export to passphrase encrypted GPG text file  
 ⬜ Light UI theme  
 ⬜ Switch or replace keys  
-⬜ Import existing text files  
+⬜ Import existing text files or directories  
 ⬜ Export to [Are.na](https://are.na)  
 ⬜ Export to PDF  
+⬜ Markdown support  
+⬜ Simple Track changes via CriticMarkup support  
 
 ### Planned for v1.0
 ⬜ Contact management  
-⬜ Collaboration / track changes  
+⬜ Document sharing  
 ⬜ Windows support  
-⬜ Markdown support  
 ⬜ Decentralised software updates  
 ⬜ Localisation (First languages: French/Spanish/German/Japanese)  
 ⬜ Automatic image management  
@@ -88,18 +92,18 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 
 ### Language Support  
 ✅ 🇬🇧 English (100%)  
-⬜ 🇩🇪 Deutsch (50%)  
+⬜ 🇩🇪 Deutsch (0%)  
 ⬜ 🇫🇷 Français (0%)  
 ⬜ 🇪🇸 Español (0%)  
 ⬜ 🇯🇵 日本語 (0%)  
 
 
 ### Big todos
-⬜ Migrate from Electron to [Muon](https://github.com/brave/muon)  
-⬜ Data management  
+⬜ Better data management  
 ⬜ Better support for file permission edge cases  
 ⬜ Hardware 2FA / GPG support  
-
+⬜ True collaboration  
+⬜ Novel identity and web of trust design  
 ⬜ Filesystem privacy??  
 ⬜ TOR support??  
 ⬜ Secure syncing??  
@@ -108,9 +112,24 @@ In much the same way as Txt respects connectivity as a privilege, communication 
 ⬜ Go native!
 
 ## Contacts
-Txt has a [mailing list](https://tinyletter.com/txt-app). Join it for very
+The New Design Congress has a [mailing list](https://ndc.substack.com/subscribe). Join it for very
 infrequent emails.  
 Have a feature request? [Submit one](https://github.com/shibacomputer/txt/issues/new)!
 
 ## Donate
 Once there's something you can actually use, I'll add donation links here!
+
+## Credits
+Grateful for the following people for their help so far:
+- [Ignatius Gilfedder](https://ignatius.design) (Design support)
+- [Rose Regina Lawrence](https://roseregina.com) (Threat modelling)
+- [Dean Francis](https://twitter.com/deanfra) (Translations)
+
+~  
+
+<img src="https://newdesigncongress.org/ndc.svg" width="200" />
+
+Txt is an experiment by the [New Design Congress](https://newdesigncongress.org), a research group 
+developing a nuanced understanding of technology's role as a social, political and environmental 
+_accelerant_. We are a fiscally sponsored project of [Simply Secure](https://simplysecure.org), 
+a US 501(c)3 nonprofit. 
