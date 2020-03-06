@@ -14,6 +14,7 @@ https://shiba.computer
 ```
 git clone git@github.com:shibacomputer/txt.git txt
 cd txt
+📦 npm install
 🔨 npm run rebuild
 👉 npm start
 ✨ 📝 🚀!
