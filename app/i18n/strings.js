@@ -104,7 +104,108 @@ module.exports = {
     },
   },
   de: {
-
+    'systemMenu': {
+      'file': 'Datei',
+      'edit': 'Bearbeiten',
+      'view': 'Ansicht',
+      'window': 'Fenster',
+      'help': 'Hilfe',
+      'debug': 'Debug',
+      'fileMenu': {
+        'new': 'Neu',
+        'newWindow': 'Neues Fenster',
+        'open': 'Öffnen …',
+        'save': 'Speichern',
+        'saveAs': 'Speichern unter …',
+        'close': 'Schließen',
+        'revert': 'Rückgängig',
+        'preview': 'Vorschau …',
+        'print': 'Drucken …',
+        'send': 'Senden an …',
+        'export': 'Exportieren als …',
+        'exportMenu': {
+          'exportToEncryptedFile': 'Verschlüsselter Text',
+          'exportToPlainText': 'Reiner Text',
+          'exportToPdf': 'PDF',
+          'exportToArena': 'Are.na'
+        }
+      },
+      'editMenu': {
+        'settings': 'Einstellungen',
+        'clearAll': 'Alles löschen',
+        'trackChanges': 'Änderungen nachverfolgen',
+        'acceptChanges': 'Änderungen bestätigen',
+        'rejectChanges': 'Änderungen ablehnen',
+      },
+      'helpMenu': {
+        'support': 'Support',
+      },
+      'appMenu': {
+        'donate': 'Spenden',
+        'checkForUpdates': 'Nach Updates suchen …',
+        'preferences': 'Einstellungen',
+      },
+      'debugMenu': {
+        'showTools': 'Werkzeuge einblenden'
+      }
+    },
+    'contextMenu': { },
+    'verbs': {
+      'ok': 'OK',
+      'open': 'Öffnen',
+      'save': 'Speichern',
+      'cancel': 'Abbrechen',
+      'revert': 'Rückgängig',
+      'discard': 'Änderungen verwerfen',
+      'trash': 'In den Papierkorb bewegen',
+      'report': 'Fehler melden',
+      'continue': 'Weiter',
+      'back': 'Zurück',
+      'help': 'Hilfe',
+      'retry': 'Wiederholen',
+      'export': 'Exportieren',
+      'unlock': 'Entschlüsseln',
+      'print': 'Drucken',
+      'deleteForever': 'Permanent löschen',
+      'saveAndDeleteForever': 'Exportieren & löschen',
+      'import': 'Importieren',
+      'completeSetup': 'Einrichtung abschließen'
+    },
+    'nouns': {
+      'untitledDocument': 'Ohne Titel',
+      'edited': 'bearbeitet',
+      'encryptedText': 'Verschlüsseltes Text-Dokument',
+      'plainText': 'Text-Dokument',
+      'pdfDocument': 'PDF-Dokument',
+      'authorProfile': 'Autorenprofil',
+      'words': 'Wörter',
+      'date': 'Datum',
+      'author': 'Autor',
+      'collaborators': 'Mitarbeitende',
+      'document': 'Dokument'
+    },
+    'dialogs': {
+      'revertFile': {
+        'title': 'Willst du %{name} wirklich verwerfen?',
+        'detail': 'Alle Änderungen werden unwiderruflich gelöscht, wenn du sie verwirfst.'
+      },
+      'modifiedFile': {
+        'title': '%{name} wurde bearbeitet. Änderungen speichern?',
+        'detail': 'Alle Änderungen werden unwiderruflich gelöscht, wenn du sie verwirfst.'
+      },
+      'askToDeleteAuthor': {
+        'title': 'Bist du dir sicher, dass du %{name} löschen willst?',
+        'detail': 'Falls du dein Autoren-Profil nicht exportiert hast, kannst du nicht mehr auf deine Txt-Dateien zugreifen.'
+      },
+      'error': {
+        'title': '%{msg}',
+        'detail': 'Weitere Hilfe kannst du auf der Website finden.'
+      },
+      'needsAuthor': {
+        'title': 'Einstellungen öffnen und Einrichtung abschließen?',
+        'detail': 'Bevor du Dateien öffnen und speichern kannst, muss Txt eingerichtet werden.'
+      }
+    },
   },
   fr: {
 
