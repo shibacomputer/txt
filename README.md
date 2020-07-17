@@ -3,7 +3,10 @@
 
 Txt is a little word processor that keeps your work safe with
 [well-documented encryption](https://en.wikipedia.org/wiki/Pretty_Good_Privacy).  
-It is very nearly in Alpha!
+~~It is very nearly in Alpha!~~
+🚨🚨🚨 
+UPDATE! THIS ALPHA WORKS, BUT WORK IS AFOOT ON A NEWER, MORE INTERESTING REVISION
+🚨🚨🚨
 
 https://newdesigncongress.org
 
