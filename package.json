@@ -60,7 +60,7 @@
     "react-codemirror2": "^6.0.0",
     "recompose": "^0.30.0",
     "regenerator-runtime": "^0.13.3",
-    "underscore": "^1.9.1"
+    "underscore": "^1.12.1"
   },
   "homepage": "./",
   "build": {
