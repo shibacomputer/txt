@@ -41,7 +41,7 @@
   "dependencies": {
     "app-root-path": "^2.2.1",
     "choo-persist": "^3.0.2",
-    "codemirror": "^5.48.2",
+    "codemirror": "^5.58.2",
     "compass": "^0.1.1",
     "csjs-inject": "^1.0.1",
     "electron-better-ipc": "^0.4.0",
